@@ -1,13 +1,21 @@
 package dk.gruppe5.drone.openCV;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.List;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
+import org.opencv.core.MatOfFloat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.video.Video;
 
 public class ImageProcessor {
 	
@@ -112,10 +120,43 @@ public class ImageProcessor {
 
 	public Mat opticalFlow(Mat frameOne, Mat frameTwo) {
 		// TODO Auto-generated method stub
-		
-	
+		//Først finder vi de gode features at tracker
 		frameOne = toCanny(frameOne);
-		return frameOne;
+		frameTwo = toCanny(frameTwo);
+		Mat standIn = new Mat();
+		MatOfPoint corners1 = new MatOfPoint();
+		MatOfPoint corners2 = new MatOfPoint();
+		Imgproc.goodFeaturesToTrack(frameOne, corners1, 100, 0.1, 30);
+		Imgproc.goodFeaturesToTrack(frameOne, corners2, 100, 0.1, 30);
+		Imgproc.cvtColor(frameOne, standIn, Imgproc.COLOR_BayerBG2RGB);	
+		/*
+		for(int x = 0; x < corners1.width(); x++){
+			for(int y = 0; y < corners1.height(); y++){
+				Imgproc.circle(standIn, new Point(corners1.get(y, x)), 3, new Scalar(0,250,0),5);
+				
+			}
+		}*/
+		
+		MatOfByte status = new MatOfByte();
+		MatOfFloat err = new MatOfFloat();
+		MatOfPoint2f corners1f = new MatOfPoint2f(corners1.toArray());
+		MatOfPoint2f corners2f = new MatOfPoint2f(corners2.toArray());
+		Video.calcOpticalFlowPyrLK(frameOne, frameTwo, corners1f, corners2f, status, err);
+		
+		for(int i = 0; i < corners1f.height(); i++){
+			Imgproc.line(standIn, new Point(corners1f.get(i, 0)),new Point(corners2f.get(i, 0)),new Scalar(0,250,0),5);
+		}
+		//System.out.println(corners1f.height());
+		//System.out.println(corners2f.height());
+//		for(int x = 0; x <= status.height(); x++){
+			
+			
+				//Imgproc.circle(standIn, new Point(corners1.get(y, x)), 3, new Scalar(0,250,0),5);
+				
+//			}
+		
+		
+		return standIn;
 	}
 
 }

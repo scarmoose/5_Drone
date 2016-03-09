@@ -3,7 +3,12 @@ package dk.gruppe5.drone.openCVtest;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -70,6 +75,24 @@ public class App {
 		frame.add(panel);
 		setupSlider(panel);
 		
+		/*
+		
+		try {
+		    File img = new File("lena.png");
+		    BufferedImage image = ImageIO.read(img); 
+		    image = imgProce.toBufferedImage(imgProce.opticalFlow(imgProce.bufferedImageToMat(image), imgProce.bufferedImageToMat(image)));
+		    
+		    ImageIcon imgIcon = new ImageIcon(image);
+		    JLabel label = new JLabel();
+		    label.setIcon(imgIcon);
+		    
+		    panel.add(label);
+		    System.out.println(image);
+		} catch (IOException e) { 
+		    e.printStackTrace(); 
+		}
+		
+		*/
 		frame.setVisible(true);
 	
 
