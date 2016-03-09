@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="libs/slf4j-api-1.7.2.jar"/>
 	<classpathentry kind="lib" path="libs/opencv-310.jar"/>
 	<classpathentry kind="lib" path="libs/opencv_java310.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCV-3.0"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

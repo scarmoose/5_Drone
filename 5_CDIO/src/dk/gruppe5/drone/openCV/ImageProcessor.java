@@ -25,7 +25,7 @@ public class ImageProcessor {
 		return image;
 	}
 	
-	public static Mat bufferedImageToMat(BufferedImage bi) {
+	public Mat bufferedImageToMat(BufferedImage bi) {
 		  Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
 		  byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
 		  mat.put(0, 0, data);
@@ -74,6 +74,48 @@ public class ImageProcessor {
 	
 	private Mat getKernelFromShape(int elementSize, int elementShape) {
 		return Imgproc.getStructuringElement(elementShape, new Size(elementSize*2+1, elementSize*2+1), new Point(elementSize, elementSize) );
+	}
+	
+	public BufferedImage toGrayScale(BufferedImage input){
+		
+		byte[] data = ((DataBufferByte) input.getRaster().getDataBuffer()).getData();
+        Mat mat = new Mat(input.getHeight(), input.getWidth(), CvType.CV_8UC3);
+        mat.put(0, 0, data);
+
+        Mat mat1 = new Mat(input.getHeight(),input.getWidth(),CvType.CV_8UC3);
+        Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+
+        byte[] data1 = new byte[mat1.rows() * mat1.cols() * (int)(mat1.elemSize())];
+        mat1.get(0, 0, data1);
+        BufferedImage image1 = new BufferedImage(mat1.cols(),mat1.rows(), BufferedImage.TYPE_BYTE_GRAY);
+        image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
+
+		
+		
+		return image1;
+		
+	}
+	
+	
+	
+
+	public Mat toCanny(Mat img) {
+		//First we grayscale the picture
+		Mat imageGray = new Mat();
+		Mat imageCny = new Mat();
+		Imgproc.cvtColor(img, imageGray, Imgproc.COLOR_BGR2GRAY);		
+		Imgproc.Canny(imageGray, imageCny, 10, 100, 3, true);
+
+	    
+		return imageCny;
+	}
+
+	public Mat opticalFlow(Mat frameOne, Mat frameTwo) {
+		// TODO Auto-generated method stub
+		
+	
+		frameOne = toCanny(frameOne);
+		return frameOne;
 	}
 
 }
