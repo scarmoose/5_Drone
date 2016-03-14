@@ -15,6 +15,7 @@ public class PPanel extends JPanel implements Runnable {
 	BufferedImage image;
 	VideoCapture capture;
 	ImageProcessor imgproc;
+	static int WEBCAM = 0;
 	
 
 	/**
@@ -23,7 +24,7 @@ public class PPanel extends JPanel implements Runnable {
 	private static final long serialVersionUID = -8195841601716878275L;
 	
 	public PPanel() {
-		capture = new VideoCapture(0);
+		capture = new VideoCapture(WEBCAM);
 		imgproc = new ImageProcessor();
 		
 		try {
