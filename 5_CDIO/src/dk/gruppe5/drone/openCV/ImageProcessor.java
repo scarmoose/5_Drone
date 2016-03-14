@@ -1,8 +1,8 @@
 package dk.gruppe5.drone.openCV;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.opencv.core.CvType;
@@ -120,9 +120,15 @@ public class ImageProcessor {
 
 	public Mat opticalFlow(Mat frameOne, Mat frameTwo) {
 		// TODO Auto-generated method stub
-		//Først finder vi de gode features at tracker
+		//FÃ¸rst finder vi de gode features at tracker
 		frameOne = toCanny(frameOne);
 		frameTwo = toCanny(frameTwo);
+		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
+		List<MatOfPoint> contours_2 = new ArrayList<MatOfPoint>();
+		Mat hierarchy_1 = new Mat();
+		Mat hierarchy_2 = new Mat();
+		Imgproc.findContours(frameOne, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+		Imgproc.findContours(frameTwo, contours_2, hierarchy_2, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 		Mat standIn = new Mat();
 		MatOfPoint corners1 = new MatOfPoint();
 		MatOfPoint corners2 = new MatOfPoint();
