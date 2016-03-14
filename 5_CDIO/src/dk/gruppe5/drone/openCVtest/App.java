@@ -32,7 +32,7 @@ public class App {
 	private JFrame frame;
 	private JPanel panel;
 	TutorialVideoListener tutVidList;
-	ImageProcessor imgProce = new ImageProcessor();
+	ImageProcessor imgProce = new ImageProcessor(); 
 
 
 	public void start() throws Exception {
