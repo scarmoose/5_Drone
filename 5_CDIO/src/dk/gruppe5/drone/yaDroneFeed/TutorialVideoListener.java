@@ -48,6 +48,7 @@ public class TutorialVideoListener extends JPanel {
 				
 				displayImage = imgProc.toBufferedImage(frameOne);
 				//displayImage = imgProc.toBufferedImage(imgProc.blur(imgProc.bufferedImageToMat(newImage), blurLevel));
+				frameTwo = frameOne;
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						repaint();
