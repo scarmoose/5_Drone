@@ -52,20 +52,28 @@ public class PPanel extends JPanel implements Runnable {
 		}
 	}
 
+	Mat old_frame;
+	
 	@Override
 	public void run() {
 		while (true) {
 			Mat frame = new Mat();
 			capture.read(frame);
+			if(old_frame == null) {
+				old_frame = frame;
+			}
 			System.out.println("Frame from camera obtained");
 			long t = System.currentTimeMillis();
-			frame = imgproc.toCanny(frame);
-			image = imgproc.toBufferedImage(frame);
+			//frame = imgproc.toCanny(frame);
+			Mat ofs_frame = imgproc.opticalFlow(frame, old_frame);
+			image = imgproc.toBufferedImage(ofs_frame);
+			old_frame = frame;
 			long dt = System.currentTimeMillis() - t;
 			System.out.println("Mat converted to BufferedImage in " + dt
 					/ 1000.0);
 			repaint();
 			System.out.println("repaint() kaldt.");
+			
 			
 			
 		}
