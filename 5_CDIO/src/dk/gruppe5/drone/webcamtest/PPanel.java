@@ -75,6 +75,13 @@ public class PPanel extends JPanel implements Runnable {
 			repaint();
 			System.out.println("repaint() kaldt.");
 			
+//			try {
+//				Thread.sleep(200);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
 			
 			
 		}
