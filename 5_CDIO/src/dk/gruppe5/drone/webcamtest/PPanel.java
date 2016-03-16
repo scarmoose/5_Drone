@@ -70,8 +70,7 @@ public class PPanel extends JPanel implements Runnable {
 			image = imgproc.toBufferedImage(ofs_frame);
 			old_frame = frame;
 			long dt = System.currentTimeMillis() - t;
-			System.out.println("Mat converted to BufferedImage in " + dt
-					/ 1000.0);
+			System.out.println("Mat converted to BufferedImage in(s) " + dt/ 1000.0);
 			repaint();
 			System.out.println("repaint() kaldt.");
 			

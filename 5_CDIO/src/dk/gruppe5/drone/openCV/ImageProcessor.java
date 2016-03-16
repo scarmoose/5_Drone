@@ -161,6 +161,8 @@ public class ImageProcessor {
 		MatOfPoint2f corners2f = new MatOfPoint2f(corners2.toArray());
 		Video.calcOpticalFlowPyrLK(frameOne, frameTwo, corners1f, corners2f, status, err);
 		Double averageUncalc = 0.0;
+		
+		
 		for(int i = 0; i < corners1f.height(); i++){
 			Point startP = new Point(corners1f.get(i, 0));
 			Point endP = new Point(corners2f.get(i, 0));
@@ -173,20 +175,26 @@ public class ImageProcessor {
 		}
 		System.out.println("Average:"+averageUncalc/corners1f.height());
 		averageUncalc = averageUncalc/corners1f.height();
-		
+		int threshold = 10;
 		for(int i = 0; i < corners1f.height(); i++){
 			
-		if(err.get(i, 0)[0]< 10){
+		
 			//Imgproc.line(standIn,startP,endP,new Scalar(0,250,0),5);
 			Point startP = new Point(corners1f.get(i, 0));
 			Point endP = new Point(corners2f.get(i, 0));
 			Double distance = Math.sqrt((startP.x-endP.x)*(startP.x-endP.x) + (startP.y-endP.y)*(startP.y-endP.y));
-			if(distance < 5*averageUncalc){
+			/*
+			 * By calculating an average in the distance between points in the picture, we can use this to remove
+			 * Unwanted vectors, for example vectors that is longer than a certain threshold in the picture
+			 */
+			if(distance < threshold*averageUncalc){
+				
+				
 				Imgproc.arrowedLine(standIn,startP,endP,new Scalar(0,250,0));
 			}
 			
 			//System.out.println("Point start:"+startP.x+","+startP.y+"-->"+endP.x+","+endP.y);
-		}
+		
 		}
 		//System.out.println(corners1f.height());
 		//System.out.println(corners2f.height());
