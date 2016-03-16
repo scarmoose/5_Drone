@@ -3,6 +3,8 @@ package dk.gruppe5.drone.webcamtest;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Window;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.PrintStream;
 
 import javax.swing.ImageIcon;
@@ -52,6 +54,15 @@ public class PWindow {
 		
 		Thread thread = new Thread(panel);
 		thread.start();
+		
+		
+		frame.addWindowListener(new WindowAdapter() {
+		    @Override
+		    public void windowClosing(WindowEvent e) {
+		    	//Nødløsning, nu slukker programmet da :P
+		        thread.stop();
+		    }
+		});
 		
 	}
 
