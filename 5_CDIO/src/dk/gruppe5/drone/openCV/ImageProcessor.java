@@ -112,7 +112,8 @@ public class ImageProcessor {
 		Mat imageGray = new Mat();
 		Mat imageCny = new Mat();
 		Imgproc.cvtColor(img, imageGray, Imgproc.COLOR_BGR2GRAY);		
-		Imgproc.Canny(imageGray, imageCny, 10, 100, 3, true);
+		Imgproc.Canny(imageGray, imageCny, 50, 100, 3, true);
+		//Imgproc.Canny(imageGray, imageCny, 10, 100, 3, true);
 
 	    
 		return imageCny;
@@ -132,25 +133,55 @@ public class ImageProcessor {
 		Mat standIn = new Mat();
 		MatOfPoint corners1 = new MatOfPoint();
 		MatOfPoint corners2 = new MatOfPoint();
-		Imgproc.goodFeaturesToTrack(frameOne, corners1, 100, 0.1, 30);
-		Imgproc.goodFeaturesToTrack(frameOne, corners2, 100, 0.1, 30);
+//		Imgproc.goodFeaturesToTrack(frameOne, corners1, 100, 0.1, 30);
+//		Imgproc.goodFeaturesToTrack(frameTwo, corners2, 100, 0.1, 30);
+		Imgproc.goodFeaturesToTrack(frameOne, corners1, 500, 0.1, 10);
+		Imgproc.goodFeaturesToTrack(frameTwo, corners2, 500, 0.1, 10);
+		//Now that we have found good features and added them to the corners1 and 2
+		//we add colour back to the picture so that we can draw lovely lines
 		Imgproc.cvtColor(frameOne, standIn, Imgproc.COLOR_BayerBG2RGB);	
-		/*
+		
+		 //This draws the good features that we have found in the 2 frames.
 		for(int x = 0; x < corners1.width(); x++){
 			for(int y = 0; y < corners1.height(); y++){
-				Imgproc.circle(standIn, new Point(corners1.get(y, x)), 3, new Scalar(0,250,0),5);
+				Imgproc.circle(standIn, new Point(corners1.get(y, x)), 3, new Scalar(0,250,0),2);
+				Imgproc.circle(standIn, new Point(corners2.get(y, x)), 7, new Scalar(200,0,200),1);
 				
 			}
-		}*/
+		}
 		
 		MatOfByte status = new MatOfByte();
 		MatOfFloat err = new MatOfFloat();
 		MatOfPoint2f corners1f = new MatOfPoint2f(corners1.toArray());
 		MatOfPoint2f corners2f = new MatOfPoint2f(corners2.toArray());
 		Video.calcOpticalFlowPyrLK(frameOne, frameTwo, corners1f, corners2f, status, err);
+		Double averageUncalc = 0.0;
+		for(int i = 0; i < corners1f.height(); i++){
+			Point startP = new Point(corners1f.get(i, 0));
+			Point endP = new Point(corners2f.get(i, 0));
+			Double distance = Math.sqrt((startP.x-endP.x)*(startP.x-endP.x) + (startP.y-endP.y)*(startP.y-endP.y));
+			//System.out.println("Distance:"+distance);
+			averageUncalc = averageUncalc + distance;
+			//System.out.println(err.get(i, 0)[0]);
+			
+		
+		}
+		System.out.println("Average:"+averageUncalc/corners1f.height());
+		averageUncalc = averageUncalc/corners1f.height();
 		
 		for(int i = 0; i < corners1f.height(); i++){
-			Imgproc.line(standIn, new Point(corners1f.get(i, 0)),new Point(corners2f.get(i, 0)),new Scalar(0,250,0),5);
+			
+		if(err.get(i, 0)[0]< 10){
+			//Imgproc.line(standIn,startP,endP,new Scalar(0,250,0),5);
+			Point startP = new Point(corners1f.get(i, 0));
+			Point endP = new Point(corners2f.get(i, 0));
+			Double distance = Math.sqrt((startP.x-endP.x)*(startP.x-endP.x) + (startP.y-endP.y)*(startP.y-endP.y));
+			if(distance < 5*averageUncalc){
+				Imgproc.arrowedLine(standIn,startP,endP,new Scalar(0,250,0));
+			}
+			
+			//System.out.println("Point start:"+startP.x+","+startP.y+"-->"+endP.x+","+endP.y);
+		}
 		}
 		//System.out.println(corners1f.height());
 		//System.out.println(corners2f.height());
