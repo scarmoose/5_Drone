@@ -112,8 +112,13 @@ public class ImageProcessor {
 		Mat imageGray = new Mat();
 		Mat imageCny = new Mat();
 		Imgproc.cvtColor(img, imageGray, Imgproc.COLOR_BGR2GRAY);		
+		//martin Webcam settings
 		Imgproc.Canny(imageGray, imageCny, 50, 100, 3, true);
+		//Drone webcame settings?????
 		//Imgproc.Canny(imageGray, imageCny, 10, 100, 3, true);
+		//Thomas Webcam settings
+		//Imgproc.Canny(imageGray, imageCny, 20, 200, 3, true);
+
 
 	    
 		return imageCny;
