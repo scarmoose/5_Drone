@@ -40,13 +40,14 @@ public class PWindow {
 		frame.setTitle("Super programmet");
 		
 		PPanel panel = new PPanel();
-		panel.setPreferredSize(new Dimension(700, 400));
-		frame.getContentPane().setLayout(new GridLayout(0,2));
-		frame.getContentPane().add(panel);
-		frame.getContentPane().add(new JScrollPane(textArea));
-		frame.getContentPane().add(new JButton("Button 3"));
-        frame.getContentPane().add(imageLabel);
+		panel.setSize(new Dimension(700, 400));
+		//panel.setPreferredSize(new Dimension(700, 400));
+		frame.setLayout(new GridLayout(0,2));
 		
+		frame.add(new JScrollPane(textArea));
+		frame.add(new JButton("Button 3"));
+        //frame.add(imageLabel);
+        frame.add(panel);
 		frame.setVisible(true);
 		
 		Thread thread = new Thread(panel);

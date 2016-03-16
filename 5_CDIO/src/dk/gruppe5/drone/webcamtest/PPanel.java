@@ -1,11 +1,15 @@
 package dk.gruppe5.drone.webcamtest;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
 
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import org.opencv.videoio.VideoCapture;
 
 import dk.gruppe5.drone.openCV.ImageProcessor;
@@ -18,6 +22,8 @@ public class PPanel extends JPanel implements Runnable {
 	ImageProcessor imgproc;
 	static int WEBCAM = 0;
 	
+	List<Point> startPoints;
+	List<Point> endPoints;
 
 	/**
 	 * 
@@ -45,12 +51,20 @@ public class PPanel extends JPanel implements Runnable {
 	
 	@Override 
 	public void paint(Graphics g) {
+		super.paintComponent(g);
 		//g.drawString("HEJ VERDEN!", 400, 300);
 		if(image != null) {
+			
 			long t = System.currentTimeMillis();
 			g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
 			long dt = System.currentTimeMillis() - t;
 			System.out.println("Image drawn in "+dt+"ms");
+			int ofsetX = image.getWidth();
+			for(int i = 0; i < startPoints.size(); i++){
+				
+				g.drawLine((int)(ofsetX+startPoints.get(i).x), (int)startPoints.get(i).y, (int)(ofsetX+ endPoints.get(i).x), (int)endPoints.get(i).y);
+			}
+			
 		}
 	}
 
@@ -73,6 +87,11 @@ public class PPanel extends JPanel implements Runnable {
 			old_frame = frame;
 			long dt = System.currentTimeMillis() - t;
 			System.out.println("Mat converted to BufferedImage in(s) " + dt/ 1000.0);
+			
+			startPoints = flowData.getStartPoints();
+			endPoints = flowData.getEndPoints();
+			
+			
 			repaint();
 			System.out.println("repaint() kaldt.");
 			
@@ -82,9 +101,12 @@ public class PPanel extends JPanel implements Runnable {
 //				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
-//			
+			
+
 			
 			
 		}
 	}
+	
+
 }
