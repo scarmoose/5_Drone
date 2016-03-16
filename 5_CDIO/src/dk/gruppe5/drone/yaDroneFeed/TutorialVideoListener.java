@@ -39,7 +39,7 @@ public class TutorialVideoListener extends JPanel {
 				frameOne = imgProc.bufferedImageToMat(newImage);
 			
 			
-				frameOne = imgProc.opticalFlow(frameOne,frameTwo);
+				frameOne = imgProc.opticalFlow(frameOne,frameTwo).getFrame();
 				
 				
 				

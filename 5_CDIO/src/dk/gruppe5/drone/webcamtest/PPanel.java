@@ -9,6 +9,7 @@ import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 
 import dk.gruppe5.drone.openCV.ImageProcessor;
+import dk.gruppe5.shared.opticalFlowData;
 
 public class PPanel extends JPanel implements Runnable {
 	
@@ -66,7 +67,8 @@ public class PPanel extends JPanel implements Runnable {
 			System.out.println("Frame from camera obtained");
 			long t = System.currentTimeMillis();
 			//frame = imgproc.toCanny(frame);
-			Mat ofs_frame = imgproc.opticalFlow(frame, old_frame);
+			opticalFlowData flowData =imgproc.opticalFlow(frame, old_frame);
+			Mat ofs_frame = flowData.getFrame();
 			image = imgproc.toBufferedImage(ofs_frame);
 			old_frame = frame;
 			long dt = System.currentTimeMillis() - t;

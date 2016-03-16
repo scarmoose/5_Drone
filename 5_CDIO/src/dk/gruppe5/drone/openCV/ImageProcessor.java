@@ -17,6 +17,8 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.video.Video;
 
+import dk.gruppe5.shared.opticalFlowData;
+
 public class ImageProcessor {
 	
 	public BufferedImage toBufferedImage(Mat matrix){
@@ -124,7 +126,7 @@ public class ImageProcessor {
 		return imageCny;
 	}
 
-	public Mat opticalFlow(Mat frameOne, Mat frameTwo) {
+	public opticalFlowData opticalFlow(Mat frameOne, Mat frameTwo) {
 		// TODO Auto-generated method stub
 		//Først finder vi de gode features at tracker
 		frameOne = toCanny(frameOne);
@@ -161,6 +163,8 @@ public class ImageProcessor {
 		MatOfPoint2f corners2f = new MatOfPoint2f(corners2.toArray());
 		Video.calcOpticalFlowPyrLK(frameOne, frameTwo, corners1f, corners2f, status, err);
 		Double averageUncalc = 0.0;
+		List<Point> startPoints = new ArrayList<>();
+		List<Point> endPoints = new ArrayList<>();
 		
 		
 		for(int i = 0; i < corners1f.height(); i++){
@@ -170,12 +174,11 @@ public class ImageProcessor {
 			//System.out.println("Distance:"+distance);
 			averageUncalc = averageUncalc + distance;
 			//System.out.println(err.get(i, 0)[0]);
-			
-		
+			startPoints.add(startP);
+			endPoints.add(endP);
 		}
-		System.out.println("Average:"+averageUncalc/corners1f.height());
 		averageUncalc = averageUncalc/corners1f.height();
-		int threshold = 10;
+		int threshold = 8;
 		for(int i = 0; i < corners1f.height(); i++){
 			
 		
@@ -186,27 +189,25 @@ public class ImageProcessor {
 			/*
 			 * By calculating an average in the distance between points in the picture, we can use this to remove
 			 * Unwanted vectors, for example vectors that is longer than a certain threshold in the picture
+			 * 
+			 * We could also use a an estimation on the different vectors to see if the drone has moved or a single object in the frame has moved
+			 * we can do this by looking at the average movement, if a an area of vectors are moving much longer than the rest of the frame vectors, 
+			 * there is likely to be an object moving in that area.
+			 */
+			
+			/*
+			 * This is used to draw arrows between the two points found matching in the two frames.
+			 * The scalar is colour.
 			 */
 			if(distance < threshold*averageUncalc){
 				
-				
 				Imgproc.arrowedLine(standIn,startP,endP,new Scalar(0,250,0));
 			}
-			
-			//System.out.println("Point start:"+startP.x+","+startP.y+"-->"+endP.x+","+endP.y);
-		
 		}
-		//System.out.println(corners1f.height());
-		//System.out.println(corners2f.height());
-//		for(int x = 0; x <= status.height(); x++){
-			
-			
-				//Imgproc.circle(standIn, new Point(corners1.get(y, x)), 3, new Scalar(0,250,0),5);
-				
-//			}
 		
 		
-		return standIn;
+		
+		return new opticalFlowData(standIn, startPoints, endPoints);
 	}
 
 }
