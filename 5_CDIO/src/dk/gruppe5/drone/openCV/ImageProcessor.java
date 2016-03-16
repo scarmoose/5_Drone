@@ -121,7 +121,6 @@ public class ImageProcessor {
 		//Thomas Webcam settings
 		//Imgproc.Canny(imageGray, imageCny, 20, 200, 3, true);
 
-
 	    
 		return imageCny;
 	}
