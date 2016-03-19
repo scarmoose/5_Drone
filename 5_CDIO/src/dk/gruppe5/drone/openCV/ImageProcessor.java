@@ -17,9 +17,12 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.video.Video;
 
+import dk.gruppe5.drone.webcamtest.Values_cam;
 import dk.gruppe5.shared.opticalFlowData;
 
 public class ImageProcessor {
+	
+	Values_cam vall = new Values_cam();
 	
 	public BufferedImage toBufferedImage(Mat matrix){
 		int type = BufferedImage.TYPE_BYTE_GRAY;
@@ -115,7 +118,7 @@ public class ImageProcessor {
 		Mat imageCny = new Mat();
 		Imgproc.cvtColor(img, imageGray, Imgproc.COLOR_BGR2GRAY);		
 		//martin Webcam settings
-		Imgproc.Canny(imageGray, imageCny, 50, 100, 3, true);
+		Imgproc.Canny(imageGray, imageCny, vall.getCanTres1(), vall.getCanTres2(), vall.getCanAp(), true);
 		//Drone webcame settings?????
 		//Imgproc.Canny(imageGray, imageCny, 10, 100, 3, true);
 		//Thomas Webcam settings
@@ -141,8 +144,8 @@ public class ImageProcessor {
 		MatOfPoint corners2 = new MatOfPoint();
 //		Imgproc.goodFeaturesToTrack(frameOne, corners1, 100, 0.1, 30);
 //		Imgproc.goodFeaturesToTrack(frameTwo, corners2, 100, 0.1, 30);
-		Imgproc.goodFeaturesToTrack(frameOne, corners1, 500, 0.1, 10);
-		Imgproc.goodFeaturesToTrack(frameTwo, corners2, 500, 0.1, 10);
+		Imgproc.goodFeaturesToTrack(frameOne, corners1, vall.getCorn1(), vall.getQual1(), vall.getDist1());
+		Imgproc.goodFeaturesToTrack(frameTwo, corners2, vall.getCorn2(), vall.getQual2(), vall.getDist2());
 		//Now that we have found good features and added them to the corners1 and 2
 		//we add colour back to the picture so that we can draw lovely lines
 		Imgproc.cvtColor(frameOne, standIn, Imgproc.COLOR_BayerBG2RGB);	
