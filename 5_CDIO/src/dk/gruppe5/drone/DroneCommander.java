@@ -25,7 +25,7 @@ public class DroneCommander extends Canvas {
 	private NavDataListener navl;
 	private ProgramWindow progWindow;
 
-	public DroneCommander(ProgramWindow window) {
+	public DroneCommander() {
 		
 		try {
 			
@@ -34,9 +34,6 @@ public class DroneCommander extends Canvas {
 			drone = new ARDrone();
 			videol = new VideoListener((ARDrone) drone);
 			navl = new NavDataListener((ARDrone) drone);
-			
-			videol.setMaximumSize(new Dimension(window.w, window.h));
-			videol.setMinimumSize(new Dimension(window.w, window.h));	
 			
 			drone.start();
 			cmd = drone.getCommandManager();

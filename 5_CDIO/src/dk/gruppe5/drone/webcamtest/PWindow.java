@@ -26,7 +26,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import de.yadrone.base.command.DroneCommand;
+import dk.gruppe5.drone.DroneCommander;
 import dk.gruppe5.drone.window.CustomOutputStream;
+import dk.gruppe5.drone.yaDroneFeed.TutorialVideoListener;
 import dk.gruppe5.drone.yaDroneFeed.Values_cam;
 
 public class PWindow {
@@ -55,8 +58,8 @@ public class PWindow {
         standardOut = System.out;
          
         // re-assigns standard output stream and error output stream
-        System.setOut(printStream);
-        System.setErr(printStream);
+//        System.setOut(printStream);
+//        System.setErr(printStream);
 
         
 		JFrame frame = new JFrame();
@@ -64,7 +67,27 @@ public class PWindow {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Super programmet");
 		
-		PPanel panel = new PPanel();
+		
+		/*
+		 * Indkommenternedenstående for at bruge webcam
+		 */
+//		PPanel panel = new PPanel();
+//		Thread thread = new Thread(panel);
+//		thread.start();
+//		frame.addWindowListener(new WindowAdapter() {
+//		    @Override
+//		    public void windowClosing(WindowEvent e) {
+//		    	//Nødløsning, nu slukker programmet da :P
+//		        thread.stop();
+//		    }
+//		});
+//		
+		/*
+		 * nedenstående bruger dronen.
+		 */
+		DroneCommander droneCom = new DroneCommander();
+		TutorialVideoListener panel = new TutorialVideoListener(droneCom.getDrone());
+		
 		panel.setSize(new Dimension(700, 400));
 		
 		//panel.setPreferredSize(new Dimension(700, 400));
@@ -109,17 +132,10 @@ public class PWindow {
 		
 		frame.setVisible(true);
 		
-		Thread thread = new Thread(panel);
-		thread.start();
 		
 		
-		frame.addWindowListener(new WindowAdapter() {
-		    @Override
-		    public void windowClosing(WindowEvent e) {
-		    	//Nødløsning, nu slukker programmet da :P
-		        thread.stop();
-		    }
-		});
+		
+		
 		
 		updateBtn.addActionListener(new ActionListener() {
 
@@ -135,7 +151,7 @@ public class PWindow {
             	frame.invalidate();
             	frame.validate();
             	frame.repaint();
-            	panel.clear();
+            	//panel.clear();
             }
             
             
@@ -147,7 +163,7 @@ public class PWindow {
 	            frame.removeAll();
 	            frame.validate();
 	            frame.setVisible(false);
-	            thread.stop();
+	           // thread.stop();
 	            Values_cam.setCanTres1(50);
 	            Values_cam.setCanTres2(100);
 	            Values_cam.setCanAp(3);

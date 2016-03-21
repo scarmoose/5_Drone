@@ -132,6 +132,7 @@ public class ImageProcessor {
 	public opticalFlowData opticalFlow(Mat frameOne, Mat frameTwo) {
 		// TODO Auto-generated method stub
 		//Først finder vi de gode features at tracker
+		
 		frameOne = toCanny(frameOne);
 		frameTwo = toCanny(frameTwo);
 		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
@@ -140,11 +141,13 @@ public class ImageProcessor {
 		Mat hierarchy_2 = new Mat();
 		Imgproc.findContours(frameOne, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 		Imgproc.findContours(frameTwo, contours_2, hierarchy_2, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+		
 		Mat standIn = new Mat();
 		MatOfPoint corners1 = new MatOfPoint();
 		MatOfPoint corners2 = new MatOfPoint();
 //		Imgproc.goodFeaturesToTrack(frameOne, corners1, 100, 0.1, 30);
 //		Imgproc.goodFeaturesToTrack(frameTwo, corners2, 100, 0.1, 30);
+	
 		Imgproc.goodFeaturesToTrack(frameOne, corners1, Values_cam.getCorn(), Values_cam.getQual(), Values_cam.getDist());
 		Imgproc.goodFeaturesToTrack(frameTwo, corners2, Values_cam.getCorn(), Values_cam.getQual(), Values_cam.getDist());
 		//Now that we have found good features and added them to the corners1 and 2
@@ -167,7 +170,7 @@ public class ImageProcessor {
 		Video.calcOpticalFlowPyrLK(frameOne, frameTwo, corners1f, corners2f, status, err);
 		List<Point> startPoints = new ArrayList<>();
 		List<Point> endPoints = new ArrayList<>();
-		
+	
 		Double averageCalc = 0.0;
 		int nrOfVec = 0;
 		for(int i = 0; i < corners1f.height(); i++){

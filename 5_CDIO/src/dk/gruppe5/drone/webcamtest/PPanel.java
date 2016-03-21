@@ -80,8 +80,6 @@ public class PPanel extends JPanel implements Runnable {
 			
 			capture.read(frame);
 			
-			
-			
 			if(old_frame == null) {
 				old_frame = frame;
 			}

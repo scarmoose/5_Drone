@@ -23,7 +23,6 @@ public class ProgramWindow /* extends JFrame */ {
 		Program prog = new Program(this);
 		videoL = prog.getDc().getVideol();
 		frame.addKeyListener(new KeyboardCommandManager((prog.getDc().getDrone())));
-		int a = 0;
 		
 		this.h = h;
 		this.w = w;
