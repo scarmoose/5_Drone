@@ -42,7 +42,7 @@ public class VideoListener extends JPanel {
 					@Override
 					public void run() {
 						repaint();
-						System.out.println("--> repaint() blev kaldt.");
+						//System.out.println("--> repaint() blev kaldt.");
 					}
 				});				
 			}	

@@ -19,7 +19,7 @@ public class DroneCommander extends Canvas {
 	 */
 	private static final long serialVersionUID = -869265015784363288L;
 	
-	private IARDrone drone;
+	private ARDrone drone;
 	private CommandManager cmd;
 	private VideoListener videol;
 	private NavDataListener navl;
@@ -34,7 +34,7 @@ public class DroneCommander extends Canvas {
 			drone = new ARDrone();
 			videol = new VideoListener((ARDrone) drone);
 			navl = new NavDataListener((ARDrone) drone);
-			addKeyListener(new KeyInput(this));
+			
 			videol.setMaximumSize(new Dimension(window.w, window.h));
 			videol.setMinimumSize(new Dimension(window.w, window.h));	
 			
@@ -42,7 +42,8 @@ public class DroneCommander extends Canvas {
 			cmd = drone.getCommandManager();
 			cmd.setVideoChannel(VideoChannel.HORI);
 			System.out.println("Drone connected.");
-			
+			progWindow.frame.addKeyListener(new KeyInput(this));
+			progWindow.frame.setFocusable(true);
 		} catch (Exception e) {
 			
 			e.printStackTrace();
