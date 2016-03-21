@@ -17,9 +17,12 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.video.Video;
 
+import dk.gruppe5.drone.webcamtest.Values_cam;
 import dk.gruppe5.shared.opticalFlowData;
 
 public class ImageProcessor {
+	
+	Values_cam vall = new Values_cam();
 	
 	public BufferedImage toBufferedImage(Mat matrix){
 		int type = BufferedImage.TYPE_BYTE_GRAY;
@@ -115,7 +118,11 @@ public class ImageProcessor {
 		Mat imageCny = new Mat();
 		Imgproc.cvtColor(img, imageGray, Imgproc.COLOR_BGR2GRAY);		
 		//martin Webcam settings
-		Imgproc.Canny(imageGray, imageCny, 20, 150, 3, true);
+
+		//Imgproc.Canny(imageGray, imageCny, 20, 150, 3, true);
+
+		Imgproc.Canny(imageGray, imageCny, vall.getCanTres1(), vall.getCanTres2(), vall.getCanAp(), true);
+
 		//Drone webcame settings?????
 		//Imgproc.Canny(imageGray, imageCny, 10, 100, 3, true);
 		//Thomas Webcam settings
@@ -141,8 +148,8 @@ public class ImageProcessor {
 		MatOfPoint corners2 = new MatOfPoint();
 //		Imgproc.goodFeaturesToTrack(frameOne, corners1, 100, 0.1, 30);
 //		Imgproc.goodFeaturesToTrack(frameTwo, corners2, 100, 0.1, 30);
-		Imgproc.goodFeaturesToTrack(frameOne, corners1, 500, 0.1, 10);
-		Imgproc.goodFeaturesToTrack(frameTwo, corners2, 500, 0.1, 10);
+		Imgproc.goodFeaturesToTrack(frameOne, corners1, vall.getCorn1(), vall.getQual1(), vall.getDist1());
+		Imgproc.goodFeaturesToTrack(frameTwo, corners2, vall.getCorn2(), vall.getQual2(), vall.getDist2());
 		//Now that we have found good features and added them to the corners1 and 2
 		//we add colour back to the picture so that we can draw lovely lines
 		Imgproc.cvtColor(frameOne, standIn, Imgproc.COLOR_BayerBG2RGB);	
@@ -161,22 +168,28 @@ public class ImageProcessor {
 		MatOfPoint2f corners1f = new MatOfPoint2f(corners1.toArray());
 		MatOfPoint2f corners2f = new MatOfPoint2f(corners2.toArray());
 		Video.calcOpticalFlowPyrLK(frameOne, frameTwo, corners1f, corners2f, status, err);
-		Double averageUncalc = 0.0;
 		List<Point> startPoints = new ArrayList<>();
 		List<Point> endPoints = new ArrayList<>();
 		
-		
+		Double averageCalc = 0.0;
+		int nrOfVec = 0;
 		for(int i = 0; i < corners1f.height(); i++){
 			Point startP = new Point(corners2f.get(i, 0));
 			Point endP = new Point(corners1f.get(i, 0));
 			Double distance = Math.sqrt((startP.x-endP.x)*(startP.x-endP.x) + (startP.y-endP.y)*(startP.y-endP.y));
-			//System.out.println("Distance:"+distance);
-			averageUncalc = averageUncalc + distance;
-			//System.out.println(err.get(i, 0)[0]);
+			
+			if(distance > 20){
+				//System.out.println("Distance:"+distance);
+				averageCalc = averageCalc + distance;
+				//System.out.println(err.get(i, 0)[0]);
+				nrOfVec++;
+			}
+			
 			
 		}
-		averageUncalc = averageUncalc/corners1f.height();
-		int threshold = 2;
+	
+		averageCalc = averageCalc/nrOfVec;
+		int threshold = 1;
 		for(int i = 0; i < corners1f.height(); i++){
 			
 		
@@ -189,7 +202,7 @@ public class ImageProcessor {
 			 * Unwanted vectors, for example vectors that is longer than a certain threshold in the picture
 			 * 
 			 * We could also use a an estimation on the different vectors to see if the drone has moved or a single object in the frame has moved
-			 * we can do this by looking at the average movement, if a an area of vectors are moving much longer than the rest of the frame vectors, 
+			 * we can do this by looking at the average movement, if an area of vectors are moving much longer than the rest of the frame vectors, 
 			 * there is likely to be an object moving in that area.
 			 */
 			
@@ -197,9 +210,10 @@ public class ImageProcessor {
 			 * This is used to draw arrows between the two points found matching in the two frames.
 			 * The scalar is colour.
 			 */
-			if(distance < threshold*averageUncalc){
+			if(distance < threshold*averageCalc && distance > 4){
 				
 				Imgproc.arrowedLine(standIn,startP,endP,new Scalar(0,250,0));
+				//System.out.println("test");
 				startPoints.add(startP);
 				endPoints.add(endP);
 			}
