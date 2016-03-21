@@ -19,7 +19,7 @@ public class DroneCommander extends Canvas {
 	 */
 	private static final long serialVersionUID = -869265015784363288L;
 	
-	private ARDrone drone;
+	private IARDrone drone;
 	private CommandManager cmd;
 	private VideoListener videol;
 	private NavDataListener navl;
@@ -42,8 +42,7 @@ public class DroneCommander extends Canvas {
 			cmd = drone.getCommandManager();
 			cmd.setVideoChannel(VideoChannel.HORI);
 			System.out.println("Drone connected.");
-			progWindow.frame.addKeyListener(new KeyInput(this));
-			progWindow.frame.setFocusable(true);
+		
 		} catch (Exception e) {
 			
 			e.printStackTrace();
@@ -57,9 +56,9 @@ public class DroneCommander extends Canvas {
 			e.printStackTrace();
 		}
 		
-		System.out.println("--> Trying to take off.");
-		takeOffAndLand(1000);
-		System.out.println("--> Takeoff and landing complete.");
+	//	System.out.println("--> Trying to take off.");
+	//	takeOffAndLand(1000);
+	//	System.out.println("--> Takeoff and landing complete.");
 		
 	}
 	

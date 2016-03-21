@@ -25,14 +25,14 @@ public class KeyInput extends Thread implements KeyListener {
 		int key = e.getKeyCode();
 		System.out.println(e.toString() + " was pressed.");
 		
-//		if(key == KeyEvent.VK_SPACE) {
-//			
-//			dc.takeOffAndLand(3000);
-//		}
-//		if(key == KeyEvent.VK_K) {
-//
-//			dc.getCmd().emergency();
-//		}
+		if(key == KeyEvent.VK_SPACE) {
+			System.out.println("space pressed");
+			dc.takeOffAndLand(3000);
+		}
+		if(key == KeyEvent.VK_K) {
+
+			dc.getCmd().emergency();
+		}
 		
 	}
 
