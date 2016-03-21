@@ -115,7 +115,7 @@ public class ImageProcessor {
 		Mat imageCny = new Mat();
 		Imgproc.cvtColor(img, imageGray, Imgproc.COLOR_BGR2GRAY);		
 		//martin Webcam settings
-		Imgproc.Canny(imageGray, imageCny, 50, 100, 3, true);
+		Imgproc.Canny(imageGray, imageCny, 20, 150, 3, true);
 		//Drone webcame settings?????
 		//Imgproc.Canny(imageGray, imageCny, 10, 100, 3, true);
 		//Thomas Webcam settings
@@ -150,8 +150,8 @@ public class ImageProcessor {
 		 //This draws the good features that we have found in the 2 frames.
 		for(int x = 0; x < corners1.width(); x++){
 			for(int y = 0; y < corners1.height(); y++){
-				Imgproc.circle(standIn, new Point(corners1.get(y, x)), 3, new Scalar(0,250,0),2);
-				Imgproc.circle(standIn, new Point(corners2.get(y, x)), 7, new Scalar(200,0,200),1);
+				Imgproc.circle(standIn, new Point(corners1.get(y, x)), 7, new Scalar(200,0,50),1);
+				Imgproc.circle(standIn, new Point(corners2.get(y, x)), 2, new Scalar(0,250,0),2);
 				
 			}
 		}
@@ -167,23 +167,22 @@ public class ImageProcessor {
 		
 		
 		for(int i = 0; i < corners1f.height(); i++){
-			Point startP = new Point(corners1f.get(i, 0));
-			Point endP = new Point(corners2f.get(i, 0));
+			Point startP = new Point(corners2f.get(i, 0));
+			Point endP = new Point(corners1f.get(i, 0));
 			Double distance = Math.sqrt((startP.x-endP.x)*(startP.x-endP.x) + (startP.y-endP.y)*(startP.y-endP.y));
 			//System.out.println("Distance:"+distance);
 			averageUncalc = averageUncalc + distance;
 			//System.out.println(err.get(i, 0)[0]);
-			startPoints.add(startP);
-			endPoints.add(endP);
+			
 		}
 		averageUncalc = averageUncalc/corners1f.height();
-		int threshold = 8;
+		int threshold = 2;
 		for(int i = 0; i < corners1f.height(); i++){
 			
 		
 			//Imgproc.line(standIn,startP,endP,new Scalar(0,250,0),5);
-			Point startP = new Point(corners1f.get(i, 0));
-			Point endP = new Point(corners2f.get(i, 0));
+			Point startP =  new Point(corners2f.get(i, 0));
+			Point endP =  new Point(corners1f.get(i, 0));
 			Double distance = Math.sqrt((startP.x-endP.x)*(startP.x-endP.x) + (startP.y-endP.y)*(startP.y-endP.y));
 			/*
 			 * By calculating an average in the distance between points in the picture, we can use this to remove
@@ -201,6 +200,8 @@ public class ImageProcessor {
 			if(distance < threshold*averageUncalc){
 				
 				Imgproc.arrowedLine(standIn,startP,endP,new Scalar(0,250,0));
+				startPoints.add(startP);
+				endPoints.add(endP);
 			}
 		}
 		

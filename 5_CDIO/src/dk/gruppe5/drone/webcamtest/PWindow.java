@@ -25,16 +25,16 @@ public class PWindow {
 	private PrintStream standardOut;
 	
 	public PWindow(int w, int h) {
-		textArea = new JTextArea(50, 10);
-        textArea.setEditable(false);
-        PrintStream printStream = new PrintStream(new CustomOutputStream(textArea));
-         
-        // keeps reference of standard output stream
-        standardOut = System.out;
-         
-        // re-assigns standard output stream and error output stream
-        System.setOut(printStream);
-        System.setErr(printStream);
+//		textArea = new JTextArea(50, 10);
+//        textArea.setEditable(false);
+//        PrintStream printStream = new PrintStream(new CustomOutputStream(textArea));
+//         
+//        // keeps reference of standard output stream
+//        standardOut = System.out;
+//         
+//        // re-assigns standard output stream and error output stream
+//        System.setOut(printStream);
+//        System.setErr(printStream);
         
 		JFrame frame = new JFrame();
 		frame.setSize(w, h);
@@ -44,10 +44,10 @@ public class PWindow {
 		PPanel panel = new PPanel();
 		panel.setSize(new Dimension(700, 400));
 		//panel.setPreferredSize(new Dimension(700, 400));
-		frame.setLayout(new GridLayout(0,2));
+		frame.setLayout(new GridLayout(0,1));
 		
 		frame.add(new JScrollPane(textArea));
-		frame.add(new JButton("Button 3"));
+	//	frame.add(new JButton("Button 3"));
         //frame.add(imageLabel);
         frame.add(panel);
 		frame.setVisible(true);
