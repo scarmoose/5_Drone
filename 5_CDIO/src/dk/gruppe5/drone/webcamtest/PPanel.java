@@ -173,6 +173,12 @@ public class PPanel extends JPanel implements Runnable {
 			
 		}
 	}
+
+	public void clear() {
+	    image.flush();
+	    image = null;
+	    repaint();
+	}
 	
 
 }

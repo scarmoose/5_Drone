@@ -21,9 +21,7 @@ import dk.gruppe5.drone.webcamtest.Values_cam;
 import dk.gruppe5.shared.opticalFlowData;
 
 public class ImageProcessor {
-	
-	Values_cam vall = new Values_cam();
-	
+		
 	public BufferedImage toBufferedImage(Mat matrix){
 		int type = BufferedImage.TYPE_BYTE_GRAY;
 		if ( matrix.channels() > 1 ) {
@@ -121,8 +119,7 @@ public class ImageProcessor {
 
 		//Imgproc.Canny(imageGray, imageCny, 20, 150, 3, true);
 
-		Imgproc.Canny(imageGray, imageCny, vall.getCanTres1(), vall.getCanTres2(), vall.getCanAp(), true);
-
+		Imgproc.Canny(imageGray, imageCny, Values_cam.getCanTres1(), Values_cam.getCanTres2(), Values_cam.getCanAp(), true);
 		//Drone webcame settings?????
 		//Imgproc.Canny(imageGray, imageCny, 10, 100, 3, true);
 		//Thomas Webcam settings
@@ -148,8 +145,8 @@ public class ImageProcessor {
 		MatOfPoint corners2 = new MatOfPoint();
 //		Imgproc.goodFeaturesToTrack(frameOne, corners1, 100, 0.1, 30);
 //		Imgproc.goodFeaturesToTrack(frameTwo, corners2, 100, 0.1, 30);
-		Imgproc.goodFeaturesToTrack(frameOne, corners1, vall.getCorn1(), vall.getQual1(), vall.getDist1());
-		Imgproc.goodFeaturesToTrack(frameTwo, corners2, vall.getCorn2(), vall.getQual2(), vall.getDist2());
+		Imgproc.goodFeaturesToTrack(frameOne, corners1, Values_cam.getCorn(), Values_cam.getQual(), Values_cam.getDist());
+		Imgproc.goodFeaturesToTrack(frameTwo, corners2, Values_cam.getCorn(), Values_cam.getQual(), Values_cam.getDist());
 		//Now that we have found good features and added them to the corners1 and 2
 		//we add colour back to the picture so that we can draw lovely lines
 		Imgproc.cvtColor(frameOne, standIn, Imgproc.COLOR_BayerBG2RGB);	
