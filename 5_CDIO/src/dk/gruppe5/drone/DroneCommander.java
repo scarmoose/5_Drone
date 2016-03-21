@@ -57,7 +57,7 @@ public class DroneCommander extends Canvas {
 		}
 		
 		System.out.println("--> Trying to take off.");
-		//takeOffAndLand(1000);
+		takeOffAndLand(1000);
 		System.out.println("--> Takeoff and landing complete.");
 		
 	}
