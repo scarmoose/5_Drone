@@ -27,6 +27,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import dk.gruppe5.drone.window.CustomOutputStream;
+import dk.gruppe5.drone.yaDroneFeed.Values_cam;
 
 public class PWindow {
 	
