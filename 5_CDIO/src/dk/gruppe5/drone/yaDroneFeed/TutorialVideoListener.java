@@ -84,37 +84,7 @@ public class TutorialVideoListener extends JPanel {
 				// System.out.println("AverageAngle:"+angletotal/startPoints.size());
 				double avAngle = angletotal / startPoints.size();
 
-				if (startPoints.size() > 30) {
-					// System.out.println("Nr of vectors: "
-					// +startPoints.size());
-
-					if (avAngle > 315 && avAngle < 360) {
-						System.out.println("Left - U");
-
-					} else if (avAngle > 0 && avAngle < 45) {
-						System.out.println("Left - D");
-
-					} else if (avAngle > 45 && avAngle < 90) {
-						System.out.println("Down - L");
-
-					} else if (avAngle > 90 && avAngle < 135) {
-						System.out.println("Down - R");
-
-					} else if (avAngle > 135 && avAngle < 180) {
-						System.out.println("Right - D");
-
-					} else if (avAngle > 180 && avAngle < 225) {
-						System.out.println("Right - U");
-
-					} else if (avAngle > 225 && avAngle < 270) {
-						System.out.println("Up - R");
-
-					} else if (avAngle > 270 && avAngle < 315) {
-						System.out.println("Up - L");
-
-					}
-
-				}
+				directionGuess(avAngle);
 				
 			
 				SwingUtilities.invokeLater(new Runnable() {
@@ -123,6 +93,8 @@ public class TutorialVideoListener extends JPanel {
 					}
 				});
 			}
+
+		
 		});
 
 		addMouseListener(new MouseAdapter() {
@@ -144,4 +116,38 @@ public class TutorialVideoListener extends JPanel {
 		return Image;
 	}
 
+	
+	public void directionGuess(double avAngle) {
+		if (startPoints.size() > 30) {
+			// System.out.println("Nr of vectors: "
+			// +startPoints.size());
+
+			if (avAngle > 315 && avAngle < 360) {
+				System.out.println("Left - U");
+
+			} else if (avAngle > 0 && avAngle < 45) {
+				System.out.println("Left - D");
+
+			} else if (avAngle > 45 && avAngle < 90) {
+				System.out.println("Down - L");
+
+			} else if (avAngle > 90 && avAngle < 135) {
+				System.out.println("Down - R");
+
+			} else if (avAngle > 135 && avAngle < 180) {
+				System.out.println("Right - D");
+
+			} else if (avAngle > 180 && avAngle < 225) {
+				System.out.println("Right - U");
+
+			} else if (avAngle > 225 && avAngle < 270) {
+				System.out.println("Up - R");
+
+			} else if (avAngle > 270 && avAngle < 315) {
+				System.out.println("Up - L");
+
+			}
+
+		}
+	}
 }
