@@ -26,6 +26,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManager;
 import de.yadrone.base.command.DroneCommand;
 import dk.gruppe5.drone.DroneCommander;
 import dk.gruppe5.drone.window.CustomOutputStream;
@@ -48,6 +49,9 @@ public class PWindow {
 	public JTextField textField_4;
 	public JTextField textField_5;
 	
+	
+	
+	DroneCommander DCom = new DroneCommander();
 	public PWindow(int w, int h) {
 
 		textArea = new JTextArea(50, 10);
@@ -85,8 +89,10 @@ public class PWindow {
 		/*
 		 * nedenstående bruger dronen.
 		 */
-		DroneCommander droneCom = new DroneCommander();
-		TutorialVideoListener panel = new TutorialVideoListener(droneCom.getDrone());
+		
+		TutorialVideoListener panel = new TutorialVideoListener(DCom.getDrone());
+		frame.setFocusable(true);
+		frame.addKeyListener(new KeyboardCommandManager((DCom.getDrone())));
 		
 		panel.setSize(new Dimension(700, 400));
 		

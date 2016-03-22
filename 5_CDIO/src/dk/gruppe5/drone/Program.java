@@ -14,7 +14,7 @@ public class Program extends Thread {
 	
 	public Program(ProgramWindow window) {
 
-		dc = new DroneCommander(window);
+		//dc = new DroneCommander(window);
 
 	}
 
