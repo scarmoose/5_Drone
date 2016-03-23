@@ -121,7 +121,7 @@ public class App {
 				JSlider source = (JSlider) e.getSource();
 				int level = (int) source.getValue();
 				System.out.println(""+level);
-				tutVidList.setBlurLevel(level);
+				
 				//Mat output = imgProce.blur(imgProce.bufferedImageToMat(tutVidList.getImage()), level);
 				
 			}

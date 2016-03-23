@@ -25,7 +25,7 @@ public class DroneCommander extends Canvas {
 	private NavDataListener navl;
 	private ProgramWindow progWindow;
 
-	public DroneCommander(ProgramWindow window) {
+	public DroneCommander() {
 		
 		try {
 			
@@ -34,15 +34,12 @@ public class DroneCommander extends Canvas {
 			drone = new ARDrone();
 			videol = new VideoListener((ARDrone) drone);
 			navl = new NavDataListener((ARDrone) drone);
-			addKeyListener(new KeyInput(this));
-			videol.setMaximumSize(new Dimension(window.w, window.h));
-			videol.setMinimumSize(new Dimension(window.w, window.h));	
 			
 			drone.start();
 			cmd = drone.getCommandManager();
 			cmd.setVideoChannel(VideoChannel.HORI);
 			System.out.println("Drone connected.");
-			
+		
 		} catch (Exception e) {
 			
 			e.printStackTrace();
@@ -56,9 +53,9 @@ public class DroneCommander extends Canvas {
 			e.printStackTrace();
 		}
 		
-		System.out.println("--> Trying to take off.");
-		//takeOffAndLand(1000);
-		System.out.println("--> Takeoff and landing complete.");
+	//	System.out.println("--> Trying to take off.");
+	//	takeOffAndLand(1000);
+	//	System.out.println("--> Takeoff and landing complete.");
 		
 	}
 	

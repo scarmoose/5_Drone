@@ -1,4 +1,4 @@
-package dk.gruppe5.drone;
+  package dk.gruppe5.drone;
 
 import java.awt.Dimension;
 
@@ -14,7 +14,7 @@ public class Program extends Thread {
 	
 	public Program(ProgramWindow window) {
 
-		dc = new DroneCommander(window);
+		//dc = new DroneCommander(window);
 
 	}
 
