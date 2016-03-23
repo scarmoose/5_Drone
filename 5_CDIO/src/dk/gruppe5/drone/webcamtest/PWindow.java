@@ -127,7 +127,7 @@ public class PWindow {
 		frame.addWindowListener(new WindowAdapter() {
 		    @Override
 		    public void windowClosing(WindowEvent e) {
-		    	//Nødløsning, nu slukker programmet da :P
+		    	//Nï¿½dlï¿½sning, nu slukker programmet da :P
 		        thread.stop();
 		    }
 		});
