@@ -99,7 +99,7 @@ public class PPanel extends JPanel implements Runnable {
 				//first grayscale, convert it to black and white, blur the image slightly to reduce noise.
 				frame = imgproc.toGrayScale(frame);
 				//blur the image
-				frame = imgproc.blur(frame, 3);
+				frame = imgproc.blur(frame);
 				//find edges by using canny
 				frame = imgproc.toCanny(frame);
 				//now we will look for contours in the image
@@ -111,6 +111,13 @@ public class PPanel extends JPanel implements Runnable {
 			}else if(method == 3){
 				frame = imgproc.templateMatching(frame);
 				image = imgproc.toBufferedImage(frame);
+			//	System.out.println(image.getWidth()+"x"+image.getHeight());
+			}else if(method == 4){
+				//Skulle vi prøve at lave afstands bestemmelse til a4 papir som ligger på siden.
+				
+				
+				
+				
 			}
 			
 
@@ -118,12 +125,12 @@ public class PPanel extends JPanel implements Runnable {
 
 			// System.out.println("repaint() kaldt.");
 
-			 try {
-			 Thread.sleep(200);
-			 } catch (InterruptedException e) {
-			 // TODO Auto-generated catch block
-			 e.printStackTrace();
-			 }
+//			 try {
+//			 Thread.sleep(200);
+//			 } catch (InterruptedException e) {
+//			 // TODO Auto-generated catch block
+//			 e.printStackTrace();
+//			 }
 
 		}
 	}
@@ -166,6 +173,11 @@ public class PPanel extends JPanel implements Runnable {
 		directionGuess(avAngle);
 	}
 
+	
+	/**
+	 * Det er noget pjat den her metode, ikke præcis nok og giver for mange fejl retninger...
+	 * @param avAngle
+	 */
 	public void directionGuess(double avAngle) {
 		if (startPoints.size() > 30) {
 			// System.out.println("Nr of vectors: " +startPoints.size());

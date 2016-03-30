@@ -6,9 +6,6 @@ public class templateMatch {
 	
 	
 	Point coordinate;
-	
-
-
 	int picWidth;
 	int picHeight;
 	double matchValue;
