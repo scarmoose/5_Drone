@@ -193,7 +193,7 @@ public class ImageProcessor {
 
 		try 
 		{
-		    img2 = ImageIO.read(new File("Airfield12.jpg")); 
+		    img2 = ImageIO.read(new File("pics/Airfield12.jpg")); 
 		} 
 		catch (IOException e) 
 		{
@@ -212,23 +212,37 @@ public class ImageProcessor {
 
         // / Do the Matching and Normalize
         Imgproc.matchTemplate(input, templateImg, result, match_method);
-        Core.normalize(result, result, 0, 1, Core.NORM_MINMAX, -1, new Mat());
+        //Core.normalize(result, result, 0, 1, Core.NORM_MINMAX, -1, new Mat());
 
         // / Localizing the best match with minMaxLoc
         MinMaxLocResult mmr = Core.minMaxLoc(result);
-
+       // System.out.println(mmr.maxVal);
+       // System.out.println(mmr.minVal);
         Point matchLoc;
         if (match_method == Imgproc.TM_SQDIFF || match_method == Imgproc.TM_SQDIFF_NORMED) {
             matchLoc = mmr.minLoc;
+         
         } else {
             matchLoc = mmr.maxLoc;
+            System.out.println(mmr.maxVal);
+        
         }
 
         // / Show me what you got
         System.out.println(matchLoc);
+     
         Imgproc.rectangle(input, matchLoc, new Point(matchLoc.x + templateImg.cols(), matchLoc.y + templateImg.rows()), new Scalar(0, 255, 0));
 		
 		return input;
+		
+	}
+	
+	public Mat scale(Mat inputMat, int scale){
+		
+		
+		
+		
+		return inputMat;
 		
 	}
 
