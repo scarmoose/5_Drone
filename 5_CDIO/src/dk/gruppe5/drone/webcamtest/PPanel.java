@@ -23,7 +23,7 @@ public class PPanel extends JPanel implements Runnable {
 	static int WEBCAM = 0;
 	// Method is used to determine what filter is run on the image, 0 is none, 1
 	// is opticalflow, 2 is image recognision.
-	public int method = 3;
+	public int method = 4;
 	List<Point> startPoints;
 	List<Point> endPoints;
 	Point direction;
@@ -116,6 +116,15 @@ public class PPanel extends JPanel implements Runnable {
 				//Skulle vi prøve at lave afstands bestemmelse til a4 papir som ligger på siden.
 				
 				
+				//First we would like to find the piece of paper. We will do this first the dumb way.
+				frame = imgproc.toGrayScale(frame);
+				frame = imgproc.blur(frame);
+				frame = imgproc.toCanny(frame);
+				
+				frame = imgproc.findPaper(frame);
+				
+				
+				image = imgproc.toBufferedImage(frame);
 				
 				
 			}

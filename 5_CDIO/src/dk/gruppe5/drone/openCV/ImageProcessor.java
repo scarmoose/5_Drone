@@ -19,6 +19,7 @@ import org.opencv.core.MatOfFloat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -407,6 +408,58 @@ public class ImageProcessor {
 		}
 
 		return new opticalFlowData(standIn, startPoints, endPoints);
+	}
+
+	public Mat findPaper(Mat input) {
+		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
+		Mat hierarchy_1 = new Mat();
+		//Imgproc.findContours(input, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+		Imgproc.findContours(input, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
+		// draw contours?
+		Random rn = new Random();
+		Mat standIn = new Mat();
+		Imgproc.cvtColor(input, standIn, Imgproc.COLOR_BayerBG2RGB);
+		
+		//Detecting shapes in the contours
+		for (int i = 0; i < contours_1.size(); i++) {
+			MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
+			
+			MatOfPoint2f approxCurve = new MatOfPoint2f();
+			double epsilon = Imgproc.arcLength(contour, true)*0.01;
+			//houghcircles houghlines
+			
+//			if(contours_1.get(i).size().area() >1 && Imgproc.isContourConvex(contours_1.get(i))) { // Minimum size allowed for consideration
+//		     
+//				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
+//				Imgproc.drawContours(standIn, contours_1, i, color, 3);
+//				
+//		     }
+			
+//			we wanna se if a contour is a square.
+			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
+			if(approxCurve.height() == 4 ){
+				System.out.println();
+				
+				Rect r = Imgproc.boundingRect(contours_1.get(i));
+				System.out.println(r.width+"x"+r.height);
+				//System.out.println("square");
+				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
+				Imgproc.drawContours(standIn, contours_1, i, color, 3);
+				
+			}
+//			
+//			MatOfPoint approxf1 = new MatOfPoint();
+//			approxCurve.convertTo(approxf1, CvType.CV_32S);
+//			
+//			System.out.println(approxf1.width()*approxf1.height());
+			//if(	(approxf1.width()*approxf1.height()) == 4 && Math.abs(Imgproc.contourArea(approxf1)) > 10 && Imgproc.isContourConvex(approxf1) ){
+				
+//			System.out.println("I found shape Huurr durr");
+	
+//			}
+			
+		}
+		return standIn;
 	}
 
 }
