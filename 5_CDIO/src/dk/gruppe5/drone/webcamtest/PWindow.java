@@ -74,6 +74,7 @@ public class PWindow {
 		/*
 		 * Indkommenternedenstående for at bruge webcam
 		 */
+
 //		PPanel panel = new PPanel();
 //		Thread thread = new Thread(panel);
 //		thread.start();
@@ -84,6 +85,7 @@ public class PWindow {
 //		        thread.stop();
 //		    }
 //		});
+
 //		
 		/*
 		 * nedenstående bruger dronen.

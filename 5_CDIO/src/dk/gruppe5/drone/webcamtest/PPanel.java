@@ -23,7 +23,9 @@ public class PPanel extends JPanel implements Runnable {
 	static int WEBCAM = 0;
 	// Method is used to determine what filter is run on the image, 0 is none, 1
 	// is opticalflow, 2 is image recognision.
+	//public int method = 2;
 	public int method = 4;
+
 	List<Point> startPoints;
 	List<Point> endPoints;
 	Point direction;
@@ -113,7 +115,7 @@ public class PPanel extends JPanel implements Runnable {
 				image = imgproc.toBufferedImage(frame);
 			//	System.out.println(image.getWidth()+"x"+image.getHeight());
 			}else if(method == 4){
-				//Skulle vi prøve at lave afstands bestemmelse til a4 papir som ligger på siden.
+				//Skulle vi prï¿½ve at lave afstands bestemmelse til a4 papir som ligger pï¿½ siden.
 				
 				
 				//First we would like to find the piece of paper. We will do this first the dumb way.
@@ -129,10 +131,18 @@ public class PPanel extends JPanel implements Runnable {
 				
 			}
 			
-
 			repaint();
 
 			// System.out.println("repaint() kaldt.");
+
+
+		/*	 try {
+			 Thread.sleep(200);
+			 } catch (InterruptedException e) {
+			 // TODO Auto-generated catch block
+			 e.printStackTrace();
+			 }
+		*/
 
 //			 try {
 //			 Thread.sleep(200);
@@ -184,7 +194,7 @@ public class PPanel extends JPanel implements Runnable {
 
 	
 	/**
-	 * Det er noget pjat den her metode, ikke præcis nok og giver for mange fejl retninger...
+	 * Det er noget pjat den her metode, ikke prï¿½cis nok og giver for mange fejl retninger...
 	 * @param avAngle
 	 */
 	public void directionGuess(double avAngle) {
