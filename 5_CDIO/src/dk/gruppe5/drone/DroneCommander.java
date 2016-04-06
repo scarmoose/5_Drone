@@ -9,7 +9,7 @@ import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.VideoChannel;
 import dk.gruppe5.drone.framework.KeyInput;
 import dk.gruppe5.drone.window.NavDataListener;
-import dk.gruppe5.drone.window.ProgramWindow;
+
 import dk.gruppe5.drone.window.VideoListener;
 
 public class DroneCommander extends Canvas {
@@ -23,7 +23,7 @@ public class DroneCommander extends Canvas {
 	private CommandManager cmd;
 	private VideoListener videol;
 	private NavDataListener navl;
-	private ProgramWindow progWindow;
+
 
 	public DroneCommander() {
 		
@@ -82,8 +82,5 @@ public class DroneCommander extends Canvas {
 		return navl;
 	}
 
-	public ProgramWindow getProgWindow() {
-		return progWindow;
-	}
 	
 }

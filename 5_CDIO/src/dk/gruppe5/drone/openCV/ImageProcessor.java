@@ -422,9 +422,6 @@ public class ImageProcessor {
 		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
 		Mat hierarchy_1 = new Mat();
 		Imgproc.findContours(input, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-		// Imgproc.findContours(input, contours_1, hierarchy_1,
-		// Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
-		// draw contours?
 		Random rn = new Random();
 		Mat standIn = new Mat();
 		Imgproc.cvtColor(input, standIn, Imgproc.COLOR_BayerBG2RGB);
@@ -437,31 +434,19 @@ public class ImageProcessor {
 
 			MatOfPoint2f approxCurve = new MatOfPoint2f();
 			double epsilon = Imgproc.arcLength(contour, true) * 0.01;
-			// houghcircles houghlines
-
 			// we wanna se if a contour is a square.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
 			if (approxCurve.height() == 4) {
-				// System.out.println();
 
-				Rect r = Imgproc.boundingRect(contours_1.get(i));
-				
-				// vi finder den omkring liggende firkant, tilføjer den til rects
+				//We find the rect that surronds the square and adds it to rects
+				Rect r = Imgproc.boundingRect(contours_1.get(i));		
 				 rects.add(new Rects(r.area(),r.tl(),r.br()));
 				 Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				 Imgproc.drawContours(standIn, contours_1, i, color, 2);
-//				// System.out.println("square");
-//				if (r.height > r.width / 2 && r.width > r.height) {
-//					// System.out.println(r.width+"x"+r.height);
-//					Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
-//					 Imgproc.drawContours(standIn, contours_1, i, color, 2);
-//					//Imgproc.rectangle(standIn, r.br(), r.tl(), color, 3);
-//					// System.out.println(hierarchy_1.get(i, 0));
-//					 rects.add(new Rects(r.area(),r.tl(),r.br()));
-//
-//				}
+
 
 			}
+			//we just say any contour/shap with more than 6 edges we call it a square
 			if (approxCurve.height() > 6) {
 
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
