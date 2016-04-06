@@ -42,7 +42,14 @@ public class TutorialVideoListener extends JPanel {
 		drone.getVideoManager().addImageListener(new ImageListener() {
 
 			public void imageUpdated(BufferedImage newImage) {
-			
+//				 try {
+//					 Thread.sleep(200);
+//					 } catch (InterruptedException e) {
+//					 // TODO Auto-generated catch block
+//					 e.printStackTrace();
+//					 }
+//				
+				
 				Mat frame = imgProc.bufferedImageToMat(newImage);
 				if (old_frame == null) {
 					old_frame = frame;
@@ -50,7 +57,7 @@ public class TutorialVideoListener extends JPanel {
 				
 				frame = imgproc.toGrayScale(frame);
 				frame = imgproc.blur(frame);
-				frame = imgproc.toCanny(frame);
+				//frame = imgproc.toCanny(frame);
 				
 				frame = imgproc.findPaper(frame);
 				
@@ -113,6 +120,7 @@ public class TutorialVideoListener extends JPanel {
 				drone.getCommandManager().setVideoChannel(VideoChannel.NEXT);
 			}
 		});
+		
 
 	}
 

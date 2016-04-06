@@ -2,8 +2,8 @@ package dk.gruppe5.drone.yaDroneFeed;
 
 public class Values_cam {
 
-	private static double cannyTres1 = 50;
-	private static double cannyTres2 = 100;
+	private static double cannyTres1 = 60;
+	private static double cannyTres2 = 200;
 	private static int cannyAp = 3;
 	private static int goodCorner = 500;
 	private static double goodQualLvl = 0.1;
