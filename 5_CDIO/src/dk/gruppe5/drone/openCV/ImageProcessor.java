@@ -19,6 +19,7 @@ import org.opencv.core.MatOfFloat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -26,6 +27,7 @@ import org.opencv.video.Video;
 
 import dk.gruppe5.drone.yaDroneFeed.Values_cam;
 import dk.gruppe5.shared.opticalFlowData;
+import dk.gruppe5.shared.templateMatch;
 
 public class ImageProcessor {
 
@@ -50,13 +52,12 @@ public class ImageProcessor {
 		return mat;
 	}
 
-	public Mat blur(Mat input, int numberOfTimes) {
-		Mat sourceImage = new Mat();
-		Mat destImage = input.clone();
-		for (int i = 0; i < numberOfTimes; i++) {
-			sourceImage = destImage.clone();
-			Imgproc.blur(sourceImage, destImage, new Size(3.0, 3.0));
-		}
+	public Mat blur(Mat input) {
+		Mat sourceImage = input.clone();
+		Mat destImage = new Mat();
+		
+		Imgproc.GaussianBlur(sourceImage, destImage, new Size(5.0,5.0),(double)2.0);
+		
 		return destImage;
 	}
 
@@ -157,7 +158,7 @@ public class ImageProcessor {
 			
 			MatOfPoint2f approxCurve = new MatOfPoint2f();
 			double epsilon = Imgproc.arcLength(contour, true)*0.02;
-			
+			//houghcircles houghlines
 			
 //			if(contours_1.get(i).size().area() >10 && Imgproc.isContourConvex(contours_1.get(i))) { // Minimum size allowed for consideration
 //		     
@@ -205,46 +206,107 @@ public class ImageProcessor {
 		//System.out.println("frameCols:"+input.cols());
 		
 		int match_method = Imgproc.TM_CCOEFF;
-	    // / Create the result matrix
-        int result_cols = input.cols() - templateImg.cols() + 1;
-        int result_rows = input.rows() - templateImg.rows() + 1;
-        Mat result = new Mat(result_rows, result_cols, CvType.CV_32FC1);
-
-        // / Do the Matching and Normalize
-        Imgproc.matchTemplate(input, templateImg, result, match_method);
-        //Core.normalize(result, result, 0, 1, Core.NORM_MINMAX, -1, new Mat());
-
-        // / Localizing the best match with minMaxLoc
-        MinMaxLocResult mmr = Core.minMaxLoc(result);
-       // System.out.println(mmr.maxVal);
-       // System.out.println(mmr.minVal);
-        Point matchLoc;
-        if (match_method == Imgproc.TM_SQDIFF || match_method == Imgproc.TM_SQDIFF_NORMED) {
-            matchLoc = mmr.minLoc;
-         
-        } else {
-            matchLoc = mmr.maxLoc;
-            System.out.println(mmr.maxVal);
-        
-        }
-
-        // / Show me what you got
-        System.out.println(matchLoc);
-     
-        Imgproc.rectangle(input, matchLoc, new Point(matchLoc.x + templateImg.cols(), matchLoc.y + templateImg.rows()), new Scalar(0, 255, 0));
+		List<templateMatch> matches = new ArrayList<>();
+		//Initial rezise of image to be a little smaller than the frame image.
+		templateImg = blur(templateImg);
+	
+		Imgproc.resize(templateImg, templateImg, new Size(input.width(),input.height()));
 		
+		//gray and to canny??
+//		input = toGrayScale(input);
+//		input = toCanny(input);
+//		
+//		templateImg = toGrayScale(templateImg);
+//		templateImg = toCanny(templateImg);
+		
+		//
+		int i = 0;
+		//As long as the size of template image is bigger than a 10th of the image, we will look at finding the best match
+		while(templateImg.width()> input.width()/30 || templateImg.height() > input.height()/30){
+		    // / Create the result matrix
+	        int result_cols = input.cols() - templateImg.cols() + 1;
+	        int result_rows = input.rows() - templateImg.rows() + 1;
+	        Mat result = new Mat(result_rows, result_cols, CvType.CV_32FC1);
+
+	        // / Do the Matching and Normalize
+	        Imgproc.matchTemplate(input, templateImg, result, match_method);
+	        //Core.normalize(result, result, 0, 1, Core.NORM_MINMAX, -1, new Mat());
+	        // / Localizing the best match with minMaxLoc
+	        MinMaxLocResult mmr = Core.minMaxLoc(result);
+	        Point matchLoc;
+	        if (match_method == Imgproc.TM_SQDIFF || match_method == Imgproc.TM_SQDIFF_NORMED) {
+	            matchLoc = mmr.minLoc;
+	         
+	        } else {
+	            matchLoc = mmr.maxLoc;
+	            //System.out.println(mmr.maxVal);
+	        
+	        }
+
+	        // / Show me what you got
+	        //System.out.println(matchLoc);
+	        
+	        i++;
+	        //System.out.println(templateImg.width()+":"+templateImg.height());
+	        templateMatch tempMatch = new templateMatch(matchLoc,templateImg.width(),templateImg.height(),mmr.maxVal);
+	        matches.add(tempMatch);
+	        
+	        try {
+	            // retrieve image
+	            BufferedImage bi = toBufferedImage(templateImg);
+	            File outputfile = new File("saveImg"+i+".png");
+	            ImageIO.write(bi, "png", outputfile);
+	        } catch (IOException e) {
+	          e.printStackTrace();
+	        }
+	        Imgproc.resize(templateImg, templateImg, new Size(input.width()-16*i,input.height()-12*i));
+	        
+		}
+		//System.out.println(matches.size());
+//		double highestValue = 0;
+//		int matchNr = 0;
+//		for(int z = 0; z < matches.size(); z++){
+//			
+//			
+//			if(matches.get(z).getMatchValue() > highestValue){
+//				highestValue =matches.get(z).getMatchValue();
+//				matchNr = z;
+//			}
+//			
+//		}
+		//input = toColor(input);
+//		//System.out.println(matchNr);
+//		//Imgproc.rectangle(input, matchLoc, new Point(matchLoc.x + templateImg.cols(), matchLoc.y + templateImg.rows()), new Scalar(0, 255, 0));
+//		Imgproc.rectangle(input, matches.get(matchNr).getCoordinate(), new Point(matches.get(matchNr).getCoordinate().x + matches.get(matchNr).getPicWidth(), 
+//								matches.get(matchNr).getCoordinate().y + matches.get(matchNr).getPicHeight()), new Scalar(0, 255, 0));
+		System.out.println("-----------");
+		for(int x = 0; x < matches.size(); x++){
+			
+			if(matches.get(x).getMatchValue() > 5.1E8){
+			Imgproc.rectangle(input, matches.get(x).getCoordinate(), new Point(matches.get(x).getCoordinate().x + matches.get(x).getPicWidth(), 
+					matches.get(x).getCoordinate().y + matches.get(x).getPicHeight()), new Scalar(0, 255, 0));
+			System.out.println(matches.get(x).getMatchValue());
+			}
+			
+			
+		}
+		System.out.println("-----------");
+
+
+      
+     
+        
+        
 		return input;
 		
 	}
 	
-	public Mat scale(Mat inputMat, int scale){
-		
-		
-		
-		
-		return inputMat;
-		
+	public Mat toColor(Mat input){
+		Mat standIn = new Mat();
+		Imgproc.cvtColor(input, standIn, Imgproc.COLOR_BayerBG2RGB);
+		return standIn;
 	}
+
 
 	public opticalFlowData opticalFlow(Mat frameOne, Mat frameTwo) {
 		// TODO Auto-generated method stub
@@ -346,6 +408,58 @@ public class ImageProcessor {
 		}
 
 		return new opticalFlowData(standIn, startPoints, endPoints);
+	}
+
+	public Mat findPaper(Mat input) {
+		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
+		Mat hierarchy_1 = new Mat();
+		//Imgproc.findContours(input, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+		Imgproc.findContours(input, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
+		// draw contours?
+		Random rn = new Random();
+		Mat standIn = new Mat();
+		Imgproc.cvtColor(input, standIn, Imgproc.COLOR_BayerBG2RGB);
+		
+		//Detecting shapes in the contours
+		for (int i = 0; i < contours_1.size(); i++) {
+			MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
+			
+			MatOfPoint2f approxCurve = new MatOfPoint2f();
+			double epsilon = Imgproc.arcLength(contour, true)*0.01;
+			//houghcircles houghlines
+			
+//			if(contours_1.get(i).size().area() >1 && Imgproc.isContourConvex(contours_1.get(i))) { // Minimum size allowed for consideration
+//		     
+//				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
+//				Imgproc.drawContours(standIn, contours_1, i, color, 3);
+//				
+//		     }
+			
+//			we wanna se if a contour is a square.
+			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
+			if(approxCurve.height() == 4 ){
+				System.out.println();
+				
+				Rect r = Imgproc.boundingRect(contours_1.get(i));
+				System.out.println(r.width+"x"+r.height);
+				//System.out.println("square");
+				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
+				Imgproc.drawContours(standIn, contours_1, i, color, 3);
+				
+			}
+//			
+//			MatOfPoint approxf1 = new MatOfPoint();
+//			approxCurve.convertTo(approxf1, CvType.CV_32S);
+//			
+//			System.out.println(approxf1.width()*approxf1.height());
+			//if(	(approxf1.width()*approxf1.height()) == 4 && Math.abs(Imgproc.contourArea(approxf1)) > 10 && Imgproc.isContourConvex(approxf1) ){
+				
+//			System.out.println("I found shape Huurr durr");
+	
+//			}
+			
+		}
+		return standIn;
 	}
 
 }

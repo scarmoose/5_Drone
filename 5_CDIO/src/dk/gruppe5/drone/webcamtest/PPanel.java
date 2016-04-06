@@ -23,7 +23,9 @@ public class PPanel extends JPanel implements Runnable {
 	static int WEBCAM = 0;
 	// Method is used to determine what filter is run on the image, 0 is none, 1
 	// is opticalflow, 2 is image recognision.
-	public int method = 2;
+	//public int method = 2;
+	public int method = 4;
+
 	List<Point> startPoints;
 	List<Point> endPoints;
 	Point direction;
@@ -99,7 +101,7 @@ public class PPanel extends JPanel implements Runnable {
 				//first grayscale, convert it to black and white, blur the image slightly to reduce noise.
 				frame = imgproc.toGrayScale(frame);
 				//blur the image
-				frame = imgproc.blur(frame, 3);
+				frame = imgproc.blur(frame);
 				//find edges by using canny
 				frame = imgproc.toCanny(frame);
 				//now we will look for contours in the image
@@ -111,12 +113,28 @@ public class PPanel extends JPanel implements Runnable {
 			}else if(method == 3){
 				frame = imgproc.templateMatching(frame);
 				image = imgproc.toBufferedImage(frame);
+			//	System.out.println(image.getWidth()+"x"+image.getHeight());
+			}else if(method == 4){
+				//Skulle vi pr�ve at lave afstands bestemmelse til a4 papir som ligger p� siden.
+				
+				
+				//First we would like to find the piece of paper. We will do this first the dumb way.
+				frame = imgproc.toGrayScale(frame);
+				frame = imgproc.blur(frame);
+				frame = imgproc.toCanny(frame);
+				
+				frame = imgproc.findPaper(frame);
+				
+				
+				image = imgproc.toBufferedImage(frame);
+				
+				
 			}
 			
-
 			repaint();
 
 			// System.out.println("repaint() kaldt.");
+
 
 		/*	 try {
 			 Thread.sleep(200);
@@ -125,6 +143,14 @@ public class PPanel extends JPanel implements Runnable {
 			 e.printStackTrace();
 			 }
 		*/
+
+//			 try {
+//			 Thread.sleep(200);
+//			 } catch (InterruptedException e) {
+//			 // TODO Auto-generated catch block
+//			 e.printStackTrace();
+//			 }
+
 		}
 	}
 
@@ -166,6 +192,11 @@ public class PPanel extends JPanel implements Runnable {
 		directionGuess(avAngle);
 	}
 
+	
+	/**
+	 * Det er noget pjat den her metode, ikke pr�cis nok og giver for mange fejl retninger...
+	 * @param avAngle
+	 */
 	public void directionGuess(double avAngle) {
 		if (startPoints.size() > 30) {
 			// System.out.println("Nr of vectors: " +startPoints.size());
