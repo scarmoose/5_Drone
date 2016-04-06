@@ -193,7 +193,7 @@ public class ImageProcessor {
 
 		try 
 		{
-		    img2 = ImageIO.read(new File("pics/Airfield12.jpg")); 
+		    img2 = ImageIO.read(new File("pics/Airfield.jpg")); 
 		} 
 		catch (IOException e) 
 		{

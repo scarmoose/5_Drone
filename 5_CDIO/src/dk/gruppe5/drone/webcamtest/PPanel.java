@@ -23,7 +23,7 @@ public class PPanel extends JPanel implements Runnable {
 	static int WEBCAM = 0;
 	// Method is used to determine what filter is run on the image, 0 is none, 1
 	// is opticalflow, 2 is image recognision.
-	public int method = 3;
+	public int method = 2;
 	List<Point> startPoints;
 	List<Point> endPoints;
 	Point direction;
@@ -118,13 +118,13 @@ public class PPanel extends JPanel implements Runnable {
 
 			// System.out.println("repaint() kaldt.");
 
-			 try {
+		/*	 try {
 			 Thread.sleep(200);
 			 } catch (InterruptedException e) {
 			 // TODO Auto-generated catch block
 			 e.printStackTrace();
 			 }
-
+		*/
 		}
 	}
 
