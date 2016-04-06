@@ -494,14 +494,15 @@ public class ImageProcessor {
 				double carea = cirRect.getArea();
 				Point ctlPt = cirRect.getTlPoint();
 				Point cbrPt = cirRect.getBrPoint();
-
-				if (/*carea > ((area / 100) * 5) &&*/ ctlPt.x > tlPt.x && ctlPt.y > tlPt.y && cbrPt.x < brPt.x
+				//area check dosent work, buuut its unlikely anything will match the requirements for airfield1 or 2
+				if (/*carea > ((area / 100) * 3) &&*/ ctlPt.x > tlPt.x && ctlPt.y > tlPt.y && cbrPt.x < brPt.x
 						&& cbrPt.y < brPt.y) {
 					containedCircles++;
 				}
 
 			}
-			//Den tæller hver cirkel dobbelt wat, noget med canny og de kanter den giver
+			//Den tæller hver cirkel dobbelt wat, noget med canny og de kanter den giver tror jeg
+			//indre cirkel og ydre cirkel. Gør det nok også med firkant...
 			System.out.println(containedCircles);
 			if (containedCircles == 6) {
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
@@ -509,6 +510,12 @@ public class ImageProcessor {
 				Point txtPoint = new Point(tlPt.x+rect.getWidth()/4,tlPt.y+rect.getHeight()/2);
 			
 				Imgproc.putText(standIn, "Airfield1", txtPoint, 5, 2, color);
+			}else if(containedCircles == 10){
+				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
+				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
+				Point txtPoint = new Point(tlPt.x+rect.getWidth()/4,tlPt.y+rect.getHeight()/2);
+			
+				Imgproc.putText(standIn, "Airfield2", txtPoint, 5, 2, color);
 			}
 
 		}
