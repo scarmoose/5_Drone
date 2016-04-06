@@ -27,7 +27,7 @@ public class TutorialVideoListener extends JPanel {
 	private static final long serialVersionUID = 5575916801733831478L;
 
 	ImageProcessor imgProc = new ImageProcessor();
-	BufferedImage Image;
+	BufferedImage image;
 	VideoCapture capture;
 	ImageProcessor imgproc;
 
@@ -47,44 +47,55 @@ public class TutorialVideoListener extends JPanel {
 				if (old_frame == null) {
 					old_frame = frame;
 				}
-				opticalFlowData flowData = imgproc.opticalFlow(frame, old_frame);
 				
-				Mat ofs_frame = flowData.getFrame();
-				Image = imgproc.toBufferedImage(ofs_frame);
-				old_frame = frame;
-			
+				frame = imgproc.toGrayScale(frame);
+				frame = imgproc.blur(frame);
+				frame = imgproc.toCanny(frame);
 				
-				startPoints = flowData.getStartPoints();
-				endPoints = flowData.getEndPoints();
-				double angletotal = 0;
+				frame = imgproc.findPaper(frame);
 				
-				for (int i = 0; i < startPoints.size(); i++) {
-					Point one = startPoints.get(i);
-					Point two = endPoints.get(i);
-
-					Double distance = Math.sqrt(Math.pow(one.x - two.x, 2) + Math.pow(one.y - two.y, 2));
-
-					if (distance > 5) {
-						// System.out.println("Distance: "+distance);
-						double angle = Math.atan2(two.y - one.y, two.x - one.x);
-						double angle2 = angle * (180 / Math.PI);
-						// System.out.println(angle2);
-						if (angle2 < 0) {
-							// System.out.println(angle2);
-							angletotal = angletotal + angle2 + 360;
-						} else {
-							// System.out.println(angle2);
-							angletotal = angletotal + angle2;
-						}
-					}
-
-				}
 				
-				// System.out.println("totalAngle:"+angletotal);
-				// System.out.println("AverageAngle:"+angletotal/startPoints.size());
-				double avAngle = angletotal / startPoints.size();
-
-				directionGuess(avAngle);
+				image = imgproc.toBufferedImage(frame);
+				
+				
+//				opticalFlowData flowData = imgproc.opticalFlow(frame, old_frame);
+//				
+//				Mat ofs_frame = flowData.getFrame();
+//				Image = imgproc.toBufferedImage(ofs_frame);
+//				old_frame = frame;
+//			
+//				
+//				startPoints = flowData.getStartPoints();
+//				endPoints = flowData.getEndPoints();
+//				double angletotal = 0;
+//				
+//				for (int i = 0; i < startPoints.size(); i++) {
+//					Point one = startPoints.get(i);
+//					Point two = endPoints.get(i);
+//
+//					Double distance = Math.sqrt(Math.pow(one.x - two.x, 2) + Math.pow(one.y - two.y, 2));
+//
+//					if (distance > 5) {
+//						// System.out.println("Distance: "+distance);
+//						double angle = Math.atan2(two.y - one.y, two.x - one.x);
+//						double angle2 = angle * (180 / Math.PI);
+//						// System.out.println(angle2);
+//						if (angle2 < 0) {
+//							// System.out.println(angle2);
+//							angletotal = angletotal + angle2 + 360;
+//						} else {
+//							// System.out.println(angle2);
+//							angletotal = angletotal + angle2;
+//						}
+//					}
+//
+//				}
+//				
+//				// System.out.println("totalAngle:"+angletotal);
+//				// System.out.println("AverageAngle:"+angletotal/startPoints.size());
+//				double avAngle = angletotal / startPoints.size();
+//
+//				directionGuess(avAngle);
 				
 			
 				SwingUtilities.invokeLater(new Runnable() {
@@ -107,13 +118,13 @@ public class TutorialVideoListener extends JPanel {
 
 	public synchronized void paint(Graphics g) {
 		super.paintComponent(g);
-		if (Image != null) {
-			g.drawImage(Image, 0, 0, Image.getWidth(), Image.getHeight(), null);
+		if (image != null) {
+			g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
 		}
 	}
 
 	public BufferedImage getImage() {
-		return Image;
+		return image;
 	}
 
 	

@@ -413,8 +413,8 @@ public class ImageProcessor {
 	public Mat findPaper(Mat input) {
 		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
 		Mat hierarchy_1 = new Mat();
-		//Imgproc.findContours(input, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-		Imgproc.findContours(input, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
+		Imgproc.findContours(input, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+		//Imgproc.findContours(input, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
 		// draw contours?
 		Random rn = new Random();
 		Mat standIn = new Mat();
@@ -434,17 +434,44 @@ public class ImageProcessor {
 //				Imgproc.drawContours(standIn, contours_1, i, color, 3);
 //				
 //		     }
+			//System.out.println("hierchy width"+ hierarchy_1.width());
+			//System.out.println("hierchy height"+ hierarchy_1.height());
+			
 			
 //			we wanna se if a contour is a square.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
 			if(approxCurve.height() == 4 ){
-				System.out.println();
+				//System.out.println();
 				
 				Rect r = Imgproc.boundingRect(contours_1.get(i));
-				System.out.println(r.width+"x"+r.height);
+				
 				//System.out.println("square");
+				if(r.height > r.width/2 && r.width> r.height){
+					//System.out.println(r.width+"x"+r.height);
+					Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
+					Imgproc.drawContours(standIn, contours_1, i, color, 2);	
+					//System.out.println(hierarchy_1.get(i, 0));
+					
+					
+					
+				}
+				
+				
+			}
+			if(approxCurve.height() > 6){
+				
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
-				Imgproc.drawContours(standIn, contours_1, i, color, 3);
+				Rect r = Imgproc.boundingRect(contours_1.get(i));
+				double area = Imgproc.contourArea(contours_1.get(i));
+				int radius = r.width/2;
+				
+				//Imgproc.rectangle(standIn, r.br(), r.tl(), color);
+				if(Math.abs(1-(r.width/r.height)) <= 0.2 && Math.abs(1-(area / (Math.PI * Math.pow(radius, 2)))) <= 0.2){
+					Imgproc.drawContours(standIn, contours_1, i, color, 2);	
+				
+						
+					//Imgproc.putText(standIn, text, org, fontFace, fontScale, color);
+				}
 				
 			}
 //			
