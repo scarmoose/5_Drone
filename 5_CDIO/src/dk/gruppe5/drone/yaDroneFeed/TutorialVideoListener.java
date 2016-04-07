@@ -16,8 +16,7 @@ import org.opencv.videoio.VideoCapture;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.video.ImageListener;
-import dk.gruppe5.drone.framework.ImageProcessor;
-import dk.gruppe5.shared.opticalFlowData;
+import dk.gruppe5.framework.ImageProcessor;
 
 public class TutorialVideoListener extends JPanel {
 
@@ -26,10 +25,10 @@ public class TutorialVideoListener extends JPanel {
 	 */
 	private static final long serialVersionUID = 5575916801733831478L;
 
-	ImageProcessor imgProc = new ImageProcessor();
+	
 	BufferedImage image;
 	VideoCapture capture;
-	ImageProcessor imgproc;
+	ImageProcessor imgProc;
 
 	List<Point> startPoints;
 	List<Point> endPoints;
@@ -37,7 +36,7 @@ public class TutorialVideoListener extends JPanel {
 	Mat old_frame;
 
 	public TutorialVideoListener(final IARDrone drone) {
-		imgproc = new ImageProcessor();
+		imgProc = new ImageProcessor();
 
 		drone.getVideoManager().addImageListener(new ImageListener() {
 
@@ -55,14 +54,14 @@ public class TutorialVideoListener extends JPanel {
 					old_frame = frame;
 				}
 				
-				frame = imgproc.toGrayScale(frame);
-				frame = imgproc.blur(frame);
-				frame = imgproc.toCanny(frame);
+				frame = imgProc.toGrayScale(frame);
+				frame = imgProc.blur(frame);
+				frame = imgProc.toCanny(frame);
 				
-				frame = imgproc.findAirfield(frame);
+				frame = imgProc.findAirfield(frame);
 				
 				
-				image = imgproc.toBufferedImage(frame);
+				image = imgProc.toBufferedImage(frame);
 				
 				
 //				opticalFlowData flowData = imgproc.opticalFlow(frame, old_frame);

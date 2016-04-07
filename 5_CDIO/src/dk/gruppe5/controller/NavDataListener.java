@@ -1,4 +1,4 @@
-package dk.gruppe5.drone.window;
+package dk.gruppe5.controller;
 
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;

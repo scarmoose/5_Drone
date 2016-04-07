@@ -1,9 +1,7 @@
 package dk.gruppe5.view;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -12,9 +10,9 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.videoio.VideoCapture;
 
-import dk.gruppe5.drone.framework.ImageProcessor;
+import dk.gruppe5.framework.ImageProcessor;
 import dk.gruppe5.legacy.KeyInput;
-import dk.gruppe5.shared.opticalFlowData;
+import dk.gruppe5.model.opticalFlowData;
 
 public class PPanel extends JPanel implements Runnable {
 
@@ -52,7 +50,8 @@ public class PPanel extends JPanel implements Runnable {
 			System.out.println("Error: Camera connection is not open.");
 		else
 			System.out.println("Success: Camera connection is open.");
-		this.addKeyListener(new KeyInput());
+		//dosent work atm
+		//this.addKeyListener(new KeyInput());
 	}
 
 	@Override

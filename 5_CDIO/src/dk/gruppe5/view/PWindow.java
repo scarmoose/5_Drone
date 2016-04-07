@@ -1,38 +1,24 @@
 package dk.gruppe5.view;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.io.Reader;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManager;
-import de.yadrone.base.command.DroneCommand;
-import dk.gruppe5.drone.DroneCommander;
-import dk.gruppe5.drone.webcamtest.WebcamTest;
 import dk.gruppe5.drone.window.CustomOutputStream;
-import dk.gruppe5.drone.yaDroneFeed.TutorialVideoListener;
-import dk.gruppe5.shared.Values_cam;
+import dk.gruppe5.model.Values_cam;
+import dk.gruppe5.test.WebcamTest;
 
 public class PWindow {
 	

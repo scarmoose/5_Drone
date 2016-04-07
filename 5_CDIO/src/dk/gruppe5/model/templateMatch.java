@@ -1,4 +1,4 @@
-package dk.gruppe5.shared;
+package dk.gruppe5.model;
 
 import org.opencv.core.Point;
 
