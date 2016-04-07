@@ -3,7 +3,7 @@ package dk.gruppe5.legacy;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import dk.gruppe5.drone.DroneCommander;
+import dk.gruppe5.controller.DroneCommander;
 
 
 public class KeyInput extends Thread implements KeyListener {

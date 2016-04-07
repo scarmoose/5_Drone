@@ -16,7 +16,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import dk.gruppe5.drone.window.CustomOutputStream;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.test.WebcamTest;
 

@@ -1,4 +1,4 @@
-package dk.gruppe5.drone.window;
+package dk.gruppe5.view;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -1,4 +1,4 @@
-package dk.gruppe5.drone.yaDroneFeed;
+package dk.gruppe5.view;
 
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
@@ -18,7 +18,7 @@ import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.video.ImageListener;
 import dk.gruppe5.framework.ImageProcessor;
 
-public class TutorialVideoListener extends JPanel {
+public class VideoListenerPanel extends JPanel {
 
 	/**
 	 * 
@@ -35,7 +35,7 @@ public class TutorialVideoListener extends JPanel {
 	Point direction;
 	Mat old_frame;
 
-	public TutorialVideoListener(final IARDrone drone) {
+	public VideoListenerPanel(final IARDrone drone) {
 		imgProc = new ImageProcessor();
 
 		drone.getVideoManager().addImageListener(new ImageListener() {
