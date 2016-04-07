@@ -7,10 +7,10 @@ import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.VideoChannel;
-import dk.gruppe5.drone.framework.KeyInput;
 import dk.gruppe5.drone.window.NavDataListener;
 
 import dk.gruppe5.drone.window.VideoListener;
+import dk.gruppe5.legacy.KeyInput;
 
 public class DroneCommander extends Canvas {
 	

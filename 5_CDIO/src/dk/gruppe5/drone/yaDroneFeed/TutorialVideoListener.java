@@ -16,7 +16,7 @@ import org.opencv.videoio.VideoCapture;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.video.ImageListener;
-import dk.gruppe5.drone.openCV.ImageProcessor;
+import dk.gruppe5.drone.framework.ImageProcessor;
 import dk.gruppe5.shared.opticalFlowData;
 
 public class TutorialVideoListener extends JPanel {
@@ -57,9 +57,9 @@ public class TutorialVideoListener extends JPanel {
 				
 				frame = imgproc.toGrayScale(frame);
 				frame = imgproc.blur(frame);
-				//frame = imgproc.toCanny(frame);
+				frame = imgproc.toCanny(frame);
 				
-				frame = imgproc.findPaper(frame);
+				frame = imgproc.findAirfield(frame);
 				
 				
 				image = imgproc.toBufferedImage(frame);

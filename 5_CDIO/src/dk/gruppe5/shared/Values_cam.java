@@ -1,4 +1,4 @@
-package dk.gruppe5.drone.yaDroneFeed;
+package dk.gruppe5.shared;
 
 public class Values_cam {
 
@@ -8,6 +8,15 @@ public class Values_cam {
 	private static int goodCorner = 500;
 	private static double goodQualLvl = 0.1;
 	private static double goodMinDist = 10;
+	
+	private static Values_cam valCam = new Values_cam();
+	private Values_cam(){
+		
+	}
+	
+	public static Values_cam getInstance(){
+		return valCam;
+	}
 	
 	public static double getCanTres1() {return cannyTres1;}	
 	public static void setCanTres1(double input) {cannyTres1 = input;}

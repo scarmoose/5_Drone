@@ -1,4 +1,4 @@
-package dk.gruppe5.drone.framework;
+package dk.gruppe5.legacy;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

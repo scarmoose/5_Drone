@@ -1,4 +1,4 @@
-package dk.gruppe5.drone.openCV;
+package dk.gruppe5.drone.framework;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -25,8 +25,8 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.video.Video;
 
-import dk.gruppe5.drone.yaDroneFeed.Values_cam;
 import dk.gruppe5.shared.Rects;
+import dk.gruppe5.shared.Values_cam;
 import dk.gruppe5.shared.opticalFlowData;
 import dk.gruppe5.shared.templateMatch;
 
@@ -418,7 +418,7 @@ public class ImageProcessor {
 		return new opticalFlowData(standIn, startPoints, endPoints);
 	}
 
-	public Mat findPaper(Mat input) {
+	public Mat findAirfield(Mat input) {
 		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
 		Mat hierarchy_1 = new Mat();
 		Imgproc.findContours(input, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
@@ -442,7 +442,7 @@ public class ImageProcessor {
 				Rect r = Imgproc.boundingRect(contours_1.get(i));		
 				 rects.add(new Rects(r.area(),r.tl(),r.br()));
 				 Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
-				 Imgproc.drawContours(standIn, contours_1, i, color, 2);
+				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
 
 
 			}
@@ -457,11 +457,10 @@ public class ImageProcessor {
 				// Imgproc.rectangle(standIn, r.br(), r.tl(), color);
 				if (Math.abs(1 - (r.width / r.height)) <= 0.2 && Math.abs(1 - (area / (Math.PI * Math.pow(radius, 2)))) <= 0.2) {
 					if(area > 20){
-					 Imgproc.drawContours(standIn, contours_1, i, color, 2);
+					//Imgproc.drawContours(standIn, contours_1, i, color, 2);
 					// Imgproc.rectangle(standIn, r.br(), r.tl(), color, 3);
 					cirRects.add(new Rects(r.area(), r.tl(), r.br()));
-					// Imgproc.putText(standIn, text, org, fontFace, fontScale,
-					// color);
+					
 					}
 					
 				}
@@ -488,7 +487,7 @@ public class ImageProcessor {
 			}
 			//Den tæller hver cirkel dobbelt wat, noget med canny og de kanter den giver tror jeg
 			//indre cirkel og ydre cirkel. Gør det nok også med firkant...
-			System.out.println(containedCircles);
+		
 			if (containedCircles == 6) {
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);

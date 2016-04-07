@@ -1,4 +1,4 @@
-package dk.gruppe5.drone.webcamtest;
+package dk.gruppe5.view;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -29,9 +29,10 @@ import javax.swing.SwingUtilities;
 import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManager;
 import de.yadrone.base.command.DroneCommand;
 import dk.gruppe5.drone.DroneCommander;
+import dk.gruppe5.drone.webcamtest.WebcamTest;
 import dk.gruppe5.drone.window.CustomOutputStream;
 import dk.gruppe5.drone.yaDroneFeed.TutorialVideoListener;
-import dk.gruppe5.drone.yaDroneFeed.Values_cam;
+import dk.gruppe5.shared.Values_cam;
 
 public class PWindow {
 	
@@ -41,7 +42,7 @@ public class PWindow {
 	private JTextArea textArea;
 	private PrintStream standardOut;
 	
-	Values_cam vall = new Values_cam();
+	Values_cam vall = Values_cam.getInstance();
 	public JTextField textField;
 	public JTextField textField_1;
 	public JTextField textField_2;

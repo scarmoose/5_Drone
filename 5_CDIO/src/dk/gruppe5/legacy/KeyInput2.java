@@ -1,9 +1,9 @@
-package dk.gruppe5.drone.webcamtest;
+package dk.gruppe5.legacy;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class KeyInput implements KeyListener {
+public class KeyInput2 implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {

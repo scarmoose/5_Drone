@@ -1,4 +1,4 @@
-package dk.gruppe5.drone.webcamtest;
+package dk.gruppe5.view;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -12,7 +12,8 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.videoio.VideoCapture;
 
-import dk.gruppe5.drone.openCV.ImageProcessor;
+import dk.gruppe5.drone.framework.ImageProcessor;
+import dk.gruppe5.legacy.KeyInput;
 import dk.gruppe5.shared.opticalFlowData;
 
 public class PPanel extends JPanel implements Runnable {
@@ -123,7 +124,7 @@ public class PPanel extends JPanel implements Runnable {
 				frame = imgproc.blur(frame);
 				frame = imgproc.toCanny(frame);
 				
-				frame = imgproc.findPaper(frame);
+				frame = imgproc.findAirfield(frame);
 				
 				
 				image = imgproc.toBufferedImage(frame);

@@ -5,6 +5,8 @@ package dk.gruppe5.drone.webcamtest;
 
 import org.opencv.core.Core;
 
+import dk.gruppe5.view.PWindow;
+
 /**
  * @author thomas
  *
