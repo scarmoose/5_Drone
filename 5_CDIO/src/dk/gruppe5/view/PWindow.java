@@ -16,13 +16,15 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManager;
+import dk.gruppe5.controller.DroneCommander;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.test.WebcamTest;
 
 public class PWindow {
 	
-	ImageIcon image = new ImageIcon("BillederTilDrone.png");
-	JLabel imageLabel = new JLabel(image);
+	//ImageIcon image = new ImageIcon("BillederTilDrone.png");
+	//JLabel imageLabel = new JLabel(image);
 	
 	private JTextArea textArea;
 	private PrintStream standardOut;
@@ -77,11 +79,11 @@ public class PWindow {
 		 * nedenstående bruger dronen.
 		 */
 
-//		DroneCommander DCom = new DroneCommander();
-//		TutorialVideoListener panel = new TutorialVideoListener(DCom.getDrone());
-//		frame.setFocusable(true);
-//		frame.addKeyListener(new KeyboardCommandManager((DCom.getDrone())));
-//		
+		DroneCommander DCom = new DroneCommander();
+		VideoListenerPanel vidpanel = new VideoListenerPanel(DCom.getDrone());
+		frame.setFocusable(true);
+		frame.addKeyListener(new KeyboardCommandManager((DCom.getDrone())));
+		
 //		panel.setSize(new Dimension(700, 400));
 		
 		//panel.setPreferredSize(new Dimension(700, 400));
@@ -91,10 +93,24 @@ public class PWindow {
 	//	frame.add(new JButton("Button 3"));
         //frame.add(imageLabel);
         frame.add(panel);        
-
+        
         JPanel jp = new JPanel();
         jp.setLayout(new GridLayout(0,4));
-           
+        
+        JPanel jButz = new JPanel();
+        jButz.setLayout(new GridLayout(0,1));
+        JButton Button1 = new JButton("Standard");jButz.add(Button1);
+        JButton Button2 = new JButton("Take Off");
+        
+        JPanel jButs = new JPanel(); 
+        jButs.setLayout(new GridLayout(0,2));
+        
+        JButton Button3 = new JButton("Opticalflow");jButs.add(Button3);
+        JButton Button4 = new JButton("Find Contours");jButs.add(Button4);
+        JButton Button5 = new JButton("Template Matching");jButs.add(Button5);
+        JButton Button6 = new JButton("Find Airfields");jButs.add(Button6);
+        
+        
         JLabel lblNumber1 = new JLabel("Canny");
         JLabel lblNumber2 = new JLabel("Good Features To Track");
         
@@ -115,7 +131,7 @@ public class PWindow {
 
         //Overskift for Canny
         jp.add(new JLabel(""));jp.add(new JLabel("Method"));jp.add(new JLabel("Circle Precision"));jp.add(new JLabel(""));
-        jp.add(new JLabel(""));jp.add(textField_8);jp.add(textField_7);jp.add(new JLabel(""));
+        jp.add(jButz);jp.add(jButs);jp.add(textField_7);jp.add(Button2);
         jp.add(new JLabel(""));jp.add(new JLabel("Treshold1"));jp.add(new JLabel("Treshold2"));jp.add(new JLabel("Aperture"));
         //Input til Canny
         jp.add(lblNumber1);jp.add(textField_1);jp.add(textField_2);jp.add(textField_3);
@@ -130,11 +146,6 @@ public class PWindow {
 		frame.add(jp);
 		
 		frame.setVisible(true);
-		
-		
-		
-		
-		
 		
 		updateBtn.addActionListener(new ActionListener() {
 
@@ -177,6 +188,51 @@ public class PWindow {
 	            WebcamTest.main(null);
             }
             
+        });
+		Button1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+	            Values_cam.setMethod(0);
+	            SwingUtilities.updateComponentTreeUI(frame);
+            	frame.invalidate();
+            	frame.validate();
+            	frame.repaint();
+            }
+        });
+		Button3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+	            Values_cam.setMethod(1);
+	            SwingUtilities.updateComponentTreeUI(frame);
+            	frame.invalidate();
+            	frame.validate();
+            	frame.repaint();
+            }
+        });
+		Button4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+	            Values_cam.setMethod(2);
+	            SwingUtilities.updateComponentTreeUI(frame);
+            	frame.invalidate();
+            	frame.validate();
+            	frame.repaint();
+            }
+        });
+		Button5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+	            Values_cam.setMethod(3);
+	            SwingUtilities.updateComponentTreeUI(frame);
+            	frame.invalidate();
+            	frame.validate();
+            	frame.repaint();
+            }
+        });
+		Button6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+	            Values_cam.setMethod(4);
+	            SwingUtilities.updateComponentTreeUI(frame);
+            	frame.invalidate();
+            	frame.validate();
+            	frame.repaint();
+            }
         });
 	}
 
