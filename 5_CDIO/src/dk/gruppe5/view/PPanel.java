@@ -12,10 +12,12 @@ import org.opencv.videoio.VideoCapture;
 
 import dk.gruppe5.framework.ImageProcessor;
 import dk.gruppe5.legacy.KeyInput;
+import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.opticalFlowData;
 
 public class PPanel extends JPanel implements Runnable {
 
+	
 	BufferedImage image;
 	VideoCapture capture;
 	ImageProcessor imgproc;
@@ -23,7 +25,6 @@ public class PPanel extends JPanel implements Runnable {
 	// Method is used to determine what filter is run on the image, 0 is none, 1
 	// is opticalflow, 2 is image recognision.
 	//public int method = 2;
-	public int method =4;
 
 	List<Point> startPoints;
 	List<Point> endPoints;
@@ -66,7 +67,7 @@ public class PPanel extends JPanel implements Runnable {
 			// System.out.println("Image drawn in "+dt+"ms");
 			int ofsetX = image.getWidth();
 			// System.out.println(direction.x+":"+direction.y);
-			if (method == 1) {
+			if (Values_cam.getMethod() == 1) {
 				for (int i = 0; i < startPoints.size(); i++) {
 					g.drawLine((int) (ofsetX + startPoints.get(i).x), (int) startPoints.get(i).y,
 							(int) (ofsetX + endPoints.get(i).x), (int) endPoints.get(i).y);
@@ -92,11 +93,11 @@ public class PPanel extends JPanel implements Runnable {
 			long t = System.currentTimeMillis();
 			long dt = System.currentTimeMillis() - t;
 
-			if (method == 1) {
+			if (Values_cam.getMethod() == 1) {
 				opticalFlowCall(frame);
-			} else if(method == 0) {
+			} else if(Values_cam.getMethod() == 0) {
 				image = imgproc.toBufferedImage(frame);
-			} else if(method == 2) {
+			} else if(Values_cam.getMethod() == 2) {
 				//We want to determine if we are looking at a picture.
 				//first grayscale, convert it to black and white, blur the image slightly to reduce noise.
 				frame = imgproc.toGrayScale(frame);
@@ -110,11 +111,11 @@ public class PPanel extends JPanel implements Runnable {
 				
 				
 				
-			}else if(method == 3){
+			}else if(Values_cam.getMethod() == 3){
 				frame = imgproc.templateMatching(frame);
 				image = imgproc.toBufferedImage(frame);
 			//	System.out.println(image.getWidth()+"x"+image.getHeight());
-			}else if(method == 4){
+			}else if(Values_cam.getMethod() == 4){
 				//Skulle vi pr�ve at lave afstands bestemmelse til a4 papir som ligger p� siden.
 				
 				

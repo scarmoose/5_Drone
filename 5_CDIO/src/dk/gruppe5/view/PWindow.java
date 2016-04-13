@@ -94,11 +94,12 @@ public class PWindow {
 
         JPanel jp = new JPanel();
         jp.setLayout(new GridLayout(0,4));
-        
+           
         JLabel lblNumber1 = new JLabel("Canny");
         JLabel lblNumber2 = new JLabel("Good Features To Track");
         
         //Oprettelse af input felter til Canny
+        
         JTextField textField_1 = new JTextField();textField_1.setText(""+Values_cam.getCanTres1());
         JTextField textField_2 = new JTextField();textField_2.setText(""+Values_cam.getCanTres2());
         JTextField textField_3 = new JTextField();textField_3.setText(""+Values_cam.getCanAp());
@@ -106,11 +107,15 @@ public class PWindow {
         JTextField textField_4 = new JTextField();textField_4.setText(""+Values_cam.getCorn());
         JTextField textField_5 = new JTextField();textField_5.setText(""+Values_cam.getQual());
         JTextField textField_6 = new JTextField();textField_6.setText(""+Values_cam.getDist());
+        JTextField textField_7 = new JTextField();textField_7.setText(""+Values_cam.getCirclePrecision());
+        JTextField textField_8 = new JTextField();textField_8.setText(""+Values_cam.getMethod());
         //Oprettelse af update og reset knap
         JButton updateBtn = new JButton("UPDATE");
         JButton repaintBtn = new JButton("Repaint");
 
         //Overskift for Canny
+        jp.add(new JLabel(""));jp.add(new JLabel("Method"));jp.add(new JLabel("Circle Precision"));jp.add(new JLabel(""));
+        jp.add(new JLabel(""));jp.add(textField_8);jp.add(textField_7);jp.add(new JLabel(""));
         jp.add(new JLabel(""));jp.add(new JLabel("Treshold1"));jp.add(new JLabel("Treshold2"));jp.add(new JLabel("Aperture"));
         //Input til Canny
         jp.add(lblNumber1);jp.add(textField_1);jp.add(textField_2);jp.add(textField_3);
@@ -141,6 +146,8 @@ public class PWindow {
             	Values_cam.setCorn(Integer.parseInt(textField_4.getText()));
             	Values_cam.setQual(Double.parseDouble(textField_5.getText()));
             	Values_cam.setDist(Double.parseDouble(textField_6.getText()));
+            	Values_cam.setMethod(Integer.parseInt(textField_8.getText()));
+            	Values_cam.setCirclePrecision(Double.parseDouble(textField_7.getText()));
             	SwingUtilities.updateComponentTreeUI(frame);
             	frame.invalidate();
             	frame.validate();
@@ -157,13 +164,15 @@ public class PWindow {
 	            frame.removeAll();
 	            frame.validate();
 	            frame.setVisible(false);
-	           // thread.stop();
+	            // thread.stop();
 	            Values_cam.setCanTres1(50);
 	            Values_cam.setCanTres2(100);
 	            Values_cam.setCanAp(3);
 	            Values_cam.setCorn(500);
 	            Values_cam.setQual(0.1);
 	            Values_cam.setDist(10);
+	            Values_cam.setMethod(4);
+	            Values_cam.setCirclePrecision(0.2);
 	            
 	            WebcamTest.main(null);
             }
