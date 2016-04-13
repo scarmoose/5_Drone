@@ -23,7 +23,7 @@ public class PPanel extends JPanel implements Runnable {
 	// Method is used to determine what filter is run on the image, 0 is none, 1
 	// is opticalflow, 2 is image recognision.
 	//public int method = 2;
-	public int method = 4;
+	public int method =4;
 
 	List<Point> startPoints;
 	List<Point> endPoints;

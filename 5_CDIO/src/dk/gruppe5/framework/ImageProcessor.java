@@ -121,20 +121,11 @@ public class ImageProcessor {
 	}
 
 	public Mat toCanny(Mat grayImg) {
-		// First we grayscale the picture
 		Mat imageGray = grayImg;
 		Mat imageCny = new Mat();
-		// Imgproc.cvtColor(img, imageGray, Imgproc.COLOR_BGR2GRAY);
-		// martin Webcam settings
-
-		// Imgproc.Canny(imageGray, imageCny, 20, 150, 3, true);
-
 		Imgproc.Canny(imageGray, imageCny, Values_cam.getCanTres1(), Values_cam.getCanTres2(), Values_cam.getCanAp(),
 				true);
-		// Drone webcame settings?????
-		// Imgproc.Canny(imageGray, imageCny, 10, 100, 3, true);
-		// Thomas Webcam settings
-		// Imgproc.Canny(imageGray, imageCny, 20, 200, 3, true);
+		
 
 		return imageCny;
 	}
@@ -446,7 +437,7 @@ public class ImageProcessor {
 
 
 			}
-			//we just say any contour/shap with more than 6 edges we call it a square
+			//we just say any contour/shap with more than 6 edges we call it a circle
 			if (approxCurve.height() > 6) {
 
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
@@ -494,6 +485,7 @@ public class ImageProcessor {
 				Point txtPoint = new Point(tlPt.x+rect.getWidth()/4,tlPt.y+rect.getHeight()/2);
 			
 				Imgproc.putText(standIn, "Airfield1", txtPoint, 5, 2, color);
+				
 			}else if(containedCircles == 10){
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
