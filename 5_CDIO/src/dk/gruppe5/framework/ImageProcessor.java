@@ -377,8 +377,7 @@ public class ImageProcessor {
 			// Imgproc.line(standIn,startP,endP,new Scalar(0,250,0),5);
 			Point startP = new Point(corners2f.get(i, 0));
 			Point endP = new Point(corners1f.get(i, 0));
-			Double distance = Math
-					.sqrt((startP.x - endP.x) * (startP.x - endP.x) + (startP.y - endP.y) * (startP.y - endP.y));
+			Double distance = Math.sqrt((startP.x - endP.x) * (startP.x - endP.x) + (startP.y - endP.y) * (startP.y - endP.y));
 					/*
 					 * By calculating an average in the distance between points
 					 * in the picture, we can use this to remove Unwanted
@@ -499,4 +498,118 @@ public class ImageProcessor {
 		return standIn;
 	}
 
+	public Mat findDirection(Mat frameOne, Mat frameTwo){
+		// Først finder vi de gode features at tracker
+				frameOne = toGrayScale(frameOne);
+				frameTwo = toGrayScale(frameTwo);
+				frameOne = toCanny(frameOne);
+				frameTwo = toCanny(frameTwo);
+				List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
+				List<MatOfPoint> contours_2 = new ArrayList<MatOfPoint>();
+				Mat hierarchy_1 = new Mat();
+				Mat hierarchy_2 = new Mat();
+				Imgproc.findContours(frameOne, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+				Imgproc.findContours(frameTwo, contours_2, hierarchy_2, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+
+				Mat standIn = new Mat();
+				MatOfPoint corners1 = new MatOfPoint();
+				MatOfPoint corners2 = new MatOfPoint();
+				// Imgproc.goodFeaturesToTrack(frameOne, corners1, 100, 0.1, 30);
+				// Imgproc.goodFeaturesToTrack(frameTwo, corners2, 100, 0.1, 30);
+
+				Imgproc.goodFeaturesToTrack(frameOne, corners1, Values_cam.getCorn(), Values_cam.getQual(),
+						Values_cam.getDist());
+				Imgproc.goodFeaturesToTrack(frameTwo, corners2, Values_cam.getCorn(), Values_cam.getQual(),
+						Values_cam.getDist());
+				// Now that we have found good features and added them to the corners1
+				// and 2
+				// we add colour back to the picture so that we can draw lovely lines
+				Imgproc.cvtColor(frameOne, standIn, Imgproc.COLOR_BayerBG2RGB);
+
+				// This draws the good features that we have found in the 2 frames.
+				for (int x = 0; x < corners1.width(); x++) {
+					for (int y = 0; y < corners1.height(); y++) {
+						Imgproc.circle(standIn, new Point(corners1.get(y, x)), 30, new Scalar(200, 0, 50), 1);
+						Imgproc.circle(standIn, new Point(corners2.get(y, x)), 20, new Scalar(0, 250, 0), 2);
+
+					}
+				}
+
+				MatOfByte status = new MatOfByte();
+				MatOfFloat err = new MatOfFloat();
+				MatOfPoint2f corners1f = new MatOfPoint2f(corners1.toArray());
+				MatOfPoint2f corners2f = new MatOfPoint2f(corners2.toArray());
+				Video.calcOpticalFlowPyrLK(frameOne, frameTwo, corners1f, corners2f, status, err);
+				List<Point> startPoints = new ArrayList<>();
+				List<Point> endPoints = new ArrayList<>();
+
+				Double averageCalc = 0.0;
+				int nrOfVec = 0;
+				for (int i = 0; i < corners1f.height(); i++) {
+					Point startP = new Point(corners2f.get(i, 0));
+					Point endP = new Point(corners1f.get(i, 0));
+					Double distance = Math.sqrt((startP.x - endP.x) * (startP.x - endP.x) + (startP.y - endP.y) * (startP.y - endP.y));
+
+					if (distance > 20) {
+						// System.out.println("Distance:"+distance);
+						averageCalc = averageCalc + distance;
+						// System.out.println(err.get(i, 0)[0]);
+						nrOfVec++;
+					}
+
+				}
+
+				averageCalc = averageCalc / nrOfVec;
+				int threshold = 1;
+				for (int i = 0; i < corners1f.height(); i++) {
+
+					// Imgproc.line(standIn,startP,endP,new Scalar(0,250,0),5);
+					Point startP = new Point(corners2f.get(i, 0));
+					Point endP = new Point(corners1f.get(i, 0));
+					Double distance = Math.sqrt((startP.x - endP.x) * (startP.x - endP.x) + (startP.y - endP.y) * (startP.y - endP.y));
+							/*
+							 * By calculating an average in the distance between points
+							 * in the picture, we can use this to remove Unwanted
+							 * vectors, for example vectors that is longer than a
+							 * certain threshold in the picture
+							 * 
+							 * We could also use a an estimation on the different
+							 * vectors to see if the drone has moved or a single object
+							 * in the frame has moved we can do this by looking at the
+							 * average movement, if an area of vectors are moving much
+							 * longer than the rest of the frame vectors, there is
+							 * likely to be an object moving in that area.
+							 */
+
+					/*
+					 * This is used to draw arrows between the two points found matching
+					 * in the two frames. The scalar is colour.
+					 */
+					if (distance < threshold * averageCalc && distance > 4) {
+
+						Imgproc.arrowedLine(standIn, startP, endP, new Scalar(0, 250, 0));
+						// System.out.println("test");
+						startPoints.add(startP);
+						endPoints.add(endP);
+					}
+				}
+	
+		
+		return standIn;
+		
+	}
+
+	
+	public Mat loadImage(String fileName) {
+		
+		BufferedImage img = null;
+		try {
+		    img = ImageIO.read(new File(fileName));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
 }

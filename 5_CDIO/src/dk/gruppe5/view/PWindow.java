@@ -1,5 +1,6 @@
 package dk.gruppe5.view;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +17,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManager;
+import de.yadrone.apps.tutorial.TutorialVideoListener;
+import dk.gruppe5.controller.DroneCommander;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.test.WebcamTest;
 
@@ -78,7 +82,7 @@ public class PWindow {
 		 */
 
 //		DroneCommander DCom = new DroneCommander();
-//		TutorialVideoListener panel = new TutorialVideoListener(DCom.getDrone());
+//		VideoListenerPanel panel = new VideoListenerPanel(DCom.getDrone());
 //		frame.setFocusable(true);
 //		frame.addKeyListener(new KeyboardCommandManager((DCom.getDrone())));
 //		
