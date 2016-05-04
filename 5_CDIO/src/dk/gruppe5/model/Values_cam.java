@@ -9,6 +9,7 @@ public class Values_cam {
 	private static double goodQualLvl = 0.1;
 	private static double goodMinDist = 10;
 	
+	private static int method = 4;
 	
 	private static double circlePrecision = 0.2;
 	
@@ -46,4 +47,7 @@ public class Values_cam {
 	public static void setCirclePrecision(double circlePrecision) {
 		Values_cam.circlePrecision = circlePrecision;
 	}
+	
+	public static int getMethod(){return method;}	
+	public static void setMethod(int input) {method = input;}
 }

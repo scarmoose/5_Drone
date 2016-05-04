@@ -14,5 +14,11 @@
 	<classpathentry kind="lib" path="libs/opencv_java310.jar"/>
 	<classpathentry kind="lib" path="libs/opencv-310.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCV-3.0"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCV_310">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/opencv/build/java/x64"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/opencv/build/java/opencv-310.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
