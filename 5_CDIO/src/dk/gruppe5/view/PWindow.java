@@ -163,7 +163,6 @@ public class PWindow {
             	Values_cam.setCorn(Integer.parseInt(textField_4.getText()));
             	Values_cam.setQual(Double.parseDouble(textField_5.getText()));
             	Values_cam.setDist(Double.parseDouble(textField_6.getText()));
-            	Values_cam.setMethod(Integer.parseInt(textField_8.getText()));
             	Values_cam.setCirclePrecision(Double.parseDouble(textField_7.getText()));
             	SwingUtilities.updateComponentTreeUI(frame);
             	frame.invalidate();
@@ -188,7 +187,6 @@ public class PWindow {
 	            Values_cam.setCorn(500);
 	            Values_cam.setQual(0.1);
 	            Values_cam.setDist(10);
-	            Values_cam.setMethod(4);
 	            Values_cam.setCirclePrecision(0.2);
 	            
 	            WebcamTest.main(null);

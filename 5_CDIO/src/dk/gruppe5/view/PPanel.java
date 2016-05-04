@@ -26,7 +26,7 @@ public class PPanel extends JPanel implements Runnable {
 	// is opticalflow, 2 is image recognision.
 	//public int method = 2;
 
-	public int method =2;
+	public int method = Values_cam.getMethod();
 
 
 	List<Point> startPoints;
