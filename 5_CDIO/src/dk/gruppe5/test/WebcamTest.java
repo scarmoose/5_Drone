@@ -19,6 +19,7 @@ public class WebcamTest {
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		PWindow window = new PWindow(1280, 720);
+		//test 123
 	}
 
 }
