@@ -2,33 +2,27 @@ package dk.gruppe5.CoordinateSystem;
 
 import java.awt.geom.Point2D;
 import java.io.Serializable;
+import java.awt.EventQueue;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class Point extends Point2D implements Serializable {
+public class Point {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	private static int x;
-	private static int y;
+	private static double x;
+	private static double y;
 
 	
-	@Override
-	public double getX() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	public static double getXPoint(){return x;}
+	public static void setXPoint(double input) {x = input;}
 
-	@Override
-	public double getY() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setLocation(double x, double y) {
-		// TODO Auto-generated method stub
-		
-	}
+	public static double getYPoint(){return y;}
+	public static void setYPoint(double input) {y = input;}
+	
 	
 }
+
