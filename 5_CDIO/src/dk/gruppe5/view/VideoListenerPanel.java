@@ -17,6 +17,7 @@ import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.video.ImageListener;
 import dk.gruppe5.framework.ImageProcessor;
+import dk.gruppe5.model.Values_cam;
 
 public class VideoListenerPanel extends JPanel {
 
@@ -28,7 +29,7 @@ public class VideoListenerPanel extends JPanel {
 	
 	BufferedImage image;
 	VideoCapture capture;
-	ImageProcessor imgProc;
+	ImageProcessor imgProc = new ImageProcessor();
 
 	List<Point> startPoints;
 	List<Point> endPoints;
@@ -54,14 +55,31 @@ public class VideoListenerPanel extends JPanel {
 					old_frame = frame;
 				}
 				
-				frame = imgProc.toGrayScale(frame);
-				frame = imgProc.blur(frame);
-				frame = imgProc.toCanny(frame);
+				if(Values_cam.getMethod() == 5){
+					//først gør vi det sort hvidt
+					frame = imgProc.toGrayScale(frame);
+					
+					//Vi tester først med blur og ser hvor godt det bliver
+					//prøv også uden
+					frame = imgProc.blur(frame);
+					
+					//Til canny for at nemmere kunne finde contourer
+					frame = imgProc.toCanny(frame);
+					
+					//Nu skal vi prøve at finde firkanter af en hvis størrelse
+					 frame = imgProc.findQRsquares(frame);
+					image = imgProc.toBufferedImage(frame);
+					
+				}
 				
-				frame = imgProc.findAirfield(frame);
-				
-				
-				image = imgProc.toBufferedImage(frame);
+//				frame = imgProc.toGrayScale(frame);
+//				frame = imgProc.blur(frame);
+//				frame = imgProc.toCanny(frame);
+//				
+//				frame = imgProc.findAirfield(frame);
+//				
+//				
+//				image = imgProc.toBufferedImage(frame);
 				
 				
 //				opticalFlowData flowData = imgproc.opticalFlow(frame, old_frame);

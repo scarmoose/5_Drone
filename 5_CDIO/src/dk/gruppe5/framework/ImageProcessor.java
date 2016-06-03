@@ -25,7 +25,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.video.Video;
 
-import dk.gruppe5.model.Rects;
+import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.opticalFlowData;
 import dk.gruppe5.model.templateMatch;
@@ -413,8 +413,8 @@ public class ImageProcessor {
 		Random rn = new Random();
 		Mat standIn = new Mat();
 		Imgproc.cvtColor(input, standIn, Imgproc.COLOR_BayerBG2RGB);
-		List<Rects> rects = new ArrayList();
-		List<Rects> cirRects = new ArrayList();
+		List<Shape> rects = new ArrayList();
+		List<Shape> cirRects = new ArrayList();
 
 		// Detecting shapes in the contours
 		for (int i = 0; i < contours_1.size(); i++) {
@@ -429,7 +429,7 @@ public class ImageProcessor {
 				// We find the rect that surronds the square and adds it to
 				// rects
 				Rect r = Imgproc.boundingRect(contours_1.get(i));
-				rects.add(new Rects(r.area(), r.tl(), r.br()));
+				rects.add(new Shape(r.area(), r.tl(), r.br(),approxCurve.height()));
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
 
@@ -450,7 +450,7 @@ public class ImageProcessor {
 						// Imgproc.drawContours(standIn, contours_1, i, color,
 						// 2);
 						// Imgproc.rectangle(standIn, r.br(), r.tl(), color, 3);
-						cirRects.add(new Rects(r.area(), r.tl(), r.br()));
+						cirRects.add(new Shape(r.area(), r.tl(), r.br(),approxCurve.height()));
 
 					}
 
@@ -460,12 +460,12 @@ public class ImageProcessor {
 
 		}
 		// check if circles are contained in a rect
-		for (Rects rect : rects) {
+		for (Shape rect : rects) {
 			double area = rect.getArea();
 			Point tlPt = rect.getTlPoint();
 			Point brPt = rect.getBrPoint();
 			int containedCircles = 0;
-			for (Rects cirRect : cirRects) {
+			for (Shape cirRect : cirRects) {
 				double carea = cirRect.getArea();
 				Point ctlPt = cirRect.getTlPoint();
 				Point cbrPt = cirRect.getBrPoint();
@@ -610,15 +610,15 @@ public class ImageProcessor {
 			e.printStackTrace();
 		}
 
-		return null;
+		return bufferedImageToMat(img);
 	}
 
 	public boolean saveImage (Mat frame ,String saveFileName){
 		try {
 		    // retrieve image
-		    BufferedImage bi = getMyImage();
-		    File outputfile = new File("saved.png");
-		    ImageIO.write(bi, "png", outputfile);
+		    BufferedImage bi = toBufferedImage(frame);
+		    File outputfile = new File("pics/testfiles/"+saveFileName);
+		    ImageIO.write(bi, "jpg", outputfile);
 		} catch (IOException e) {
 			return false;
 		}
@@ -638,7 +638,7 @@ public class ImageProcessor {
 		Random rn = new Random();
 		Mat standIn = new Mat();
 		Imgproc.cvtColor(frame, standIn, Imgproc.COLOR_BayerBG2RGB);
-		List<Rects> rects = new ArrayList();
+		List<Shape> shapes = new ArrayList();
 
 		// Detecting shapes in the contours
 		for (int i = 0; i < contours_1.size(); i++) {
@@ -653,7 +653,7 @@ public class ImageProcessor {
 				// We find the rect that surronds the square and adds it to
 				// rects
 				Rect r = Imgproc.boundingRect(contours_1.get(i));
-				//rects.add(new Rects(r.area(), r.tl(), r.br()));
+				shapes.add(new Shape(r.area(), r.tl(), r.br(),approxCurve.height()));
 				//green for squares with 4 edges
 				Scalar color = new Scalar(0, 255, 0);
 				Imgproc.rectangle(standIn, r.tl(), r.br(), color, 3);
@@ -665,7 +665,7 @@ public class ImageProcessor {
 				// We find the rect that surronds the square and adds it to
 				// rects
 				Rect r = Imgproc.boundingRect(contours_1.get(i));
-				//rects.add(new Rects(r.area(), r.tl(), r.br()));
+				shapes.add(new Shape(r.area(), r.tl(), r.br(),approxCurve.height()));
 				//Red for squares with 5 edges
 				Scalar color = new Scalar(0, 0,255);
 				Imgproc.rectangle(standIn, r.tl(), r.br(), color, 3);
@@ -677,13 +677,16 @@ public class ImageProcessor {
 				// We find the rect that surronds the square and adds it to
 				// rects
 				Rect r = Imgproc.boundingRect(contours_1.get(i));
-				//rects.add(new Rects(r.area(), r.tl(), r.br()));
-				//Red for squares with 5 edges
+				shapes.add(new Shape(r.area(), r.tl(), r.br(),approxCurve.height()));
+				//blue for squares with 5 edges
 				Scalar color = new Scalar(255, 0,0);
 				Imgproc.rectangle(standIn, r.tl(), r.br(), color, 3);
 				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
 
 			}
+			/*
+			 * måske skulle man se på en en given contour indeholder ekstra mange contourer, og om den har en vis størrelse
+			 */
 			
 
 		}

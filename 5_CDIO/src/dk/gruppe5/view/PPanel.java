@@ -155,8 +155,8 @@ public class PPanel extends JPanel implements Runnable {
 					 frame = imgproc.findQRsquares(frame);
 					
 					 //save the images so we can review them
-					 
-					
+					 imgproc.saveImage(frame, "testOnce"+i +".jpg");
+					 Values_cam.setMethod(0);
 					
 				}
 				
