@@ -2,8 +2,8 @@ package dk.gruppe5.model;
 
 public class Values_cam {
 
-	private static double cannyTres1 = 80;
-	private static double cannyTres2 = 100;
+	private static double cannyTres1 = 30;
+	private static double cannyTres2 = 50;
 	private static int cannyAp = 3;
 	private static int goodCorner = 500;
 	private static double goodQualLvl = 0.1;

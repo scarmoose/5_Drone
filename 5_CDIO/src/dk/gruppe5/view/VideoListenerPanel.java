@@ -54,8 +54,9 @@ public class VideoListenerPanel extends JPanel {
 				if (old_frame == null) {
 					old_frame = frame;
 				}
-				
-				if(Values_cam.getMethod() == 5){
+				if(Values_cam.getMethod() == 0){
+					image = imgProc.toBufferedImage(frame);
+				} else 	if(Values_cam.getMethod() == 5){
 					//først gør vi det sort hvidt
 					frame = imgProc.toGrayScale(frame);
 					
@@ -67,7 +68,7 @@ public class VideoListenerPanel extends JPanel {
 					frame = imgProc.toCanny(frame);
 					
 					//Nu skal vi prøve at finde firkanter af en hvis størrelse
-					 frame = imgProc.findQRsquares(frame);
+					// frame = imgProc.findQRsquares(frame);
 					image = imgProc.toBufferedImage(frame);
 					
 				}

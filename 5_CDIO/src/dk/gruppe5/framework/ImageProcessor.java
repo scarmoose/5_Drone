@@ -429,7 +429,7 @@ public class ImageProcessor {
 				// We find the rect that surronds the square and adds it to
 				// rects
 				Rect r = Imgproc.boundingRect(contours_1.get(i));
-				rects.add(new Shape(r.area(), r.tl(), r.br(),approxCurve.height()));
+				rects.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
 
@@ -450,7 +450,7 @@ public class ImageProcessor {
 						// Imgproc.drawContours(standIn, contours_1, i, color,
 						// 2);
 						// Imgproc.rectangle(standIn, r.br(), r.tl(), color, 3);
-						cirRects.add(new Shape(r.area(), r.tl(), r.br(),approxCurve.height()));
+						cirRects.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
 
 					}
 
@@ -613,21 +613,21 @@ public class ImageProcessor {
 		return bufferedImageToMat(img);
 	}
 
-	public boolean saveImage (Mat frame ,String saveFileName){
+	public boolean saveImage(Mat frame, String saveFileName) {
 		try {
-		    // retrieve image
-		    BufferedImage bi = toBufferedImage(frame);
-		    File outputfile = new File("pics/testfiles/"+saveFileName);
-		    ImageIO.write(bi, "jpg", outputfile);
+			// retrieve image
+			BufferedImage bi = toBufferedImage(frame);
+			File outputfile = new File("pics/testfiles/" + saveFileName);
+			ImageIO.write(bi, "jpg", outputfile);
 		} catch (IOException e) {
 			return false;
 		}
-		
+
 		return true;
-		
+
 	}
-	
-	public Mat findQRsquares(Mat frame) {
+
+	public List<Shape> findQRsquares(Mat frame) {
 
 		// Here contours are stored, we will check each one to see if it matches
 		// the stuff we need
@@ -646,55 +646,78 @@ public class ImageProcessor {
 
 			MatOfPoint2f approxCurve = new MatOfPoint2f();
 			double epsilon = Imgproc.arcLength(contour, true) * 0.01;
-			// we wanna se if a contour is a square.
+
+			// we wanna se if a contour is a square, or has one or more edges so
+			// we save them.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
-			if (approxCurve.height() == 4) {
 
-				// We find the rect that surronds the square and adds it to
-				// rects
-				Rect r = Imgproc.boundingRect(contours_1.get(i));
-				shapes.add(new Shape(r.area(), r.tl(), r.br(),approxCurve.height()));
-				//green for squares with 4 edges
-				Scalar color = new Scalar(0, 255, 0);
-				Imgproc.rectangle(standIn, r.tl(), r.br(), color, 3);
-				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
+			// sorting, check if its area is to small, we are talking very small
+			Rect r = Imgproc.boundingRect(contours_1.get(i));
+			// double area = (r.br().x -r.tl().x )* (r.br().y -r.tl().y );
+			// System.out.println("calc area --> " +area);
+			// System.out.println("area --> " +r.area());
+			//
 
+			// sorting the squares found
+			if (r.area() > 500.0) {
+//				int width = r.width;
+//				int height = r.height;
+//				double difference = width / height;
+				double width = r.width;
+				double height = r.height;
+				double difference = width / height;
+				//System.out.println(difference);
+				if (difference > 0.5 && difference < 1.0) {
+					// System.out.println(r.area());
+					if (approxCurve.height() == 4) {
+						shapes.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
+					} else if (approxCurve.height() == 5) {
+						shapes.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
+					} else if (approxCurve.height() > 6  && approxCurve.height() < 10 ){
+						shapes.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
+					}
+				}
 			}
-			if (approxCurve.height() == 5) {
-
-				// We find the rect that surronds the square and adds it to
-				// rects
-				Rect r = Imgproc.boundingRect(contours_1.get(i));
-				shapes.add(new Shape(r.area(), r.tl(), r.br(),approxCurve.height()));
-				//Red for squares with 5 edges
-				Scalar color = new Scalar(0, 0,255);
-				Imgproc.rectangle(standIn, r.tl(), r.br(), color, 3);
-				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
-
-			}
-			if (approxCurve.height() > 6) {
-
-				// We find the rect that surronds the square and adds it to
-				// rects
-				Rect r = Imgproc.boundingRect(contours_1.get(i));
-				shapes.add(new Shape(r.area(), r.tl(), r.br(),approxCurve.height()));
-				//blue for squares with 5 edges
-				Scalar color = new Scalar(255, 0,0);
-				Imgproc.rectangle(standIn, r.tl(), r.br(), color, 3);
-				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
-
-			}
-			/*
-			 * måske skulle man se på en en given contour indeholder ekstra mange contourer, og om den har en vis størrelse
-			 */
-			
-
 		}
 		
 		
+		for (Shape rect : shapes) {
 
-		return standIn;
+			if (rect.getEdges() == 4) {
+
+				// We find the rect that surronds the square and adds it to
+				// rects
+				// green for squares with 4 edges
+				Scalar color = new Scalar(0, 255, 0);
+				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
+				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
+
+			}
+			if (rect.getEdges() == 5) {
+
+				// We find the rect that surronds the square and adds it to
+				// rects
+
+				// Red for squares with 5 edges
+				Scalar color = new Scalar(255, 0, 0);
+				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
+				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
+
+			}
+			if (rect.getEdges() > 6) {
+
+				// We find the rect that surronds the square and adds it to
+				// rects
+				// blue for squares with 5 edges
+				Scalar color = new Scalar(0, 0, 255);
+				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
+				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
+
+			}
+
+		}
+
+		return shapes;
 	}
-
 
 }
