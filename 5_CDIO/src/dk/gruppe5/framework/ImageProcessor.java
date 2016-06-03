@@ -125,7 +125,6 @@ public class ImageProcessor {
 		Mat imageCny = new Mat();
 		Imgproc.Canny(imageGray, imageCny, Values_cam.getCanTres1(), Values_cam.getCanTres2(), Values_cam.getCanAp(),
 				true);
-		
 
 		return imageCny;
 	}
@@ -377,20 +376,19 @@ public class ImageProcessor {
 			// Imgproc.line(standIn,startP,endP,new Scalar(0,250,0),5);
 			Point startP = new Point(corners2f.get(i, 0));
 			Point endP = new Point(corners1f.get(i, 0));
-			Double distance = Math.sqrt((startP.x - endP.x) * (startP.x - endP.x) + (startP.y - endP.y) * (startP.y - endP.y));
-					/*
-					 * By calculating an average in the distance between points
-					 * in the picture, we can use this to remove Unwanted
-					 * vectors, for example vectors that is longer than a
-					 * certain threshold in the picture
-					 * 
-					 * We could also use a an estimation on the different
-					 * vectors to see if the drone has moved or a single object
-					 * in the frame has moved we can do this by looking at the
-					 * average movement, if an area of vectors are moving much
-					 * longer than the rest of the frame vectors, there is
-					 * likely to be an object moving in that area.
-					 */
+			Double distance = Math
+					.sqrt((startP.x - endP.x) * (startP.x - endP.x) + (startP.y - endP.y) * (startP.y - endP.y));
+			/*
+			 * By calculating an average in the distance between points in the
+			 * picture, we can use this to remove Unwanted vectors, for example
+			 * vectors that is longer than a certain threshold in the picture
+			 * 
+			 * We could also use a an estimation on the different vectors to see
+			 * if the drone has moved or a single object in the frame has moved
+			 * we can do this by looking at the average movement, if an area of
+			 * vectors are moving much longer than the rest of the frame
+			 * vectors, there is likely to be an object moving in that area.
+			 */
 
 			/*
 			 * This is used to draw arrows between the two points found matching
@@ -428,15 +426,16 @@ public class ImageProcessor {
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
 			if (approxCurve.height() == 4) {
 
-				//We find the rect that surronds the square and adds it to rects
-				Rect r = Imgproc.boundingRect(contours_1.get(i));		
-				 rects.add(new Rects(r.area(),r.tl(),r.br()));
-				 Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
+				// We find the rect that surronds the square and adds it to
+				// rects
+				Rect r = Imgproc.boundingRect(contours_1.get(i));
+				rects.add(new Rects(r.area(), r.tl(), r.br()));
+				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
 
-
 			}
-			//we just say any contour/shap with more than 6 edges we call it a circle
+			// we just say any contour/shap with more than 6 edges we call it a
+			// circle
 			if (approxCurve.height() > 6) {
 
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
@@ -445,14 +444,16 @@ public class ImageProcessor {
 				int radius = r.width / 2;
 
 				// Imgproc.rectangle(standIn, r.br(), r.tl(), color);
-				if (Math.abs(1 - (r.width / r.height)) <= 0.2 && Math.abs(1 - (area / (Math.PI * Math.pow(radius, 2)))) <= 0.2) {
-					if(area > 20){
-					//Imgproc.drawContours(standIn, contours_1, i, color, 2);
-					// Imgproc.rectangle(standIn, r.br(), r.tl(), color, 3);
-					cirRects.add(new Rects(r.area(), r.tl(), r.br()));
-					
+				if (Math.abs(1 - (r.width / r.height)) <= 0.2
+						&& Math.abs(1 - (area / (Math.PI * Math.pow(radius, 2)))) <= 0.2) {
+					if (area > 20) {
+						// Imgproc.drawContours(standIn, contours_1, i, color,
+						// 2);
+						// Imgproc.rectangle(standIn, r.br(), r.tl(), color, 3);
+						cirRects.add(new Rects(r.area(), r.tl(), r.br()));
+
 					}
-					
+
 				}
 
 			}
@@ -468,28 +469,30 @@ public class ImageProcessor {
 				double carea = cirRect.getArea();
 				Point ctlPt = cirRect.getTlPoint();
 				Point cbrPt = cirRect.getBrPoint();
-				//area check dosent work, buuut its unlikely anything will match the requirements for airfield1 or 2
-				if (/*carea > ((area / 100) * 3) &&*/ ctlPt.x > tlPt.x && ctlPt.y > tlPt.y && cbrPt.x < brPt.x
+				// area check dosent work, buuut its unlikely anything will
+				// match the requirements for airfield1 or 2
+				if (/* carea > ((area / 100) * 3) && */ ctlPt.x > tlPt.x && ctlPt.y > tlPt.y && cbrPt.x < brPt.x
 						&& cbrPt.y < brPt.y) {
 					containedCircles++;
 				}
 
 			}
-			//Den t�ller hver cirkel dobbelt wat, noget med canny og de kanter den giver tror jeg
-			//indre cirkel og ydre cirkel. G�r det nok ogs� med firkant...
-		
+			// Den t�ller hver cirkel dobbelt wat, noget med canny og de kanter
+			// den giver tror jeg
+			// indre cirkel og ydre cirkel. G�r det nok ogs� med firkant...
+
 			if (containedCircles == 6) {
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
-				Point txtPoint = new Point(tlPt.x+rect.getWidth()/4,tlPt.y+rect.getHeight()/2);
-			
+				Point txtPoint = new Point(tlPt.x + rect.getWidth() / 4, tlPt.y + rect.getHeight() / 2);
+
 				Imgproc.putText(standIn, "Airfield1", txtPoint, 5, 2, color);
-				
-			}else if(containedCircles == 10){
+
+			} else if (containedCircles == 10) {
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
-				Point txtPoint = new Point(tlPt.x+rect.getWidth()/4,tlPt.y+rect.getHeight()/2);
-			
+				Point txtPoint = new Point(tlPt.x + rect.getWidth() / 4, tlPt.y + rect.getHeight() / 2);
+
 				Imgproc.putText(standIn, "Airfield2", txtPoint, 5, 2, color);
 			}
 
@@ -498,124 +501,197 @@ public class ImageProcessor {
 		return standIn;
 	}
 
-	public Mat findDirection(Mat frameOne, Mat frameTwo){
+	public Mat findDirection(Mat frameOne, Mat frameTwo) {
 		// Først finder vi de gode features at tracker
-				frameOne = toGrayScale(frameOne);
-				frameTwo = toGrayScale(frameTwo);
-				frameOne = toCanny(frameOne);
-				frameTwo = toCanny(frameTwo);
-				List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
-				List<MatOfPoint> contours_2 = new ArrayList<MatOfPoint>();
-				Mat hierarchy_1 = new Mat();
-				Mat hierarchy_2 = new Mat();
-				Imgproc.findContours(frameOne, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-				Imgproc.findContours(frameTwo, contours_2, hierarchy_2, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+		frameOne = toGrayScale(frameOne);
+		frameTwo = toGrayScale(frameTwo);
+		frameOne = toCanny(frameOne);
+		frameTwo = toCanny(frameTwo);
+		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
+		List<MatOfPoint> contours_2 = new ArrayList<MatOfPoint>();
+		Mat hierarchy_1 = new Mat();
+		Mat hierarchy_2 = new Mat();
+		Imgproc.findContours(frameOne, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+		Imgproc.findContours(frameTwo, contours_2, hierarchy_2, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
-				Mat standIn = new Mat();
-				MatOfPoint corners1 = new MatOfPoint();
-				MatOfPoint corners2 = new MatOfPoint();
-				// Imgproc.goodFeaturesToTrack(frameOne, corners1, 100, 0.1, 30);
-				// Imgproc.goodFeaturesToTrack(frameTwo, corners2, 100, 0.1, 30);
+		Mat standIn = new Mat();
+		MatOfPoint corners1 = new MatOfPoint();
+		MatOfPoint corners2 = new MatOfPoint();
+		// Imgproc.goodFeaturesToTrack(frameOne, corners1, 100, 0.1, 30);
+		// Imgproc.goodFeaturesToTrack(frameTwo, corners2, 100, 0.1, 30);
 
-				Imgproc.goodFeaturesToTrack(frameOne, corners1, Values_cam.getCorn(), Values_cam.getQual(),
-						Values_cam.getDist());
-				Imgproc.goodFeaturesToTrack(frameTwo, corners2, Values_cam.getCorn(), Values_cam.getQual(),
-						Values_cam.getDist());
-				// Now that we have found good features and added them to the corners1
-				// and 2
-				// we add colour back to the picture so that we can draw lovely lines
-				Imgproc.cvtColor(frameOne, standIn, Imgproc.COLOR_BayerBG2RGB);
+		Imgproc.goodFeaturesToTrack(frameOne, corners1, Values_cam.getCorn(), Values_cam.getQual(),
+				Values_cam.getDist());
+		Imgproc.goodFeaturesToTrack(frameTwo, corners2, Values_cam.getCorn(), Values_cam.getQual(),
+				Values_cam.getDist());
+		// Now that we have found good features and added them to the corners1
+		// and 2
+		// we add colour back to the picture so that we can draw lovely lines
+		Imgproc.cvtColor(frameOne, standIn, Imgproc.COLOR_BayerBG2RGB);
 
-				// This draws the good features that we have found in the 2 frames.
-				for (int x = 0; x < corners1.width(); x++) {
-					for (int y = 0; y < corners1.height(); y++) {
-						Imgproc.circle(standIn, new Point(corners1.get(y, x)), 30, new Scalar(200, 0, 50), 1);
-						Imgproc.circle(standIn, new Point(corners2.get(y, x)), 20, new Scalar(0, 250, 0), 2);
+		// This draws the good features that we have found in the 2 frames.
+		for (int x = 0; x < corners1.width(); x++) {
+			for (int y = 0; y < corners1.height(); y++) {
+				Imgproc.circle(standIn, new Point(corners1.get(y, x)), 30, new Scalar(200, 0, 50), 1);
+				Imgproc.circle(standIn, new Point(corners2.get(y, x)), 20, new Scalar(0, 250, 0), 2);
 
-					}
-				}
+			}
+		}
 
-				MatOfByte status = new MatOfByte();
-				MatOfFloat err = new MatOfFloat();
-				MatOfPoint2f corners1f = new MatOfPoint2f(corners1.toArray());
-				MatOfPoint2f corners2f = new MatOfPoint2f(corners2.toArray());
-				Video.calcOpticalFlowPyrLK(frameOne, frameTwo, corners1f, corners2f, status, err);
-				List<Point> startPoints = new ArrayList<>();
-				List<Point> endPoints = new ArrayList<>();
+		MatOfByte status = new MatOfByte();
+		MatOfFloat err = new MatOfFloat();
+		MatOfPoint2f corners1f = new MatOfPoint2f(corners1.toArray());
+		MatOfPoint2f corners2f = new MatOfPoint2f(corners2.toArray());
+		Video.calcOpticalFlowPyrLK(frameOne, frameTwo, corners1f, corners2f, status, err);
+		List<Point> startPoints = new ArrayList<>();
+		List<Point> endPoints = new ArrayList<>();
 
-				Double averageCalc = 0.0;
-				int nrOfVec = 0;
-				for (int i = 0; i < corners1f.height(); i++) {
-					Point startP = new Point(corners2f.get(i, 0));
-					Point endP = new Point(corners1f.get(i, 0));
-					Double distance = Math.sqrt((startP.x - endP.x) * (startP.x - endP.x) + (startP.y - endP.y) * (startP.y - endP.y));
+		Double averageCalc = 0.0;
+		int nrOfVec = 0;
+		for (int i = 0; i < corners1f.height(); i++) {
+			Point startP = new Point(corners2f.get(i, 0));
+			Point endP = new Point(corners1f.get(i, 0));
+			Double distance = Math
+					.sqrt((startP.x - endP.x) * (startP.x - endP.x) + (startP.y - endP.y) * (startP.y - endP.y));
 
-					if (distance > 20) {
-						// System.out.println("Distance:"+distance);
-						averageCalc = averageCalc + distance;
-						// System.out.println(err.get(i, 0)[0]);
-						nrOfVec++;
-					}
+			if (distance > 20) {
+				// System.out.println("Distance:"+distance);
+				averageCalc = averageCalc + distance;
+				// System.out.println(err.get(i, 0)[0]);
+				nrOfVec++;
+			}
 
-				}
+		}
 
-				averageCalc = averageCalc / nrOfVec;
-				int threshold = 1;
-				for (int i = 0; i < corners1f.height(); i++) {
+		averageCalc = averageCalc / nrOfVec;
+		int threshold = 1;
+		for (int i = 0; i < corners1f.height(); i++) {
 
-					// Imgproc.line(standIn,startP,endP,new Scalar(0,250,0),5);
-					Point startP = new Point(corners2f.get(i, 0));
-					Point endP = new Point(corners1f.get(i, 0));
-					Double distance = Math.sqrt((startP.x - endP.x) * (startP.x - endP.x) + (startP.y - endP.y) * (startP.y - endP.y));
-							/*
-							 * By calculating an average in the distance between points
-							 * in the picture, we can use this to remove Unwanted
-							 * vectors, for example vectors that is longer than a
-							 * certain threshold in the picture
-							 * 
-							 * We could also use a an estimation on the different
-							 * vectors to see if the drone has moved or a single object
-							 * in the frame has moved we can do this by looking at the
-							 * average movement, if an area of vectors are moving much
-							 * longer than the rest of the frame vectors, there is
-							 * likely to be an object moving in that area.
-							 */
+			// Imgproc.line(standIn,startP,endP,new Scalar(0,250,0),5);
+			Point startP = new Point(corners2f.get(i, 0));
+			Point endP = new Point(corners1f.get(i, 0));
+			Double distance = Math
+					.sqrt((startP.x - endP.x) * (startP.x - endP.x) + (startP.y - endP.y) * (startP.y - endP.y));
+			/*
+			 * By calculating an average in the distance between points in the
+			 * picture, we can use this to remove Unwanted vectors, for example
+			 * vectors that is longer than a certain threshold in the picture
+			 * 
+			 * We could also use a an estimation on the different vectors to see
+			 * if the drone has moved or a single object in the frame has moved
+			 * we can do this by looking at the average movement, if an area of
+			 * vectors are moving much longer than the rest of the frame
+			 * vectors, there is likely to be an object moving in that area.
+			 */
 
-					/*
-					 * This is used to draw arrows between the two points found matching
-					 * in the two frames. The scalar is colour.
-					 */
-					if (distance < threshold * averageCalc && distance > 4) {
+			/*
+			 * This is used to draw arrows between the two points found matching
+			 * in the two frames. The scalar is colour.
+			 */
+			if (distance < threshold * averageCalc && distance > 4) {
 
-						Imgproc.arrowedLine(standIn, startP, endP, new Scalar(0, 250, 0));
-						// System.out.println("test");
-						startPoints.add(startP);
-						endPoints.add(endP);
-					}
-				}
-	
-		
+				Imgproc.arrowedLine(standIn, startP, endP, new Scalar(0, 250, 0));
+				// System.out.println("test");
+				startPoints.add(startP);
+				endPoints.add(endP);
+			}
+		}
+
 		return standIn;
-		
+
 	}
 
-	
 	public Mat loadImage(String fileName) {
-		
+
 		BufferedImage img = null;
 		try {
-		    img = ImageIO.read(new File(fileName));
+			img = ImageIO.read(new File(fileName));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-	
-	
-	public Mat findQRsquares(){
+
+	public boolean saveImage (Mat frame ,String saveFileName){
+		try {
+		    // retrieve image
+		    BufferedImage bi = getMyImage();
+		    File outputfile = new File("saved.png");
+		    ImageIO.write(bi, "png", outputfile);
+		} catch (IOException e) {
+			return false;
+		}
 		
+		return true;
 		
-		return null;
 	}
+	
+	public Mat findQRsquares(Mat frame) {
+
+		// Here contours are stored, we will check each one to see if it matches
+		// the stuff we need
+		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
+		Mat hierarchy_1 = new Mat();
+		Imgproc.findContours(frame, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+		// random is used for colours
+		Random rn = new Random();
+		Mat standIn = new Mat();
+		Imgproc.cvtColor(frame, standIn, Imgproc.COLOR_BayerBG2RGB);
+		List<Rects> rects = new ArrayList();
+
+		// Detecting shapes in the contours
+		for (int i = 0; i < contours_1.size(); i++) {
+			MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
+
+			MatOfPoint2f approxCurve = new MatOfPoint2f();
+			double epsilon = Imgproc.arcLength(contour, true) * 0.01;
+			// we wanna se if a contour is a square.
+			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
+			if (approxCurve.height() == 4) {
+
+				// We find the rect that surronds the square and adds it to
+				// rects
+				Rect r = Imgproc.boundingRect(contours_1.get(i));
+				//rects.add(new Rects(r.area(), r.tl(), r.br()));
+				//green for squares with 4 edges
+				Scalar color = new Scalar(0, 255, 0);
+				Imgproc.rectangle(standIn, r.tl(), r.br(), color, 3);
+				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
+
+			}
+			if (approxCurve.height() == 5) {
+
+				// We find the rect that surronds the square and adds it to
+				// rects
+				Rect r = Imgproc.boundingRect(contours_1.get(i));
+				//rects.add(new Rects(r.area(), r.tl(), r.br()));
+				//Red for squares with 5 edges
+				Scalar color = new Scalar(0, 0,255);
+				Imgproc.rectangle(standIn, r.tl(), r.br(), color, 3);
+				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
+
+			}
+			if (approxCurve.height() > 6) {
+
+				// We find the rect that surronds the square and adds it to
+				// rects
+				Rect r = Imgproc.boundingRect(contours_1.get(i));
+				//rects.add(new Rects(r.area(), r.tl(), r.br()));
+				//Red for squares with 5 edges
+				Scalar color = new Scalar(255, 0,0);
+				Imgproc.rectangle(standIn, r.tl(), r.br(), color, 3);
+				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
+
+			}
+			
+
+		}
+		
+		
+
+		return standIn;
+	}
+
+
 }

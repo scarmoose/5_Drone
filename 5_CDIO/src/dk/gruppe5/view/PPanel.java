@@ -134,9 +134,32 @@ public class PPanel extends JPanel implements Runnable {
 				
 				
 			}else if(method == 5){
-				String[] files = {"",""};
-				String fileName = "pics/3Corner.jpg";
-				frame = imgproc.loadImage(fileName);
+				String[] files = {"2+1table.jpg","2Blur.jpg", "2QRDark.jpg","3Corner.jpg","3FarRoom.jpg","4SideFar.jpg"};
+				String folder = "pics/";
+				
+				for(int i = 0; i < files.length; i++){
+					String fileName = folder+files[i];
+					frame = imgproc.loadImage(fileName);
+					
+					//først gør vi det sort hvidt
+					frame = imgproc.toGrayScale(frame);
+					
+					//Vi tester først med blur og ser hvor godt det bliver
+					//prøv også uden
+					frame = imgproc.blur(frame);
+					
+					//Til canny for at nemmere kunne finde contourer
+					frame = imgproc.toCanny(frame);
+					
+					//Nu skal vi prøve at finde firkanter af en hvis størrelse
+					 frame = imgproc.findQRsquares(frame);
+					
+					 //save the images so we can review them
+					 
+					
+					
+				}
+				
 				
 			}
 			
