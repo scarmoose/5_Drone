@@ -134,8 +134,10 @@ public class PPanel extends JPanel implements Runnable {
 				
 				
 			}else if(method == 5){
+				String[] files = {"",""};
 				String fileName = "pics/3Corner.jpg";
 				frame = imgproc.loadImage(fileName);
+				
 			}
 			
 			repaint();
