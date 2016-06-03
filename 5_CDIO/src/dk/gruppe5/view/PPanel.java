@@ -18,6 +18,8 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
+import com.google.zxing.Result;
+
 import dk.gruppe5.framework.ImageProcessor;
 import dk.gruppe5.legacy.KeyInput;
 import dk.gruppe5.model.Shape;
@@ -143,8 +145,8 @@ public class PPanel extends JPanel implements Runnable {
 				
 				
 			}else if(method == 5){
-				//String[] files = {"2+1table.jpg","2Blur.jpg", "2QRDark.jpg","3Corner.jpg","3FarRoom.jpg","4SideFar.jpg"};
-				String[] files = {"2+1table.jpg"};
+				String[] files = {"2+1table.jpg","2Blur.jpg", "2QRDark.jpg","3Corner.jpg","3FarRoom.jpg","4SideFar.jpg"};
+				
 				String folder = "pics/";
 				
 				for(int i = 0; i < files.length; i++){
@@ -166,18 +168,22 @@ public class PPanel extends JPanel implements Runnable {
 					//Nu skal vi prøve at finde firkanter af en hvis størrelse
 					List<Shape> shapes = imgproc.findQRsquares(frame);
 					List<BufferedImage> potentialQRcodes = new ArrayList<BufferedImage>();
-					
+					BufferedImage source = imgproc.toBufferedImage(backUp);
 					
 					//place shapes on the backup image to test
 					int z = 0;
 					for (Shape rect : shapes) {
 						int h = (int) rect.getHeight();
 						int w = (int) rect.getWidth();
-						BufferedImage dst = imgproc.toBufferedImage(backUp).getSubimage((int)rect.getTlPoint().x, (int)rect.getTlPoint().y, w, h);
+						BufferedImage dst = source.getSubimage((int)rect.getTlPoint().x, (int)rect.getTlPoint().y, w, h);
 						potentialQRcodes.add(dst);
-						
-						
 					}
+					
+					
+					List<Result> results = imgproc.readQRCodes(potentialQRcodes);
+					
+					backUp = imgproc.markQrCodes(results, shapes, backUp);
+					
 					 //save the images so we can review them
 					 imgproc.saveImage(backUp, "testOnce"+i +".jpg");
 					// image = imgproc.toBufferedImage(backUp);

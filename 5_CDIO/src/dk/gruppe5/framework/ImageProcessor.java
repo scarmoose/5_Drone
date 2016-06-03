@@ -25,6 +25,15 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.video.Video;
 
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.ReaderException;
+import com.google.zxing.Result;
+import com.google.zxing.ResultPoint;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
+
 import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.opticalFlowData;
@@ -660,64 +669,116 @@ public class ImageProcessor {
 
 			// sorting the squares found
 			if (r.area() > 500.0) {
-//				int width = r.width;
-//				int height = r.height;
-//				double difference = width / height;
+				// int width = r.width;
+				// int height = r.height;
+				// double difference = width / height;
 				double width = r.width;
 				double height = r.height;
 				double difference = width / height;
-				//System.out.println(difference);
+				// System.out.println(difference);
 				if (difference > 0.5 && difference < 1.0) {
 					// System.out.println(r.area());
 					if (approxCurve.height() == 4) {
 						shapes.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
 					} else if (approxCurve.height() == 5) {
 						shapes.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
-					} else if (approxCurve.height() > 6  && approxCurve.height() < 10 ){
+					} else if (approxCurve.height() > 6 && approxCurve.height() < 10) {
 						shapes.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
 					}
 				}
 			}
 		}
-		
-		
-		for (Shape rect : shapes) {
 
-			if (rect.getEdges() == 4) {
+//		for (Shape rect : shapes) {
+//
+//			if (rect.getEdges() == 4) {
+//
+//				// We find the rect that surronds the square and adds it to
+//				// rects
+//				// green for squares with 4 edges
+//				Scalar color = new Scalar(0, 255, 0);
+//				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
+//				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
+//
+//			}
+//			if (rect.getEdges() == 5) {
+//
+//				// We find the rect that surronds the square and adds it to
+//				// rects
+//
+//				// Red for squares with 5 edges
+//				Scalar color = new Scalar(255, 0, 0);
+//				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
+//				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
+//
+//			}
+//			if (rect.getEdges() > 6) {
+//
+//				// We find the rect that surronds the square and adds it to
+//				// rects
+//				// blue for squares with 5 edges
+//				Scalar color = new Scalar(0, 0, 255);
+//				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
+//				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
+//
+//			}
+//
+//		}
 
-				// We find the rect that surronds the square and adds it to
-				// rects
-				// green for squares with 4 edges
-				Scalar color = new Scalar(0, 255, 0);
-				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
-				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
+		return shapes;
+	}
 
+	public List<Result> readQRCodes(List<BufferedImage> potentialQRcodes) {
+		// try to detect QR code
+		List<Result> qrData = new ArrayList<>();
+
+		for (BufferedImage image : potentialQRcodes) {
+			Result scanResult;
+
+			LuminanceSource source = new BufferedImageLuminanceSource(image);
+			BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+			// decode the barcode (if only QR codes are used, the QRCodeReader
+			// might be a better choice)
+			MultiFormatReader reader = new MultiFormatReader();
+			try {
+				scanResult = reader.decode(bitmap);
+			} catch (ReaderException e) {
+				// no code found.
+				scanResult = null;
 			}
-			if (rect.getEdges() == 5) {
+			qrData.add(scanResult);
 
-				// We find the rect that surronds the square and adds it to
-				// rects
-
-				// Red for squares with 5 edges
-				Scalar color = new Scalar(255, 0, 0);
-				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
-				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
-
-			}
-			if (rect.getEdges() > 6) {
-
-				// We find the rect that surronds the square and adds it to
-				// rects
-				// blue for squares with 5 edges
-				Scalar color = new Scalar(0, 0, 255);
-				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
-				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
-
+		}
+		for (Result Qrdata : qrData) {
+			if (Qrdata != null) {
+				System.out.println(Qrdata.getText());
 			}
 
 		}
+		return qrData;
+	}
 
-		return shapes;
+	public Mat markQrCodes(List<Result> results, List<Shape> shapes, Mat backUp) {
+		//find each qr code from the list, mark it on the image and add the shape
+		
+		for(int i = 0; i < results.size(); i++){
+			if(results.get(i) != null){
+				//draw the shape and write the result in the area
+				// Red for squares with 5 edges
+				Shape shape = shapes.get(i);
+				Scalar color = new Scalar(255, 0, 0);
+				Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
+				Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4, shape.getTlPoint().y + shape.getHeight() / 2);
+				Imgproc.putText(backUp, results.get(i).getText(), txtPoint, 5, 2, color);
+				
+			}
+		}
+		
+		
+		
+		
+		return backUp;
 	}
 
 }
