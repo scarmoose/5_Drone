@@ -4,8 +4,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
+import dk.gruppe5.controller.Mathmagic;
 
 class Surface extends JPanel {
+	
+	Mathmagic math = new Mathmagic();
 
     private void doDrawing(Graphics g) {
 
@@ -16,6 +19,10 @@ class Surface extends JPanel {
         g2d.drawLine(0, 0, 0, 1000/2);
         g2d.drawLine(0, 1000/2, 1100/2, 1000/2);
         g2d.drawLine(1100/2, 1000/2, 1100/2, 0);
+       
+        
+        System.out.println(math.getArray()[1].getX());
+        
     }
 
     @Override

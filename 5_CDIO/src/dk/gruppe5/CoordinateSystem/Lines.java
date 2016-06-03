@@ -9,6 +9,8 @@ public class Lines extends JFrame {
     public Lines() {
         initUI();
     }
+    
+    
 
     private void initUI() {
 
