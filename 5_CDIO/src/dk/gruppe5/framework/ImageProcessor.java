@@ -475,8 +475,8 @@ public class ImageProcessor {
 				}
 
 			}
-			//Den tæller hver cirkel dobbelt wat, noget med canny og de kanter den giver tror jeg
-			//indre cirkel og ydre cirkel. Gør det nok også med firkant...
+			//Den tï¿½ller hver cirkel dobbelt wat, noget med canny og de kanter den giver tror jeg
+			//indre cirkel og ydre cirkel. Gï¿½r det nok ogsï¿½ med firkant...
 		
 			if (containedCircles == 6) {
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
@@ -612,4 +612,10 @@ public class ImageProcessor {
 		return null;
 	}
 	
+	
+	public Mat findQRsquares(){
+		
+		
+		return null;
+	}
 }
