@@ -18,10 +18,10 @@ class Surface extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
 
         //The four walls
-        g2d.drawLine(20, 50, 930/2+20, 50);
-        g2d.drawLine(20, 50, 20, 1060/2+50);
-        g2d.drawLine(20, 1060/2+50, 930/2+20, 1060/2+50);
-        g2d.drawLine(930/2+20, 1060/2+50, 930/2+20, 50);
+        g2d.drawLine(20, 50, 930/2+20, 50); //upper wall
+        g2d.drawLine(20, 50, 20, 1060/2+50); // left wall
+        g2d.drawLine(20, 1060/2+50, 930/2+20, 1060/2+50); // down wall
+        g2d.drawLine(930/2+20, 1060/2+50, 930/2+20, 50); // right wall
       
         
         ArrayList<Integer> Xelements = new ArrayList<>();
@@ -47,8 +47,12 @@ class Surface extends JPanel {
 
     @Override
     public void paintComponent(Graphics g) {
-
+    	
+    	Graphics2D g2d = (Graphics2D) g;
+        int x = this.getWidth() / 2;
+        int y = this.getHeight() / 2;
+        g2d.rotate(Math.toRadians(180.0), x, y);
         super.paintComponent(g);
-        doDrawing(g);
+    	doDrawing(g);
     }
 }
