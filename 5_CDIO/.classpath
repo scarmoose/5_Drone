@@ -19,5 +19,7 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/opencv/build/java/x64"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="libs/zxing/core-2.2.jar"/>
+	<classpathentry kind="lib" path="libs/zxing/javase-2.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
