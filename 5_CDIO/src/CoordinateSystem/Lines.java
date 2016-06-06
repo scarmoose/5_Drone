@@ -195,7 +195,15 @@ public class Lines extends JFrame {
             //Rectangle bounds = model.getBounds();
             g2d.setColor(Color.BLUE);
             //The four walls
-            g2d.drawLine(20, 50, 930/2+20, 50);
+            g2d.drawLine(20, 50, 30/2+20, 50);
+            g2d.drawLine(30/2+20, 50-(10/2), 150/2+20, 50-(10/2));
+            g2d.drawLine(150/2+20, 50-(77/2), 480/2+20, 50-(77/2));
+            g2d.drawLine(480/2+20, 50, 930/2+20, 50);
+            
+            g2d.drawLine(150/2+20, 50-(10/2), 150/2+20, 50-(77/2));
+            g2d.drawLine(30/2+20, 50-(10/2), 30/2+20, 50);
+            g2d.drawLine(480/2+20, 50-(77/2), 480/2+20, 50);
+            
             g2d.drawLine(20, 50, 20, 1060/2+50);
             g2d.drawLine(20, 1060/2+50, 930/2+20, 1060/2+50);
             g2d.drawLine(930/2+20, 1060/2+50, 930/2+20, 50);
