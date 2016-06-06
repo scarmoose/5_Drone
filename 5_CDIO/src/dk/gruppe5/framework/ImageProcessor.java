@@ -689,41 +689,41 @@ public class ImageProcessor {
 			}
 		}
 
-//		for (Shape rect : shapes) {
-//
-//			if (rect.getEdges() == 4) {
-//
-//				// We find the rect that surronds the square and adds it to
-//				// rects
-//				// green for squares with 4 edges
-//				Scalar color = new Scalar(0, 255, 0);
-//				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
-//				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
-//
-//			}
-//			if (rect.getEdges() == 5) {
-//
-//				// We find the rect that surronds the square and adds it to
-//				// rects
-//
-//				// Red for squares with 5 edges
-//				Scalar color = new Scalar(255, 0, 0);
-//				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
-//				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
-//
-//			}
-//			if (rect.getEdges() > 6) {
-//
-//				// We find the rect that surronds the square and adds it to
-//				// rects
-//				// blue for squares with 5 edges
-//				Scalar color = new Scalar(0, 0, 255);
-//				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
-//				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
-//
-//			}
-//
-//		}
+		for (Shape rect : shapes) {
+
+			if (rect.getEdges() == 4) {
+
+				// We find the rect that surronds the square and adds it to
+				// rects
+				// green for squares with 4 edges
+				Scalar color = new Scalar(0, 255, 0);
+				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
+				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
+
+			}
+			if (rect.getEdges() == 5) {
+
+				// We find the rect that surronds the square and adds it to
+				// rects
+
+				// Red for squares with 5 edges
+				Scalar color = new Scalar(255, 0, 0);
+				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
+				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
+
+			}
+			if (rect.getEdges() > 6) {
+
+				// We find the rect that surronds the square and adds it to
+				// rects
+				// blue for squares with 5 edges
+				Scalar color = new Scalar(0, 0, 255);
+				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
+				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
+
+			}
+
+		}
 
 		return shapes;
 	}
@@ -767,10 +767,16 @@ public class ImageProcessor {
 				//draw the shape and write the result in the area
 				// Red for squares with 5 edges
 				Shape shape = shapes.get(i);
-				Scalar color = new Scalar(255, 0, 0);
+				Scalar color = new Scalar(0, 0, 255);
 				Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
 				Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4, shape.getTlPoint().y + shape.getHeight() / 2);
 				Imgproc.putText(backUp, results.get(i).getText(), txtPoint, 5, 2, color);
+				
+			}else{
+				Shape shape = shapes.get(i);
+				Scalar color = new Scalar(255, 0, 0);
+				Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
+				Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4, shape.getTlPoint().y + shape.getHeight() / 2);
 				
 			}
 		}
@@ -778,6 +784,26 @@ public class ImageProcessor {
 		
 		
 		
+		return backUp;
+	}
+
+	public Mat equalizeHistogramBalance(Mat frame) {
+		Mat dst = new Mat();
+		Imgproc.equalizeHist(frame, dst);
+		return dst;
+	}
+
+	public Mat drawShapes(List<Shape> shapes, Mat backUp) {
+		
+		for(int i = 0; i < shapes.size(); i++){
+			
+				//draw the shape and write the result in the area
+				// Red for squares with 5 edges
+				Shape shape = shapes.get(i);
+				Scalar color = new Scalar(255, 0, 0);
+				Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
+				Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4, shape.getTlPoint().y + shape.getHeight() / 2);
+		}
 		return backUp;
 	}
 
