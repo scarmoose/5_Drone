@@ -34,4 +34,8 @@ public class Mathmagic {
 	private float getDistanceBetweenPoints(Point p1, Point p2) {
 		return (float )p1.distance(p2);
 	}
+	
+	
+	
+	
 }
