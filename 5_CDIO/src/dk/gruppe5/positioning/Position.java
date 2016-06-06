@@ -26,7 +26,6 @@ public class Position implements IPosition {
 
 	@Override
 	public Point getPosition() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -57,7 +56,4 @@ public class Position implements IPosition {
 		
 		return new Circle(center, radius);
 	}
-	
-	
-
 }
