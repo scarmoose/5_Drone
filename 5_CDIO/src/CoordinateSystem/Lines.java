@@ -203,8 +203,8 @@ public class Lines extends JFrame {
             ArrayList<Integer> Xelements = new ArrayList<>();
     		ArrayList<Integer> Yelements = new ArrayList<>();
     		for (int i = 0 ; i < Mathmagic.getArray().length ; i++){
-    			Xelements.add((int) Mathmagic.getArray()[i].getX());
-    			Yelements.add((int) Mathmagic.getArray()[i].getY());
+    			Xelements.add((int) Mathmagic.getArray()[i].getPosition().getX());
+    			Yelements.add((int) Mathmagic.getArray()[i].getPosition().getY());
     		}
         	
     		for (int k = 0;k< Xelements.size();k++){
