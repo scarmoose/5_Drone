@@ -49,6 +49,7 @@ class Surface extends JPanel {
 			System.out.println("x = " + xplace + ", y= "+yvalue);
 		}
         g2d.setPaint(Color.blue);
+        super.repaint();
     }
 
     @Override
@@ -61,6 +62,7 @@ class Surface extends JPanel {
     	
         super.paintComponent(g);
         doDrawing(g);
+        
     }
 }
 

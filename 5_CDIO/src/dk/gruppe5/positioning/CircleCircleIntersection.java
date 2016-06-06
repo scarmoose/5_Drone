@@ -94,7 +94,7 @@ public final class CircleCircleIntersection {
 			distanceRadicalPointIntersectionPoints = 0;
 			return;
 		}
-
+		
 		// Type determination is simpler if done later.
 		/* else
 		{
