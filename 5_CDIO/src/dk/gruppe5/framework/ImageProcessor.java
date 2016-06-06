@@ -34,8 +34,10 @@ import com.google.zxing.ResultPoint;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 
+import dk.gruppe5.controller.Mathmagic;
 import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
+import dk.gruppe5.model.Wallmark;
 import dk.gruppe5.model.opticalFlowData;
 import dk.gruppe5.model.templateMatch;
 
@@ -688,42 +690,45 @@ public class ImageProcessor {
 				}
 			}
 		}
-
-		for (Shape rect : shapes) {
-
-			if (rect.getEdges() == 4) {
-
-				// We find the rect that surronds the square and adds it to
-				// rects
-				// green for squares with 4 edges
-				Scalar color = new Scalar(0, 255, 0);
-				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
-				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
-
-			}
-			if (rect.getEdges() == 5) {
-
-				// We find the rect that surronds the square and adds it to
-				// rects
-
-				// Red for squares with 5 edges
-				Scalar color = new Scalar(255, 0, 0);
-				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
-				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
-
-			}
-			if (rect.getEdges() > 6) {
-
-				// We find the rect that surronds the square and adds it to
-				// rects
-				// blue for squares with 5 edges
-				Scalar color = new Scalar(0, 0, 255);
-				Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(), color, 3);
-				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
-
-			}
-
-		}
+		//
+		// for (Shape rect : shapes) {
+		//
+		// if (rect.getEdges() == 4) {
+		//
+		// // We find the rect that surronds the square and adds it to
+		// // rects
+		// // green for squares with 4 edges
+		// Scalar color = new Scalar(0, 255, 0);
+		// Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(),
+		// color, 3);
+		// // Imgproc.drawContours(standIn, contours_1, i, color, 2);
+		//
+		// }
+		// if (rect.getEdges() == 5) {
+		//
+		// // We find the rect that surronds the square and adds it to
+		// // rects
+		//
+		// // Red for squares with 5 edges
+		// Scalar color = new Scalar(255, 0, 0);
+		// Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(),
+		// color, 3);
+		// // Imgproc.drawContours(standIn, contours_1, i, color, 2);
+		//
+		// }
+		// if (rect.getEdges() > 6) {
+		//
+		// // We find the rect that surronds the square and adds it to
+		// // rects
+		// // blue for squares with 5 edges
+		// Scalar color = new Scalar(0, 0, 255);
+		// Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(),
+		// color, 3);
+		// // Imgproc.drawContours(standIn, contours_1, i, color, 2);
+		//
+		// }
+		//
+		// }
 
 		return shapes;
 	}
@@ -750,40 +755,153 @@ public class ImageProcessor {
 			qrData.add(scanResult);
 
 		}
-		for (Result Qrdata : qrData) {
-			if (Qrdata != null) {
-				System.out.println(Qrdata.getText());
-			}
-
-		}
+		// for (Result Qrdata : qrData) {
+		// if (Qrdata != null) {
+		// System.out.println(Qrdata.getText());
+		// }
+		//
+		// }
 		return qrData;
 	}
 
 	public Mat markQrCodes(List<Result> results, List<Shape> shapes, Mat backUp) {
-		//find each qr code from the list, mark it on the image and add the shape
-		
-		for(int i = 0; i < results.size(); i++){
-			if(results.get(i) != null){
-				//draw the shape and write the result in the area
-				// Red for squares with 5 edges
+		// find each qr code from the list, mark it on the image,
+		// then find any squares that match the height of this QR code and
+		// roughly size(width and height)
+		// if any are found the determine which they probaly are and mark them
+		// with name
+
+		List<Shape> qrCodeShapeConfirms = new ArrayList<Shape>();
+		List<Result> qrCodeResultConfirms = new ArrayList<Result>();
+
+		for (int i = 0; i < results.size(); i++) {
+			if (results.get(i) != null) {
+				// draw the shape and write the result in the area
 				Shape shape = shapes.get(i);
 				Scalar color = new Scalar(0, 0, 255);
 				Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
-				Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4, shape.getTlPoint().y + shape.getHeight() / 2);
+				Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4,
+						shape.getTlPoint().y + shape.getHeight() / 2);
 				Imgproc.putText(backUp, results.get(i).getText(), txtPoint, 5, 2, color);
-				
-			}else{
-				Shape shape = shapes.get(i);
-				Scalar color = new Scalar(255, 0, 0);
-				Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
-				Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4, shape.getTlPoint().y + shape.getHeight() / 2);
-				
+				qrCodeShapeConfirms.add(shape);
+				qrCodeResultConfirms.add(results.get(i));
+
+			} else {
+				// Shape shape = shapes.get(i);
+				// Scalar color = new Scalar(255, 0, 0);
+				// Imgproc.rectangle(backUp, shape.getTlPoint(),
+				// shape.getBrPoint(), color, 3);
+
 			}
 		}
-		
-		
-		
-		
+		for (int z = 0; z < qrCodeShapeConfirms.size(); z++) {
+
+			for (int i = 0; i < shapes.size(); i++) {
+				// check om det er en firkant som ikke ligger lige ved siden af
+				// sig QR koden, der skal være en vis afstand
+				if (shapes.get(i).getTlPoint().x > (qrCodeShapeConfirms.get(z).getTlPoint().x + 200)
+						|| shapes.get(i).getTlPoint().x < (qrCodeShapeConfirms.get(z).getTlPoint().x - 200)) {
+
+					// System.out.println("x position far enough for shape");
+					// check om højde i billede ca passer med den bekræfte QR
+					// kodes position og hver firkant, dem der matcher checker
+					// vi størrelse
+					// check if 10% under and 10% above
+					if (shapes.get(i).getTlPoint().y > (qrCodeShapeConfirms.get(z).getTlPoint().y * 0.5)
+							&& shapes.get(i).getTlPoint().y < (qrCodeShapeConfirms.get(z).getTlPoint().y * 1.5)) {
+					
+						// check om størrelse passer ca indenfor ~ 20% mindre og
+						// større?
+						// den kunne være en del mindre, da der er den der
+						// alcove
+						if (/*
+							 * shapes.get(i).getArea() > (
+							 * qrCodeShapeConfirms.get(z).getArea()*0.5) &&
+							 */ shapes.get(i).getArea() < (qrCodeShapeConfirms.get(z).getArea() * 1.2)) {
+							
+							// check om den er til højre eller venstre for den
+							// aflæste QR kode
+							// hvis x er større så den til højre ellers er den
+							// til venstre
+							if (shapes.get(i).getTlPoint().x > (qrCodeShapeConfirms.get(z).getTlPoint().x)) {
+
+								// System.out.println("found one right off");
+								// slå op hvem der ligger til højre og marker
+								// denne som det
+								int nrWallMark = 0;
+								for (Wallmark wallmark : Mathmagic.getArray()) {
+									// System.out.println(wallmark.getName() + "
+									// tries to match with "
+									// +qrCodeResultConfirms.get(z).getText() );
+									if (wallmark.getName().equals(qrCodeResultConfirms.get(z).getText())) {
+										// System.out.println("found a match in
+										// the mathmagic! --> right");
+										Shape shape = shapes.get(i);
+										Scalar color = new Scalar(0, 255, 0);
+										Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
+										
+									
+										
+										
+										Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4,
+												shape.getTlPoint().y + shape.getHeight() / 2);
+										Imgproc.putText(backUp, Mathmagic.getArray()[nrWallMark + 1].getName(),
+												txtPoint, 5, 2, color);
+										
+										
+										//tegn streg mellem det fundne markering og QR markeringen, start med tl i begge
+										Point qrMiddlePoint = new Point(qrCodeShapeConfirms.get(z).getTlPoint().x + qrCodeShapeConfirms.get(z).getWidth() / 4,
+												qrCodeShapeConfirms.get(z).getTlPoint().y + qrCodeShapeConfirms.get(z).getHeight() / 2);
+										Imgproc.line(backUp, txtPoint, qrMiddlePoint, color);
+										
+										
+
+									}
+									nrWallMark++;
+								}
+
+							} else if(shapes.get(i).getTlPoint().x < (qrCodeShapeConfirms.get(z).getTlPoint().x)){
+								// System.out.println("found one left off");
+								int nrWallMark = 0;
+								for (Wallmark wallmark : Mathmagic.getArray()) {
+									// System.out.println(wallmark.getName() + "
+									// tries to match with "
+									// +qrCodeResultConfirms.get(z).getText() );
+									if (wallmark.getName().equals(qrCodeResultConfirms.get(z).getText())) {
+										// System.out.println("found a match in
+										// the mathmagic! --> left");
+										Shape shape = shapes.get(i);
+										Scalar color = new Scalar(0, 255, 0);
+										Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
+										Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4,
+												shape.getTlPoint().y + shape.getHeight() / 2);
+										Imgproc.putText(backUp, Mathmagic.getArray()[nrWallMark - 1].getName(),
+												txtPoint, 5, 2, color);
+										
+										//tegn streg mellem det fundne markering og QR markeringen, start med tl i begge
+										Point qrMiddlePoint = new Point(qrCodeShapeConfirms.get(z).getTlPoint().x + qrCodeShapeConfirms.get(z).getWidth() / 4,
+												qrCodeShapeConfirms.get(z).getTlPoint().y + qrCodeShapeConfirms.get(z).getHeight() / 2);
+										Imgproc.line(backUp, txtPoint, qrMiddlePoint, color);
+
+									}
+									nrWallMark++;
+								}
+
+							}
+						}else{
+							System.out.println("Size not good enough");							
+						}
+
+					}else{
+						System.out.println("height not good enough");
+					}
+					
+				}
+
+			}
+
+		}
+
 		return backUp;
 	}
 
@@ -794,15 +912,16 @@ public class ImageProcessor {
 	}
 
 	public Mat drawShapes(List<Shape> shapes, Mat backUp) {
-		
-		for(int i = 0; i < shapes.size(); i++){
-			
-				//draw the shape and write the result in the area
-				// Red for squares with 5 edges
-				Shape shape = shapes.get(i);
-				Scalar color = new Scalar(255, 0, 0);
-				Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
-				Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4, shape.getTlPoint().y + shape.getHeight() / 2);
+
+		for (int i = 0; i < shapes.size(); i++) {
+
+			// draw the shape and write the result in the area
+			// Red for squares with 5 edges
+			Shape shape = shapes.get(i);
+			Scalar color = new Scalar(255, 0, 0);
+			Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
+			Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4,
+					shape.getTlPoint().y + shape.getHeight() / 2);
 		}
 		return backUp;
 	}
