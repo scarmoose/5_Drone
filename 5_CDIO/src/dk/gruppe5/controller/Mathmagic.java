@@ -1,9 +1,11 @@
 package dk.gruppe5.controller;
 
 import java.awt.Point;
-import java.util.Arrays;
 
 public class Mathmagic {
+	
+	int pixels = 720;
+	int cameraDegrees = 68;
 
 	static Point[] wallmarks = {
 			new Point(188,1055), new Point(338, 1060), new Point(515,1055), new Point(694, 1060), new Point(840, 1055),
@@ -30,5 +32,4 @@ public class Mathmagic {
 	private float getDistanceBetweenPoints(Point p1, Point p2) {
 		return (float )p1.distance(p2);
 	}
-	
 }
