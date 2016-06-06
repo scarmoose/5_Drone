@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -13,10 +14,14 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.videoio.VideoCapture;
 
+import com.google.zxing.Result;
+
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.video.ImageListener;
 import dk.gruppe5.framework.ImageProcessor;
+import dk.gruppe5.model.Shape;
+import dk.gruppe5.model.Values_cam;
 
 public class VideoListenerPanel extends JPanel {
 
@@ -54,54 +59,56 @@ public class VideoListenerPanel extends JPanel {
 					old_frame = frame;
 				}
 				
-				frame = imgProc.toGrayScale(frame);
-				frame = imgProc.blur(frame);
-				frame = imgProc.toCanny(frame);
+				if(Values_cam.getMethod() == 0){
+					image = imgProc.toBufferedImage(frame);
+				} else 	if(Values_cam.getMethod() == 5){
+					Mat backUp = new Mat();
+					backUp = frame;
+					//kig på whitebalancing og eventuelt at reducere området som vi kigger igennem for firkanter.
+					//frame = imgProc.equalizeHistogramBalance(frame);
+					
+					//først gør vi det sort hvidt
+					frame = imgProc.toGrayScale(frame);
+					
+					//
+					frame = imgProc.equalizeHistogramBalance(frame);
+					//Vi tester først med blur og ser hvor godt det bliver
+					//prøv også uden
+					//blur virker bedre
+					frame = imgProc.blur(frame);
 				
-				frame = imgProc.findAirfield(frame);
-				
-				
-				image = imgProc.toBufferedImage(frame);
-				
-				
-//				opticalFlowData flowData = imgproc.opticalFlow(frame, old_frame);
+					//Til canny for at nemmere kunne finde contourer
+					frame = imgProc.toCanny(frame);
+					
+					//Nu skal vi prøve at finde firkanter af en hvis størrelse
+					List<Shape> shapes = imgProc.findQRsquares(frame);
+					//vi finder de potentielle QR kode områder
+					List<BufferedImage> potentialQRcodes = new ArrayList<BufferedImage>();
+					BufferedImage source = imgProc.toBufferedImage(backUp);
+					
+					//place shapes on the backup image to test
+					int z = 0;
+					for (Shape rect : shapes) {
+						int h = (int) rect.getHeight();
+						int w = (int) rect.getWidth();
+						BufferedImage dst = source.getSubimage((int)rect.getTlPoint().x, (int)rect.getTlPoint().y, w, h);
+						potentialQRcodes.add(dst);
+					}
+					//Vi aflæser de potentielle QR koder og ser om vi har nogen matches, hvis vi har!
+					//så marker dette og firkanter der har ca samme højde og størrelse!
+					//skriv i disse hvilken en firkant de nok er ud fra dataene vi har.
+					//tegn streg mellem dem og skriv pixel afstand
+					//udregn afstand til QR kode via python afstands bestemmelse på papir
+					
+					
+					List<Result> results = imgProc.readQRCodes(potentialQRcodes);
+					backUp = imgProc.markQrCodes(results, shapes, backUp);
+//					
 //				
-//				Mat ofs_frame = flowData.getFrame();
-//				Image = imgproc.toBufferedImage(ofs_frame);
-//				old_frame = frame;
-//			
-//				
-//				startPoints = flowData.getStartPoints();
-//				endPoints = flowData.getEndPoints();
-//				double angletotal = 0;
-//				
-//				for (int i = 0; i < startPoints.size(); i++) {
-//					Point one = startPoints.get(i);
-//					Point two = endPoints.get(i);
-//
-//					Double distance = Math.sqrt(Math.pow(one.x - two.x, 2) + Math.pow(one.y - two.y, 2));
-//
-//					if (distance > 5) {
-//						// System.out.println("Distance: "+distance);
-//						double angle = Math.atan2(two.y - one.y, two.x - one.x);
-//						double angle2 = angle * (180 / Math.PI);
-//						// System.out.println(angle2);
-//						if (angle2 < 0) {
-//							// System.out.println(angle2);
-//							angletotal = angletotal + angle2 + 360;
-//						} else {
-//							// System.out.println(angle2);
-//							angletotal = angletotal + angle2;
-//						}
-//					}
-//
-//				}
-//				
-//				// System.out.println("totalAngle:"+angletotal);
-//				// System.out.println("AverageAngle:"+angletotal/startPoints.size());
-//				double avAngle = angletotal / startPoints.size();
-//
-//				directionGuess(avAngle);
+//					image = imgProc.toBufferedImage(backUp);
+					image = imgProc.toBufferedImage(backUp);
+				}
+				
 				
 			
 				SwingUtilities.invokeLater(new Runnable() {
