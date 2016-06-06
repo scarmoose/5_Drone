@@ -64,29 +64,29 @@ public class PWindow {
 		
 		
 		/*
-		 * Indkommenternedenstående for at bruge webcam
+		 * Indkommenternedenstï¿½ende for at bruge webcam
 		 */
 
-		PPanel panel = new PPanel();
-		Thread thread = new Thread(panel);
-		thread.start();
-		frame.addWindowListener(new WindowAdapter() {
-		    @Override
-		    public void windowClosing(WindowEvent e) {
-		    	//Nødløsning, nu slukker programmet da :P
-		        thread.stop();
-		    }
-		});
+//		PPanel panel = new PPanel();
+//		Thread thread = new Thread(panel);
+//		thread.start();
+//		frame.addWindowListener(new WindowAdapter() {
+//		    @Override
+//		    public void windowClosing(WindowEvent e) {
+//		    	//Nï¿½dlï¿½sning, nu slukker programmet da :P
+//		        thread.stop();
+//		    }
+//		});
 
 //		
 		/*
-		 * nedenstående bruger dronen.
+		 * nedenstï¿½ende bruger dronen.
 		 */
 
 
-//		DroneCommander DCom = new DroneCommander();
-//		VideoListenerPanel vidpanel = new VideoListenerPanel(DCom.getDrone());
-//		frame.setFocusable(true);
+		DroneCommander DCom = new DroneCommander();
+		VideoListenerPanel panel = new VideoListenerPanel(DCom.getDrone());
+		frame.setFocusable(true);
 //		frame.addKeyListener(new KeyboardCommandManager((DCom.getDrone())));
 		
 
