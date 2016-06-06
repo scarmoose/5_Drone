@@ -7,6 +7,6 @@ public interface IPosition {
 	float getDistanceToPoints(float angle, float distanceBetweenPoints);
 	float getAngleInDegreesFromPixelsOccupied(int pixels);
 	Circle getCircle(Point p1, Point p2, int pixelsOccupiedByObject);
-	Point getPosition();
+	Point getPosition(Circle c1, Circle c2, Point[] startPoints);
 
 }
