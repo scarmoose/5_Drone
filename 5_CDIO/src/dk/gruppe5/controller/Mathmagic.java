@@ -7,12 +7,16 @@ public class Mathmagic {
 	int pixels = 720;
 	int cameraDegrees = 68;
 
-	Point[] wallmarks = {
+	static Point[] wallmarks = {
 			new Point(188,1055), new Point(338, 1060), new Point(515,1055), new Point(694, 1060), new Point(840, 1055),
 			new Point(926, 904), new Point(926, 721), new Point(926, 566), new Point(926, 324), new Point(926, 115),
 			new Point(847, -10), new Point(656, -77), new Point(420,0), new Point(350, 0), new Point(150,0),
 			new Point(0,108), new Point(0, 357), new Point(0, 561), new Point(0,770), new Point(0,997) 
 	};
+	
+	public static Point[] getArray(){
+		return wallmarks;
+	}
 
 	public float[][] wallmarkDistances = new float[20][20];
 
