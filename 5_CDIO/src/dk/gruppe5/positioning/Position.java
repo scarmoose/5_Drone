@@ -76,4 +76,20 @@ public class Position implements IPosition {
 		
 		return new Circle(center, radius);
 	}
+
+
+
+	@Override
+	public Point getPositionCoordinates() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public Circle getCircle(Point p1, Point p2, int pixelsOccupiedByObject) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.videoio.VideoCapture;
 
 import com.google.zxing.Result;
@@ -100,9 +101,18 @@ public class VideoListenerPanel extends JPanel {
 					//tegn streg mellem dem og skriv pixel afstand
 					//udregn afstand til QR kode via python afstands bestemmelse på papir
 					
-					
 					List<Result> results = imgProc.readQRCodes(potentialQRcodes);
-					backUp = imgProc.markQrCodes(results, shapes, backUp);
+					//backUp = imgProc.markQrCodes(results, shapes, backUp);
+					Point[] points = imgProc.markQrCodes(results, shapes, backUp);
+					if(points != null){
+						backUp = imgProc.drawLine( points[0],points[1],backUp);
+						backUp = imgProc.drawLine(points[1], points[2], backUp);
+						System.out.println("point1:" +points[0]+"   point 2:" +points[1]+ "   point 3:"+points[2]);	
+					}else{
+						image = imgProc.toBufferedImage(backUp);
+					}
+//				
+//					
 //					
 //				
 //					image = imgProc.toBufferedImage(backUp);
