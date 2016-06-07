@@ -26,9 +26,14 @@ public class PositionTest {
 	public void test() {
 		mm = new Mathmagic();
 		pos = new Position();
-		Point p1 = mm.map.get("W00.00");
-		Point p2 = mm.map.get("W00.01");
-		Point p3 = mm.map.get("W00.02");
+//		Point p1 = mm.map.get("W00.04");
+//		Point p2 = mm.map.get("W01.00");
+//		Point p3 = mm.map.get("W01.01");
+		
+		Point p1 = new Point(0,0);
+		Point p2 = new Point(1,2);
+		Point p3 = new Point(0,4);
+		
 		Point[] points = new Point[]{p1, p2, p3};
 		Circle c1;
 		Circle c2;
