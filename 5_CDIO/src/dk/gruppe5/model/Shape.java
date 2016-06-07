@@ -40,4 +40,8 @@ public class Shape {
 	public int getEdges() {
 		return edges;
 	}
+	public Point getCenter(){
+		return  new Point(tlPoint.x+getHeight()/2,tlPoint.y+getWidth()/2);
+		
+	}
 }
