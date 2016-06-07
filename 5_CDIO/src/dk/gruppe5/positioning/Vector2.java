@@ -3,6 +3,7 @@ package dk.gruppe5.positioning;
 import static java.lang.Math.*;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.io.Serializable;
 
 public final class Vector2 implements Serializable {
@@ -119,5 +120,12 @@ public final class Vector2 implements Serializable {
 		}
 		return points;
 	}
+	
+    public float distance(Vector2 pt) {
+        double px = pt.x - this.x;
+        double py = pt.y - this.y;
+        return (float) Math.sqrt(px * px + py * py);
+    }
+
 
 }

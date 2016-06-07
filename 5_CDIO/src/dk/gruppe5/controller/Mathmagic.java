@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import dk.gruppe5.model.Wallmark;
+import dk.gruppe5.positioning.Vector2;
 
 public class Mathmagic {
 	
@@ -31,14 +32,14 @@ public class Mathmagic {
 		for(int i = 0; i < wallmarks.length; i++){
 			map.put(wallmarks[i].getName(), wallmarks[i].getPosition());
 			for(int j  = 0; j < wallmarks.length; j++){
-				float distance = getDistanceBetweenPoints(wallmarks[i].getPosition(), wallmarks[j].getPosition());
+				float distance = getDistanceBetweenPoints(new Vector2(wallmarks[i].getPosition()), new Vector2(wallmarks[j].getPosition()));
 				wallmarkDistances[i][j] = distance;
 				
 			}
 		}	
 	}
 
-	private float getDistanceBetweenPoints(Point p1, Point p2) {
+	private float getDistanceBetweenPoints(Vector2 p1, Vector2 p2) {
 		return (float )p1.distance(p2);
 	}
 	

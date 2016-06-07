@@ -2,7 +2,7 @@ package dk.gruppe5.positioning;
 
 import java.awt.Point;
 
-public class Position implements IPosition {
+public class Position {
 	
 	private Vector2 currentPos;
 	final static float TOTAL_PIXELS = 720.0f;
@@ -12,13 +12,11 @@ public class Position implements IPosition {
 	
 
 
-	@Override
 	public float getAngleInDegreesFromPixelsOccupied(int pixels) {
 		return TOTAL_ANGLE * (pixels/TOTAL_PIXELS);
 	}
 
 
-	@Override
 	public float getDistanceToPoints(float angle, float distanceBetweenPoints) {
 		return (float) ((distanceBetweenPoints/2) / Math.tan(Math.toRadians(angle)));
 	}
@@ -30,8 +28,8 @@ public class Position implements IPosition {
 	 * @param startPoints Points that was used to create the circles
 	 * @return
 	 */
-	@Override
-	public Point getPosition(Circle c1, Circle c2, Point[] startPoints) {
+
+	public Point getPosition(Circle c1, Circle c2, Vector2[] startPoints) {
 		CircleCircleIntersection cci = new CircleCircleIntersection(c1, c2);
 		Point[] points = Vector2.getPointArray(cci.getIntersectionVectors());
 		if(points != null && points.length > 0) {
@@ -53,12 +51,11 @@ public class Position implements IPosition {
 	
 	
 
-	@Override
-	public Circle getCircleFromPoints(Point p1, Point p2, int pixelsOccupiedByObject) {
-		int 	x1 = p1.x,
-				y1 = p1.y,
-				x2 = p2.x,
-				y2 = p2.y;
+	public Circle getCircleFromPoints(Vector2 p1, Vector2 p2, int pixelsOccupiedByObject) {
+		double 	x1 = p1.x,
+						y1 = p1.y,
+						x2 = p2.x,
+						y2 = p2.y;
 		
 		double alpha = getAngleInDegreesFromPixelsOccupied(pixelsOccupiedByObject);
 		double a = Math . sqrt ( Math . pow ( x1 - x2 ,2) + Math . pow ( y1 - y2 , 2) ) ;
@@ -74,7 +71,7 @@ public class Position implements IPosition {
 		double x_c = - t8 / t15 * t7 / 2.0 + x1 / 2.0 + x2 / 2.0;
 		double y_c = t12 / t15 * t7 / 2.0 + y1 / 2.0 + y2 / 2.0;
 		
-		Point center = new Point((int) x_c, (int) y_c);
+		Vector2 center = new Vector2( x_c, y_c);
 		
 		System.out.println("alpha: "+ alpha);
 		double radius = (1.0/2) * a/Math.sin(Math.toRadians(alpha));
@@ -83,13 +80,13 @@ public class Position implements IPosition {
 		return new Circle(center, radius);
 	}
 	
-	public Circle getCircleFromPointsWithAngle(Point p1, Point p2, float angle) {
-		int 	x1 = p1.x,
-				y1 = p1.y,
-				x2 = p2.x,
-				y2 = p2.y;
+	public Circle getCircleFromPointsWithAngle(Vector2 p1, Vector2 p2, float angle) {
+		double 	x1 = p1.x,
+						y1 = p1.y,
+						x2 = p2.x,
+						y2 = p2.y;
 		
-		double alpha = angle;
+		double alpha = Math.toRadians(angle);
 		double a = Math . sqrt ( Math . pow ( x1 - x2 ,2) + Math . pow ( y1 - y2 , 2) ) ;
 		double t1 = a * a ;
 		double t2 = Math . sin ( alpha ) ;
@@ -103,10 +100,10 @@ public class Position implements IPosition {
 		double x_c = - t8 / t15 * t7 / 2.0 + x1 / 2.0 + x2 / 2.0;
 		double y_c = t12 / t15 * t7 / 2.0 + y1 / 2.0 + y2 / 2.0;
 		
-		Point center = new Point((int) x_c, (int) y_c);
+		Vector2 center = new Vector2( x_c, y_c);
 		
 		System.out.println("alpha: "+ alpha);
-		double radius = (1.0/2) * a/Math.sin(Math.toRadians(alpha));
+		double radius = (1.0/2) * a/Math.sin(alpha);
 		System.out.println("radius: "+ radius);
 		
 		return new Circle(center, radius);
