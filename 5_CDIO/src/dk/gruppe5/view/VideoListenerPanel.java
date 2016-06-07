@@ -21,10 +21,12 @@ import com.google.zxing.Result;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.video.ImageListener;
+import dk.gruppe5.controller.Mathmagic;
 import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.ImageProcessor;
 import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
+import dk.gruppe5.positioning.Position;
 
 public class VideoListenerPanel extends JPanel {
 
@@ -115,6 +117,8 @@ public class VideoListenerPanel extends JPanel {
 								backUp = imgProc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp);
 								System.out.println("point1:" +data.getQrNames()[0]+"   point 2:" +data.getQrNames()[1]+ "   point 3:"+data.getQrNames()[2]);
 								System.out.println("point1:" +data.getPoints()[0]+"   point 2:" +data.getPoints()[1]+ "   point 3:"+data.getPoints()[2]);
+								Position test = new Position();
+						
 							}
 							
 						}else if(!Double.isNaN(data.getPoints()[1].x)){
