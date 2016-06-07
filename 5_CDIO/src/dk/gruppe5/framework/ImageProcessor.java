@@ -764,7 +764,7 @@ public class ImageProcessor {
 		return qrData;
 	}
 
-	public Mat markQrCodes(List<Result> results, List<Shape> shapes, Mat backUp) {
+	public Point[] markQrCodes(List<Result> results, List<Shape> shapes, Mat backUp) {
 		// find each qr code from the list, mark it on the image,
 		// then find any squares that match the height of this QR code and
 		// roughly size(width and height)
@@ -773,16 +773,23 @@ public class ImageProcessor {
 
 		List<Shape> qrCodeShapeConfirms = new ArrayList<Shape>();
 		List<Result> qrCodeResultConfirms = new ArrayList<Result>();
+		
+		Point leftPoint;
+		Point rightPoint;
+		Point QrPoint;
+		List<Point> leftPoints = new ArrayList<Point>();
+		List<Point> RightPoints = new ArrayList<Point>();
+		List<Point> QrPointsPoints = new ArrayList<Point>();
 
 		for (int i = 0; i < results.size(); i++) {
 			if (results.get(i) != null) {
 				// draw the shape and write the result in the area
 				Shape shape = shapes.get(i);
 				Scalar color = new Scalar(0, 0, 255);
-				Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
-				Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4,
-						shape.getTlPoint().y + shape.getHeight() / 2);
-				Imgproc.putText(backUp, results.get(i).getText(), txtPoint, 5, 2, color);
+//				Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
+//				Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4,
+//						shape.getTlPoint().y + shape.getHeight() / 2);
+//				Imgproc.putText(backUp, results.get(i).getText(), txtPoint, 5, 2, color);
 				qrCodeShapeConfirms.add(shape);
 				qrCodeResultConfirms.add(results.get(i));
 
@@ -795,12 +802,17 @@ public class ImageProcessor {
 			}
 		}
 		for (int z = 0; z < qrCodeShapeConfirms.size(); z++) {
-
+			// den her afstand skal lidt styres af afstanden vi er til qr koden
+			int minDistance = 150;
+			//finder lige midten af qr koden ca.
+			QrPointsPoints.add(new Point(qrCodeShapeConfirms.get(z).getTlPoint().x + qrCodeShapeConfirms.get(z).getWidth() / 4,
+					qrCodeShapeConfirms.get(z).getTlPoint().y + qrCodeShapeConfirms.get(z).getHeight() / 2));
+			
 			for (int i = 0; i < shapes.size(); i++) {
 				// check om det er en firkant som ikke ligger lige ved siden af
 				// sig QR koden, der skal være en vis afstand
-				if (shapes.get(i).getTlPoint().x > (qrCodeShapeConfirms.get(z).getTlPoint().x + 200)
-						|| shapes.get(i).getTlPoint().x < (qrCodeShapeConfirms.get(z).getTlPoint().x - 200)) {
+				if (shapes.get(i).getTlPoint().x > (qrCodeShapeConfirms.get(z).getTlPoint().x + minDistance)
+						|| shapes.get(i).getTlPoint().x < (qrCodeShapeConfirms.get(z).getTlPoint().x - minDistance)) {
 
 					// System.out.println("x position far enough for shape");
 					// check om højde i billede ca passer med den bekræfte QR
@@ -809,100 +821,146 @@ public class ImageProcessor {
 					// check if 10% under and 10% above
 					if (shapes.get(i).getTlPoint().y > (qrCodeShapeConfirms.get(z).getTlPoint().y * 0.5)
 							&& shapes.get(i).getTlPoint().y < (qrCodeShapeConfirms.get(z).getTlPoint().y * 1.5)) {
-					
+
 						// check om størrelse passer ca indenfor ~ 20% mindre og
 						// større?
 						// den kunne være en del mindre, da der er den der
 						// alcove
-						if (/*
-							 * shapes.get(i).getArea() > (
-							 * qrCodeShapeConfirms.get(z).getArea()*0.5) &&
-							 */ shapes.get(i).getArea() < (qrCodeShapeConfirms.get(z).getArea() * 1.2)) {
-							
-							// check om den er til højre eller venstre for den
-							// aflæste QR kode
-							// hvis x er større så den til højre ellers er den
-							// til venstre
-							if (shapes.get(i).getTlPoint().x > (qrCodeShapeConfirms.get(z).getTlPoint().x)) {
+						if (shapes.get(i).getArea() > (qrCodeShapeConfirms.get(z).getArea() * 0.5)
+								&& shapes.get(i).getArea() < (qrCodeShapeConfirms.get(z).getArea() * 1.2)) {
 
-								// System.out.println("found one right off");
-								// slå op hvem der ligger til højre og marker
-								// denne som det
-								int nrWallMark = 0;
-								for (Wallmark wallmark : Mathmagic.getArray()) {
-									// System.out.println(wallmark.getName() + "
-									// tries to match with "
-									// +qrCodeResultConfirms.get(z).getText() );
-									if (wallmark.getName().equals(qrCodeResultConfirms.get(z).getText())) {
-										// System.out.println("found a match in
-										// the mathmagic! --> right");
-										Shape shape = shapes.get(i);
-										Scalar color = new Scalar(0, 255, 0);
-										Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
-										
+							// check om formen ca passer med et A4 højde er
+							// længere end bredde
+
+							if (shapes.get(i).getHeight() > shapes.get(i).getWidth()) {
+
+								// check om den er til højre eller venstre for
+								// den
+								// aflæste QR kode
+								// hvis x er større så den til højre ellers er
+								// den
+								// til venstre
+								if (shapes.get(i).getTlPoint().x > (qrCodeShapeConfirms.get(z).getTlPoint().x)) {
 									
-										
-										
-										Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4,
-												shape.getTlPoint().y + shape.getHeight() / 2);
-										Imgproc.putText(backUp, Mathmagic.getArray()[nrWallMark + 1].getName(),
-												txtPoint, 5, 2, color);
-										
-										
-										//tegn streg mellem det fundne markering og QR markeringen, start med tl i begge
-										Point qrMiddlePoint = new Point(qrCodeShapeConfirms.get(z).getTlPoint().x + qrCodeShapeConfirms.get(z).getWidth() / 4,
-												qrCodeShapeConfirms.get(z).getTlPoint().y + qrCodeShapeConfirms.get(z).getHeight() / 2);
-										Imgproc.line(backUp, txtPoint, qrMiddlePoint, color);
-										
-										
+									
 
+									// System.out.println("found one right
+									// off");
+									// slå op hvem der ligger til højre og
+									// marker
+									// denne som det
+									int nrWallMark = 0;
+									for (Wallmark wallmark : Mathmagic.getArray()) {
+										// System.out.println(wallmark.getName()
+										// + "
+										// tries to match with "
+										// +qrCodeResultConfirms.get(z).getText()
+										// );
+										if (wallmark.getName().equals(qrCodeResultConfirms.get(z).getText())) {
+											// System.out.println("found a match
+											// in
+											// the mathmagic! --> right");
+											Shape shape = shapes.get(i);
+//											Scalar color = new Scalar(0, 255, 0);
+//											Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
+//
+											Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4,
+													shape.getTlPoint().y + shape.getHeight() / 2);
+//											Imgproc.putText(backUp, Mathmagic.getArray()[nrWallMark + 1].getName(),
+//													txtPoint, 5, 2, color);
+
+											// tegn streg mellem det fundne
+											// markering og QR markeringen,
+											// start
+											// med tl i begge
+											Point qrMiddlePoint = new Point(
+													qrCodeShapeConfirms.get(z).getTlPoint().x
+															+ qrCodeShapeConfirms.get(z).getWidth() / 4,
+													qrCodeShapeConfirms.get(z).getTlPoint().y
+															+ qrCodeShapeConfirms.get(z).getHeight() / 2);
+//											Imgproc.line(backUp, txtPoint, qrMiddlePoint, color);
+											RightPoints.add(txtPoint);
+
+										}
+										nrWallMark++;
 									}
-									nrWallMark++;
-								}
 
-							} else if(shapes.get(i).getTlPoint().x < (qrCodeShapeConfirms.get(z).getTlPoint().x)){
-								// System.out.println("found one left off");
-								int nrWallMark = 0;
-								for (Wallmark wallmark : Mathmagic.getArray()) {
-									// System.out.println(wallmark.getName() + "
-									// tries to match with "
-									// +qrCodeResultConfirms.get(z).getText() );
-									if (wallmark.getName().equals(qrCodeResultConfirms.get(z).getText())) {
-										// System.out.println("found a match in
-										// the mathmagic! --> left");
-										Shape shape = shapes.get(i);
-										Scalar color = new Scalar(0, 255, 0);
-										Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
-										Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4,
-												shape.getTlPoint().y + shape.getHeight() / 2);
-										Imgproc.putText(backUp, Mathmagic.getArray()[nrWallMark - 1].getName(),
-												txtPoint, 5, 2, color);
-										
-										//tegn streg mellem det fundne markering og QR markeringen, start med tl i begge
-										Point qrMiddlePoint = new Point(qrCodeShapeConfirms.get(z).getTlPoint().x + qrCodeShapeConfirms.get(z).getWidth() / 4,
-												qrCodeShapeConfirms.get(z).getTlPoint().y + qrCodeShapeConfirms.get(z).getHeight() / 2);
-										Imgproc.line(backUp, txtPoint, qrMiddlePoint, color);
+								} else if (shapes.get(i).getTlPoint().x < (qrCodeShapeConfirms.get(z).getTlPoint().x)) {
+									// System.out.println("found one left off");
+									int nrWallMark = 0;
+									for (Wallmark wallmark : Mathmagic.getArray()) {
+										// System.out.println(wallmark.getName()
+										// + "
+										// tries to match with "
+										// +qrCodeResultConfirms.get(z).getText()
+										// );
+										if (wallmark.getName().equals(qrCodeResultConfirms.get(z).getText())) {
+											// System.out.println("found a match
+											// in
+											// the mathmagic! --> left");
+											Shape shape = shapes.get(i);
+//											Scalar color = new Scalar(0, 255, 0);
+//											Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
+											Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4,
+													shape.getTlPoint().y + shape.getHeight() / 2);
+//											Imgproc.putText(backUp, Mathmagic.getArray()[nrWallMark - 1].getName(),
+//													txtPoint, 5, 2, color);
 
+											// tegn streg mellem det fundne
+											// markering og QR markeringen,
+											// start
+											// med tl i begge
+											Point qrMiddlePoint = new Point(
+													qrCodeShapeConfirms.get(z).getTlPoint().x
+															+ qrCodeShapeConfirms.get(z).getWidth() / 4,
+													qrCodeShapeConfirms.get(z).getTlPoint().y
+															+ qrCodeShapeConfirms.get(z).getHeight() / 2);
+//											Imgproc.line(backUp, txtPoint, qrMiddlePoint, color);
+											leftPoints.add(txtPoint);
+
+										}
+										nrWallMark++;
 									}
-									nrWallMark++;
-								}
 
+								}
 							}
-						}else{
-							System.out.println("Size not good enough");							
+						} else {
+							//System.out.println("Size not good enough");
 						}
 
-					}else{
-						System.out.println("height not good enough");
+					} else {
+						//System.out.println("height not good enough");
 					}
-					
+
 				}
 
 			}
 
 		}
+		
+		
+		// find gennemsnit af punkter og returner 3 punkter, [left,middle,right]
+		
+		Point leftAverage = averagePoint(leftPoints);
+		Point rightAverage = averagePoint(RightPoints);
+		Point QrAverage = averagePoint(QrPointsPoints);
+		
+		Point[] points = {leftAverage,QrAverage,rightAverage};
+		//System.out.println("point1:" +points[0]+"   point 2:" +points[1]+ "   point 3:"+points[2]);
+	
+		if(Double.isNaN(points[0].x) || Double.isNaN(points[1].x) || Double.isNaN(points[2].x)){
+			return null;
+		}
+		return points;
+	}
 
-		return backUp;
+	private Point averagePoint(List<Point> Points) {
+		Point preAverage = new Point();
+		for(Point point : Points){
+			preAverage = new Point(preAverage.x + point.x, preAverage.y+point.y);
+			
+		}
+		return new Point(preAverage.x/Points.size(),preAverage.y/Points.size());
 	}
 
 	public Mat equalizeHistogramBalance(Mat frame) {
@@ -924,6 +982,15 @@ public class ImageProcessor {
 					shape.getTlPoint().y + shape.getHeight() / 2);
 		}
 		return backUp;
+	}
+
+	
+	public Mat drawLine(Point point, Point point2, Mat backUp) {
+		Scalar color = new Scalar(0, 255, 0);
+		Imgproc.line(backUp, point, point2, color);
+		
+		
+	return backUp;
 	}
 
 }

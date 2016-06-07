@@ -95,7 +95,7 @@ public class Position {
 		float alpha = getAngleInDegreesFromPixelsOccupied(pixelsOccupiedByObject);
 		return getCircleFromPointsWithAngle(p1, p2, alpha);
 	}
-	
+
 	
 	/**
 	 * This creates a circle with the two observed points, and the observer points on the peripheral line
