@@ -77,8 +77,7 @@ public class PWindow {
 //		        thread.stop();
 //		    }
 //		});
-
-//		
+		
 		/*
 		 * nedenst�ende bruger dronen.
 		 */
@@ -87,7 +86,7 @@ public class PWindow {
 		DroneCommander DCom = new DroneCommander();
 		VideoListenerPanel panel = new VideoListenerPanel(DCom.getDrone());
 		frame.setFocusable(true);
-//		frame.addKeyListener(new KeyboardCommandManager((DCom.getDrone())));
+		frame.addKeyListener(new KeyboardCommandManager((DCom.getDrone())));
 		
 
 //		panel.setSize(new Dimension(700, 400));
@@ -202,6 +201,20 @@ public class PWindow {
             	frame.repaint();
             }
         });
+		Button2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DroneCommander dCommando = new DroneCommander();
+				
+				System.out.println("Takeoff er presset");
+				dCommando.testFlight(3000);
+				//dCommando.takeOffAndLand(3000);
+				//dCommando.hover(5000);
+	            SwingUtilities.updateComponentTreeUI(frame);
+            	frame.invalidate();
+            	frame.validate();
+            	frame.repaint();
+            }
+        });		
 		Button3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 	            Values_cam.setMethod(1);
