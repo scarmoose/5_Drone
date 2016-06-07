@@ -1,6 +1,7 @@
 package CoordinateSystem;
 
 import java.awt.BasicStroke;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -144,23 +145,24 @@ public class Lines extends JFrame {
 
         @Override
         public void update() {
-            Points.setXPoint(Points.getXPoint()+xDelta);
-            Points.setYPoint(Points.getYPoint()+yDelta);
+            DronePosition.setXPoint(DronePosition.getXPoint());
+            DronePosition.setYPoint(DronePosition.getYPoint());
             
-            if (Points.getXPoint() < 0) {
-            	Points.setXPoint(0);
+            
+            if (DronePosition.getXPoint() < 0) {
+            	DronePosition.setXPoint(0);
                 xDelta *= -1;
-            } else if (Points.getXPoint() + 20 > 930) {
+            } else if (DronePosition.getXPoint() + 20 > 930) {
                 //bounds.x = size.width - bounds.width;
-                Points.setXPoint(930 - 20);
+                DronePosition.setXPoint(930 - 20);
                 xDelta *= -1;
             }
             
-            if (Points.getYPoint() < 0) {
-                Points.setYPoint(0);
+            if (DronePosition.getYPoint() < 0) {
+                DronePosition.setYPoint(0);
                 yDelta *= -1;
-            } else if (Points.getYPoint() + 20 > 1060) {
-            	Points.setYPoint(1060 - 20);
+            } else if (DronePosition.getYPoint() + 20 > 1060) {
+            	DronePosition.setYPoint(1060 - 20);
                 yDelta *= -1;
             }
             fireStateChanged();
@@ -237,9 +239,10 @@ public class Lines extends JFrame {
             //g2d.drawRoundRect(Points.getXPoint()/2+20, Points.getYPoint()/2+50, 2, 2, 2, 2);
             
             Image img1 = Toolkit.getDefaultToolkit().getImage("rsz_he291.jpg");
-            g2d.drawImage(img1, Points.getXPoint()/2+20, Points.getYPoint()/2+50, this);
+            g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYPoint()/2+50, this);
             
-            System.out.println(Points.getXPoint()+" + "+Points.getYPoint());
+            
+            System.out.println(DronePosition.getXPoint()+" + "+DronePosition.getYPoint());
             //g2d.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);
             g2d.dispose();
         }

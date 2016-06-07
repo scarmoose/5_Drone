@@ -27,6 +27,18 @@ public class Mathmagic {
 	public static Wallmark[] getArray(){
 		return wallmarks;
 	}
+	
+	public Point getPointFromInt(int i) {
+		return spMap.get(isMap.get(i));
+	}
+	
+	public Point getPointFromName(String name) {
+		return spMap.get(name);
+	}
+	
+	public String getNameFromInt(int i) {
+		return isMap.get(i);
+	}
 
 	public float[][] wallmarkDistances = new float[20][20];
 
