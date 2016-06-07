@@ -73,7 +73,9 @@ public class DroneCommander extends Canvas {
 		cmd.hover().doFor(interval);
 		cmd.landing();
 	}
-
+	public void killAll(){
+		cmd.emergency();
+	}
 	public CommandManager getCmd() {
 		return cmd;
 	}

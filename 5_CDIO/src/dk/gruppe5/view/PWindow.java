@@ -1,5 +1,6 @@
 package dk.gruppe5.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -41,7 +42,7 @@ public class PWindow {
 	public JTextField textField_4;
 	public JTextField textField_5;
 	
-	
+	DroneCommander dCommando = new DroneCommander();
 	
 	public PWindow(int w, int h) {
 
@@ -114,6 +115,8 @@ public class PWindow {
         JButton Button4 = new JButton("Find Contours");jButs.add(Button4);
         JButton Button5 = new JButton("Template Matching");jButs.add(Button5);
         JButton Button6 = new JButton("Find Airfields");jButs.add(Button6);
+        JButton Button7 = new JButton("Kill Switch");jButs.add(Button7); Button7.setForeground(Color.RED);
+       
         
         
         JLabel lblNumber1 = new JLabel("Canny");
@@ -145,7 +148,7 @@ public class PWindow {
         //Input til Good Features to Track
         jp.add(lblNumber2);jp.add(textField_4);jp.add(textField_5);jp.add(textField_6);
         //Update knap
-        jp.add(new JLabel(""));jp.add(updateBtn);jp.add(repaintBtn);
+        jp.add(new JLabel(""));jp.add(updateBtn);jp.add(repaintBtn);jp.add(Button7);
         
         
 		frame.add(jp);
@@ -203,11 +206,9 @@ public class PWindow {
         });
 		Button2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DroneCommander dCommando = new DroneCommander();
-				
 				System.out.println("Takeoff er presset");
-				dCommando.testFlight(3000);
-				//dCommando.takeOffAndLand(3000);
+				//dCommando.testFlight(3000);
+				dCommando.takeOffAndLand(5000);
 				//dCommando.hover(5000);
 	            SwingUtilities.updateComponentTreeUI(frame);
             	frame.invalidate();
@@ -245,6 +246,16 @@ public class PWindow {
 		Button6.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 	            Values_cam.setMethod(4);
+	            SwingUtilities.updateComponentTreeUI(frame);
+            	frame.invalidate();
+            	frame.validate();
+            	frame.repaint();
+            }
+        });
+		Button7.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("KILL IT");
+				dCommando.killAll();
 	            SwingUtilities.updateComponentTreeUI(frame);
             	frame.invalidate();
             	frame.validate();
