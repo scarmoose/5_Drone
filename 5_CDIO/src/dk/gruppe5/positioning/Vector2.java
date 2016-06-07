@@ -26,6 +26,10 @@ public final class Vector2 implements Serializable {
 		this.x = p.x;
 		this.y = p.y;
 	}
+	public Vector2(org.opencv.core.Point point){
+		this.x = point.x;
+		this.y = point.y;
+	}
 
 	public Vector2 add(Vector2 a) {
 		return new Vector2(x + a.x, y + a.y);

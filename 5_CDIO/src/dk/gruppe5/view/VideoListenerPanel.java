@@ -27,6 +27,7 @@ import dk.gruppe5.framework.ImageProcessor;
 import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.positioning.Position;
+import dk.gruppe5.positioning.Vector2;
 
 public class VideoListenerPanel extends JPanel {
 
@@ -118,7 +119,10 @@ public class VideoListenerPanel extends JPanel {
 								System.out.println("point1:" +data.getQrNames()[0]+"   point 2:" +data.getQrNames()[1]+ "   point 3:"+data.getQrNames()[2]);
 								System.out.println("point1:" +data.getPoints()[0]+"   point 2:" +data.getPoints()[1]+ "   point 3:"+data.getPoints()[2]);
 								Position test = new Position();
-						
+								Vector2 left = new Vector2(data.getPoints()[0]);
+								Vector2 qrCode = new Vector2(data.getPoints()[1]);
+								Vector2 right  = new Vector2(data.getPoints()[2]);
+								//test.getPositionFromPoints(data.getPoints()[0], data.getPoints()[1], data.getPoints()[3]);
 							}
 							
 						}else if(!Double.isNaN(data.getPoints()[1].x)){

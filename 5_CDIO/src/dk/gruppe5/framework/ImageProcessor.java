@@ -861,7 +861,7 @@ public class ImageProcessor {
 
 		Point[] points = { leftAverage, QrAverage, rightAverage };
 		//hent de 3 gemte felters navne
-		String[] qrNames = { nameOfQROnTheRight,nameOfQRCodeFound, nameOfQROnTheLeft};
+		String[] qrNames = {nameOfQROnTheLeft,nameOfQRCodeFound,nameOfQROnTheRight};
 		
 		//System.out.println("Names: -->  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
 		//System.out.println("Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
