@@ -133,12 +133,20 @@ public class Position {
 		return new Circle(center, radius);
 	}
 	
+	
+	
 	public Point getPositionFromPoints(Point p1, Point p2, Point p3) {
 		float pixelsFromP1toP2 = (float) p1.distance(p2);
 		float pixelsFromP2toP3 = (float) p2.distance(p3);
 		Vector2 v1 = new Vector2(p1);
 		Vector2 v2 = new Vector2(p2);
 		Vector2 v3 = new Vector2(p3);
+		return getPositionFromPoints(v1, v2, v3, pixelsFromP1toP2, pixelsFromP2toP3);
+	}
+	
+	public Point getPositionFromPoints(Vector2 v1, Vector2 v2, Vector2 v3) {
+		float pixelsFromP1toP2 = (float) v1.distance(v2);
+		float pixelsFromP2toP3 = (float) v2.distance(v3);
 		return getPositionFromPoints(v1, v2, v3, pixelsFromP1toP2, pixelsFromP2toP3);
 	}
 	
