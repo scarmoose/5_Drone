@@ -122,6 +122,9 @@ public class VideoListenerPanel extends JPanel {
 								Vector2 left = new Vector2(data.getPoints()[0]);
 								Vector2 qrCode = new Vector2(data.getPoints()[1]);
 								Vector2 right  = new Vector2(data.getPoints()[2]);
+								
+								//mangles at testes, thomas skal kigge på om QRcode navn skal bruges til noget???
+								System.out.println(test.getPositionFromPoints(left, qrCode, right));
 								//test.getPositionFromPoints(data.getPoints()[0], data.getPoints()[1], data.getPoints()[3]);
 							}
 							
