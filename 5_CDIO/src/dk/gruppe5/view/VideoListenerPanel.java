@@ -20,6 +20,7 @@ import com.google.zxing.Result;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.video.ImageListener;
+import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.ImageProcessor;
 import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
@@ -103,11 +104,14 @@ public class VideoListenerPanel extends JPanel {
 					
 					List<Result> results = imgProc.readQRCodes(potentialQRcodes);
 					//backUp = imgProc.markQrCodes(results, shapes, backUp);
-					Point[] points = imgProc.markQrCodes(results, shapes, backUp);
-					if(points != null){
-						backUp = imgProc.drawLine( points[0],points[1],backUp);
-						backUp = imgProc.drawLine(points[1], points[2], backUp);
-						System.out.println("point1:" +points[0]+"   point 2:" +points[1]+ "   point 3:"+points[2]);	
+					DetectedWallmarksAndNames data  = imgProc.markQrCodes(results, shapes, backUp);
+					
+					
+					if(data != null){
+						backUp = imgProc.drawLine( data.getPoints()[0],data.getPoints()[1],backUp);
+						backUp = imgProc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp);
+						System.out.println("point1:" +data.getQrNames()[0]+"   point 2:" +data.getQrNames()[1]+ "   point 3:"+data.getQrNames()[2]);
+						System.out.println("point1:" +data.getPoints()[0]+"   point 2:" +data.getPoints()[1]+ "   point 3:"+data.getPoints()[2]);	
 					}else{
 						image = imgProc.toBufferedImage(backUp);
 					}
