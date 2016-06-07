@@ -145,8 +145,8 @@ public class Lines extends JFrame {
 
         @Override
         public void update() {
-            DronePosition.setXPoint(DronePosition.getXPoint());
-            DronePosition.setYPoint(DronePosition.getYPoint());
+            DronePosition.setXPoint(DronePosition.getXPoint() +xDelta);
+            DronePosition.setYPoint(DronePosition.getYPoint() +yDelta);
             
             
             if (DronePosition.getXPoint() < 0) {
@@ -164,7 +164,7 @@ public class Lines extends JFrame {
             } else if (DronePosition.getYPoint() + 20 > 1060) {
             	DronePosition.setYPoint(1060 - 20);
                 yDelta *= -1;
-            }
+            } 
             fireStateChanged();
         }
 
@@ -234,12 +234,17 @@ public class Lines extends JFrame {
     			g2d.drawRoundRect(xplace/2+20, yvalue/2+50, 4, 4, 4, 4);
     			//System.out.println("x = " + xplace + ", y= "+yvalue);
     		}
-            g2d.setPaint(Color.blue);
+            
             
             //g2d.drawRoundRect(Points.getXPoint()/2+20, Points.getYPoint()/2+50, 2, 2, 2, 2);
-            
             Image img1 = Toolkit.getDefaultToolkit().getImage("rsz_he291.jpg");
             g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYPoint()/2+50, this);
+            if(DronePosition.getXPoint() < 930 && DronePosition.getYPoint() < 1060){
+            g2d.setPaint(Color.blue);
+            g2d.drawRect(331, 395, 5, 5);
+            g2d.drawRect(321, 500, 5, 5);
+            g2d.drawRect(400, 200, 5, 5);
+            }
             
             
             System.out.println(DronePosition.getXPoint()+" + "+DronePosition.getYPoint());
