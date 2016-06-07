@@ -1,13 +1,19 @@
 package dk.gruppe5.controller;
 
 import java.awt.Point;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.HashMap;
 
 import dk.gruppe5.model.Wallmark;
+import dk.gruppe5.positioning.Vector2;
 
 public class Mathmagic {
 	
 	int pixels = 720;
 	int cameraDegrees = 68;
+	
+	public final static Map<String, Point> map = new HashMap<String, Point>();
 
 	static Wallmark[] wallmarks = {
 			new Wallmark("W00.00",new Point(188,1055)), new Wallmark("W00.01",new Point(338, 1060)), new Wallmark("W00.02",new Point(515,1055)), new Wallmark("W00.03",new Point(694, 1060)), new Wallmark("W00.04",new Point(840, 1055)),
@@ -24,14 +30,16 @@ public class Mathmagic {
 
 	public Mathmagic(){
 		for(int i = 0; i < wallmarks.length; i++){
+			map.put(wallmarks[i].getName(), wallmarks[i].getPosition());
 			for(int j  = 0; j < wallmarks.length; j++){
-				float distance = getDistanceBetweenPoints(wallmarks[i].getPosition(), wallmarks[j].getPosition());
+				float distance = getDistanceBetweenPoints(new Vector2(wallmarks[i].getPosition()), new Vector2(wallmarks[j].getPosition()));
 				wallmarkDistances[i][j] = distance;
+				
 			}
-		}
+		}	
 	}
 
-	private float getDistanceBetweenPoints(Point p1, Point p2) {
+	private float getDistanceBetweenPoints(Vector2 p1, Vector2 p2) {
 		return (float )p1.distance(p2);
 	}
 	

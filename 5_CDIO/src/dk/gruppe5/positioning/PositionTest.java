@@ -5,6 +5,8 @@ package dk.gruppe5.positioning;
 
 import java.awt.Point;
 
+import dk.gruppe5.controller.Mathmagic;
+
 /**
  * @author Thomas
  *
@@ -12,6 +14,7 @@ import java.awt.Point;
 public class PositionTest {
 	
 	Position pos;
+	Mathmagic mm;
 
 	/**
 	 * @param args
@@ -21,20 +24,32 @@ public class PositionTest {
 	}
 	
 	public void test() {
-		
+		mm = new Mathmagic();
 		pos = new Position();
-		Point p1 = new Point(0, 10);
-		Point p2 = new Point(0, 0);
-		Point p3 = new Point(10, 0);
-		Point[] points = new Point[]{p1, p2, p3};
+		
+//		Point p1 = mm.map.get("W00.04");
+//		Point p2 = mm.map.get("W01.00");
+//		Point p3 = mm.map.get("W01.01");
+		
+		Vector2 p1 = new Vector2(0,0);
+		Vector2 p2 = new Vector2(1,2);
+		Vector2 p3 = new Vector2(0,4);
+		
+		Vector2[] points = new Vector2[]{p1, p2, p3};
 		Circle c1;
 		Circle c2;
 		
-		c1 = pos.getCircle(p1, p2, 360);
-		c2 = pos.getCircle(p2, p3, 360);
+		c1 = pos.getCircleFromPointsWithAngle(p1, p2, (float) Math.toDegrees(0.18));
+		System.out.println(c1);
+		c2 = pos.getCircleFromPointsWithAngle(p2, p3, (float) Math.toDegrees(0.2));
+		System.out.println(c2);
 		
-		Point p = pos.getPosition(c1, c2, points);
-		System.out.println(p);
+		Vector2[] vectors = pos.getIntersectionVectors(c1, c2);
+		for(Vector2 v : vectors) 
+			System.out.println(v);
+		
+		Vector2 vector = pos.getPositionVector(c1, c2, points);
+		System.out.println("Position: "+vector);
 	}
 
 }
