@@ -182,7 +182,7 @@ public class PPanel extends JPanel implements Runnable {
 					
 					List<Result> results = imgproc.readQRCodes(potentialQRcodes);
 					
-					backUp = imgproc.markQrCodes(results, shapes, backUp);
+					//backUp = imgproc.markQrCodes(results, shapes, backUp);
 					image = imgproc.toBufferedImage(backUp);
 					 //save the images so we can review them
 					 //imgproc.saveImage(backUp, "testOnce"+i +".jpg");

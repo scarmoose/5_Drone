@@ -29,7 +29,7 @@ public class Position {
 	 * @param startPoints Points that was used to create the circles
 	 * @return
 	 */
-
+	@Deprecated
 	public Point getPosition(Circle c1, Circle c2, Vector2[] startPoints) {
 		CircleCircleIntersection cci = new CircleCircleIntersection(c1, c2);
 		Point[] points = Vector2.getPointArray(cci.getIntersectionVectors());
@@ -50,6 +50,13 @@ public class Position {
 		return null;
 	}
 	
+	/**
+	 * giver skæringspunkterne for de to cirkler, hvis der er nogen. 
+	 * @param c1 cirkel 1
+	 * @param c2 cirkel 2
+	 * @return skæringspunkterne. <code>null</code> hvis der ikke er nogen
+	 */
+	
 	public Vector2[] getIntersectionVectors(Circle c1, Circle c2) {
 		CircleCircleIntersection cci = new CircleCircleIntersection(c1, c2);
 		Vector2[] points = cci.getIntersectionVectors();
@@ -58,6 +65,15 @@ public class Position {
 		}
 		return null;
 	}
+	
+	/**
+	 * giver det af skæringspunkterne for de cirkler, der ikke er et at de givne startpoints.
+	 * Altså de 3 punkter, de 2 cirkler blevet lavet med. 
+	 * @param c1 cirkel 1
+	 * @param c2 cirkel 2
+	 * @param startPoints punkter der skal tjekkes op imod
+	 * @return returnerer <code>null</code>, 1 punkt, eller 2 punkter. Ved henholdsvis 0, 1 og 2 skæringspunkter.
+	 */
 	
 	public Vector2 getPositionVector(Circle c1, Circle c2, Vector2[] startPoints) {
 		CircleCircleIntersection cci = new CircleCircleIntersection(c1, c2);
@@ -70,13 +86,21 @@ public class Position {
 			if(vectors.length == 2) {
 				System.out.println("Der var 2 points");
 				for(Vector2 v : vectors) {
-					if(!isVectorAlmostEqualToOneOfThePoints(v, startPoints, 2)) // må være 2% fra
+					if(!isVectorAlmostEqualToOneOfThePoints(v, startPoints, 2)) // må ikke være inden for 2% af startPoints
 						return v;
 				}
 			}
 		}
 		return null;
 	}
+	
+	/**
+	 * fortæller om et punkt @param v ligger tæt på et at punkterne i @param points
+	 * @param v punkt der skal tjekkes for
+	 * @param points punkter der skal tjekkes op imod
+	 * @param thresholdPercent antal procent det må være fra, før der skal returneres true
+	 * @return true hvis punktet @param v ligger tæt på et af punkterne i @param points
+	 */
 	
 	public boolean isVectorAlmostEqualToOneOfThePoints(Vector2 v, Vector2[] points, float thresholdPercent) {
 		for(Vector2 vector : points) {
@@ -91,20 +115,27 @@ public class Position {
 	}
 	
 	
-
+	/**
+	 * giver en cirkel med <param>p1</param> og <param>p2</param>, samt iagtageren/dronen på periferien
+	 * @param p1 punkt 1
+	 * @param p2 punkt 2
+	 * @param pixelsOccupiedByObject så mange pixels, der er i mellem p1 og p2. 
+	 * @return cirkel med alle punkter i periferien
+	 */
+	
 	public Circle getCircleFromPoints(Vector2 p1, Vector2 p2, float pixelsOccupiedByObject) {
 		float alpha = getAngleInDegreesFromPixelsOccupied(pixelsOccupiedByObject);
 		return getCircleFromPointsWithAngle(p1, p2, alpha);
 	}
 
-	
 	/**
 	 * This creates a circle with the two observed points, and the observer points on the peripheral line
-	 * @param p1
-	 * @param p2
-	 * @param angle
+	 * @param p1 point number 1
+	 * @param p2 point number 2
+ 	 * @param angle observed angle between the objects
 	 * @return
 	 */
+	
 	public Circle getCircleFromPointsWithAngle(Vector2 p1, Vector2 p2, float angle) {
 		double 		x1 = p1.x,
 					y1 = p1.y,
@@ -136,7 +167,7 @@ public class Position {
 	
 	
 	
-	public Point getPositionFromPoints(Point p1, Point p2, Point p3) {
+	public Vector2 getPositionFromPoints(Point p1, Point p2, Point p3) {
 		float pixelsFromP1toP2 = (float) p1.distance(p2);
 		float pixelsFromP2toP3 = (float) p2.distance(p3);
 		Vector2 v1 = new Vector2(p1);
@@ -145,24 +176,35 @@ public class Position {
 		return getPositionFromPoints(v1, v2, v3, pixelsFromP1toP2, pixelsFromP2toP3);
 	}
 	
-	public Point getPositionFromPoints(Vector2 v1, Vector2 v2, Vector2 v3) {
+	@Deprecated
+	public Vector2 getPositionFromPoints(Vector2 v1, Vector2 v2, Vector2 v3) {
 		float pixelsFromP1toP2 = (float) v1.distance(v2); // .distance ikke testet
 		float pixelsFromP2toP3 = (float) v2.distance(v3);
 		return getPositionFromPoints(v1, v2, v3, pixelsFromP1toP2, pixelsFromP2toP3);
 	}
 	
-	public Point getPositionFromPoints(Vector2 v1, Vector2 v2, Vector2 v3,
+	/**
+	 * Giver et <code>Vector2</code> punkt med positionen bestemt ud fra tre rumkoordinater, 
+	 * og afstandene derimellem
+	 * @param v1
+	 * @param v2
+	 * @param v3
+	 * @param pixelsFromP1toP2
+	 * @param pixelsFromP2toP3
+	 * @return
+	 */
+	public Vector2 getPositionFromPoints(Vector2 v1, Vector2 v2, Vector2 v3,
 			float pixelsFromP1toP2, float pixelsFromP2toP3){
 		
 		Vector2[] points = new Vector2[]{v1, v2, v3};
 		Circle c1 = getCircleFromPoints(v1, v2, pixelsFromP1toP2);
 		Circle c2 = getCircleFromPoints(v2, v3, pixelsFromP2toP3);
-		Vector2 position = getPositionVector(c1, c2, points);
-		return new Point((int) position.x, (int) position.y);
+		return getPositionVector(c1, c2, points);
+		 
 	}
 	
 	/**
-	 * Giver et opencv.core.Point, der repræsenterer positionen, 
+	 * Giver et <code>org.opencv.core.Point</code>, der repræsenterer positionen, 
 	 * som udregnet fra de givne punkter i rummet, og pixelkoordinaterne fra kameraet. 
 	 * @param v1 rumkoordinater for punkt 1
 	 * @param v2 rumkoordinater for punkt 2
@@ -179,7 +221,7 @@ public class Position {
 	}
 	
 	/**
-	 * Giver et opencv.core.Point, der repræsenterer positionen, 
+	 * Giver et <code>org.opencv.core.Point</code>, der repræsenterer positionen, 
 	 * som udregnet fra de givne punkter i rummet, og pixelkoordinaterne fra kameraet. 
 	 * @param vectors array af rumkoordinater for punkterne. I rækkefølge.
 	 * @param p1 pixelkoordinater for punkt 1
@@ -200,7 +242,7 @@ public class Position {
 	}
 	
 	/**
-	 * Giver et opencv.core.Point, der repræsenterer positionen, 
+	 * Giver et <code>org.opencv.core.Point</code>, der repræsenterer positionen, 
 	 * som udregnet fra de givne punkter i rummet, og pixelkoordinaterne fra kameraet. 
 	 * @param names array af navne på punkterne der er fundet. I rækkefølge.
 	 * @param p1 pixelkoordinater for punkt 1
@@ -218,6 +260,13 @@ public class Position {
 		};
 		return getPositionFromPoints(vectors, p1, p2, p3);
 	}
+	
+	/**
+	 * Giver afstanden i mellem to punkter
+	 * @param p1 Punkt 1
+	 * @param p2 Punkt 2
+	 * @return Afstanden i mellem de to punkter.
+	 */
 	
 	public float distance(org.opencv.core.Point p1, org.opencv.core.Point p2) {
 		return (float) Math.abs(Math.sqrt(

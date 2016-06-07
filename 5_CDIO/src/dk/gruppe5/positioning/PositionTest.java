@@ -26,11 +26,19 @@ public class PositionTest {
 	public void test2() {
 		mm = new Mathmagic();
 		pos = new Position();
-		
-		org.opencv.core.Point p1 = new org.opencv.core.Point(232,132); 
-		org.opencv.core.Point p2 = new org.opencv.core.Point(300,400);
+		int x = 39;
+		int y = 84;
+		org.opencv.core.Point p1 = new org.opencv.core.Point(x, y); 
+		org.opencv.core.Point p2 = new org.opencv.core.Point(x+=3, y+=4);
+		System.out.println("p1.x: "+p1.x+", p1.y: "+p1.y);
+		System.out.println("p2.x: "+p2.x+", p2.y: "+p2.y);
 		
 		System.out.println(pos.distance(p1, p2));
+		System.out.println("float max: "+Float.MAX_VALUE);
+		System.out.println("double max: "+Double.MAX_VALUE);
+		System.out.println("integer max: "+Integer.MAX_VALUE);
+		System.out.println("short max: "+Short.MAX_VALUE);
+		System.out.println("long max: "+Long.MAX_VALUE);
 		
 	}
 	
