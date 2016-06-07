@@ -8,7 +8,9 @@ import java.awt.Graphics2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class Points {
+import dk.gruppe5.positioning.Vector2;
+
+public class DronePosition {
 
 	/**
 	 * 
@@ -22,6 +24,11 @@ public class Points {
 
 	public static int getYPoint(){return y;}
 	public static void setYPoint(int input) {y = input;}
+	
+	public static void setCoordinates(Vector2 v){
+		x = (int) v.x;
+		y = (int) v.y;
+	}
 	
 	
 }
