@@ -28,21 +28,21 @@ public class Mathmagic {
 		return wallmarks;
 	}
 	
-	public Point getPointFromInt(int i) {
+	public static Point getPointFromInt(int i) {
 		return spMap.get(isMap.get(i));
 	}
 	
-	public Point getPointFromName(String name) {
+	public static Point getPointFromName(String name) {
 		return spMap.get(name);
 	}
 	
-	public String getNameFromInt(int i) {
+	public static String getNameFromInt(int i) {
 		return isMap.get(i);
 	}
 
-	public float[][] wallmarkDistances = new float[20][20];
+	public static float[][] wallmarkDistances = new float[20][20];
 
-	public Mathmagic(){
+	static{
 		for(int i = 0; i < wallmarks.length; i++){
 			isMap.put(i, wallmarks[i].getName());
 			spMap.put(wallmarks[i].getName(), wallmarks[i].getPosition());
@@ -54,7 +54,7 @@ public class Mathmagic {
 		}	
 	}
 
-	private float getDistanceBetweenPoints(Vector2 p1, Vector2 p2) {
+	private static float getDistanceBetweenPoints(Vector2 p1, Vector2 p2) {
 		return (float )p1.distance(p2);
 	}
 	

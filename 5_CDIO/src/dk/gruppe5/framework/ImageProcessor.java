@@ -824,7 +824,7 @@ public class ImageProcessor {
 								Point txtPoint = shape.getCenter();
 								rightPoints.add(txtPoint);
 								System.out.println("name on right set");
-								nameOfQROnTheRight = Mathmagic.isMap.get(nrWallMark + 1);
+								nameOfQROnTheRight = Mathmagic.getNameFromInt(nrWallMark+1);
 								break;
 							}
 							nrWallMark++;
@@ -839,7 +839,7 @@ public class ImageProcessor {
 								Point txtPoint = shape.getCenter();
 								leftPoints.add(txtPoint);
 								System.out.println("name on left set");
-								nameOfQROnTheLeft = Mathmagic.isMap.get(nrWallMark - 1);
+								nameOfQROnTheLeft = Mathmagic.getNameFromInt(nrWallMark-1);
 								break;
 							}
 							nrWallMark++;
@@ -863,12 +863,12 @@ public class ImageProcessor {
 		//hent de 3 gemte felters navne
 		String[] qrNames = { nameOfQROnTheRight,nameOfQRCodeFound, nameOfQROnTheLeft};
 		
-		System.out.println("Names: -->  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
-		System.out.println("Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
-		if (Double.isNaN(points[0].x) || Double.isNaN(points[1].x) || Double.isNaN(points[2].x)) {
+		//System.out.println("Names: -->  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
+		//System.out.println("Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
+		if ( Double.isNaN(points[1].x)) {
 			//System.out.println("points null");
 			return null;
-		} else if (qrNames[0] == null || qrNames[1] == null || qrNames[2] == null) {
+		} else if (qrNames[1] == null) {
 			//System.out.println("names null");
 			return null;
 		}
@@ -878,7 +878,7 @@ public class ImageProcessor {
 	}
 
 	private boolean isShapeValidQRAndPosition(Shape QRCodeShape, Shape currentShape) {
-		int minDistance = 150;
+		int minDistance = 100;
 		if (currentShape.getTlPoint().x > (QRCodeShape.getTlPoint().x + minDistance)
 				|| currentShape.getTlPoint().x < (QRCodeShape.getTlPoint().x - minDistance)) {
 
@@ -894,7 +894,7 @@ public class ImageProcessor {
 				// større?
 				// den kunne være en del mindre, da der er den der
 				// alcove
-				if (currentShape.getArea() > (QRCodeShape.getArea() * 0.5)
+				if (currentShape.getArea() > (QRCodeShape.getArea() * 0.8)
 						&& currentShape.getArea() < (QRCodeShape.getArea() * 1.2)) {
 
 					// check om formen ca passer med et A4 højde er

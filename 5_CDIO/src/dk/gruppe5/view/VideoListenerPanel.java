@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
 import com.google.zxing.Result;
@@ -108,10 +109,20 @@ public class VideoListenerPanel extends JPanel {
 					
 					
 					if(data != null){
-//						backUp = imgProc.drawLine( data.getPoints()[0],data.getPoints()[1],backUp);
-//						backUp = imgProc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp);
-						System.out.println("point1:" +data.getQrNames()[0]+"   point 2:" +data.getQrNames()[1]+ "   point 3:"+data.getQrNames()[2]);
-						System.out.println("point1:" +data.getPoints()[0]+"   point 2:" +data.getPoints()[1]+ "   point 3:"+data.getPoints()[2]);	
+						if(!Double.isNaN(data.getPoints()[0].x) && !Double.isNaN(data.getPoints()[1].x) && !Double.isNaN(data.getPoints()[2].x) ){
+							if(data.getQrNames()[0] != null && data.getQrNames()[1] != null && data.getQrNames()[2] != null){
+								backUp = imgProc.drawLine( data.getPoints()[0],data.getPoints()[1],backUp);
+								backUp = imgProc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp);
+								System.out.println("point1:" +data.getQrNames()[0]+"   point 2:" +data.getQrNames()[1]+ "   point 3:"+data.getQrNames()[2]);
+								System.out.println("point1:" +data.getPoints()[0]+"   point 2:" +data.getPoints()[1]+ "   point 3:"+data.getPoints()[2]);
+							}
+							
+						}else if(!Double.isNaN(data.getPoints()[1].x)){
+							Scalar color = new Scalar(255, 0, 0);
+							Imgproc.putText(backUp, data.getQrNames()[1], data.getPoints()[1], 5, 2, color);
+							
+						}
+							
 					}else{
 						image = imgProc.toBufferedImage(backUp);
 					}
