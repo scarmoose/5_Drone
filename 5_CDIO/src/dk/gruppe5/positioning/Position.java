@@ -25,16 +25,16 @@ public class Position implements IPosition {
 
 
 	@Override
-	public Point getPosition() {
+	public Point getPositionCoordinates(Circle c1, Circle ) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Circle getCircle(Point p1, Point p2, int pixelsOccupiedByObject) {
+	public Circle getCircleFromPoints(Point p1, Point p2, int pixelsOccupiedByObject) {
 		int 	x1 = p1.x,
-				x2 = p2.x,
 				y1 = p1.y,
+				x2 = p2.x,
 				y2 = p2.y;
 		
 		double alpha = getAngleInDegreesFromPixelsOccupied(pixelsOccupiedByObject);

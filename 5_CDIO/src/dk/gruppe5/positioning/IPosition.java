@@ -5,8 +5,8 @@ import java.awt.Point;
 public interface IPosition {
 	
 	float getDistanceToPoints(float angle, float distanceBetweenPoints);
-	Point getPosition();
+	Point getPositionCoordinates();
 	float getAngleInDegreesFromPixelsOccupied(int pixels);
-	Circle getCircle(Point p1, Point p2, int pixelsOccupiedByObject);
+	Circle getCircleFromPoints(Point p1, Point p2, int pixelsOccupiedByObject);
 
 }
