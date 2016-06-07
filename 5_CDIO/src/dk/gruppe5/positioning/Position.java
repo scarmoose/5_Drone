@@ -5,7 +5,7 @@ import java.awt.Point;
 public class Position implements IPosition {
 	
 	private Vector2 currentPos;
-	final static int TOTAL_PIXELS = 720;
+	final static float TOTAL_PIXELS = 720.0f;
 	final static float TOTAL_ANGLE = 67.7f;
 	
 	public Position() {}
@@ -35,8 +35,12 @@ public class Position implements IPosition {
 		CircleCircleIntersection cci = new CircleCircleIntersection(c1, c2);
 		Point[] points = Vector2.getPointArray(cci.getIntersectionVectors());
 		if(points != null && points.length > 0) {
-			if(points.length == 1) return new Point((int) points[0].x, (int) points[0].y);
+			if(points.length == 1) {
+				System.out.println("Der var 1 point");
+				return new Point((int) points[0].x, (int) points[0].y);
+			}
 			if(points.length == 2) {
+				System.out.println("Der var 2 points");
 				for(Point p : points) {
 					if(!p.equals(startPoints[0]) && !p.equals(startPoints[1])
 							&& !p.equals(startPoints[2]))
@@ -72,8 +76,12 @@ public class Position implements IPosition {
 		
 		Point center = new Point((int) x_c, (int) y_c);
 		
+		System.out.println("alpha: "+ alpha);
 		double radius = (1.0/2) * a/Math.sin(Math.toRadians(alpha));
+		System.out.println("radius: "+ radius);
 		
 		return new Circle(center, radius);
 	}
+
+
 }
