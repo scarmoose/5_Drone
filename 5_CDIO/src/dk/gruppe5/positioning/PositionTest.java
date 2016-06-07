@@ -20,10 +20,21 @@ public class PositionTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new PositionTest().test();
+		new PositionTest().test2();
 	}
 	
-	public void test() {
+	public void test2() {
+		mm = new Mathmagic();
+		pos = new Position();
+		
+		org.opencv.core.Point p1 = new org.opencv.core.Point(232,132); 
+		org.opencv.core.Point p2 = new org.opencv.core.Point(300,400);
+		
+		System.out.println(pos.distance(p1, p2));
+		
+	}
+	
+	public void test1() {
 		mm = new Mathmagic();
 		pos = new Position();
 		

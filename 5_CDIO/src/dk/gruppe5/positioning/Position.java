@@ -1,6 +1,7 @@
 package dk.gruppe5.positioning;
 
 import java.awt.Point;
+import org.opencv.*;
 
 public class Position {
 	
@@ -69,7 +70,7 @@ public class Position {
 			if(vectors.length == 2) {
 				System.out.println("Der var 2 points");
 				for(Vector2 v : vectors) {
-					if(!isVectorAlmostEqualToOneOfThePoints(v, startPoints, 2))
+					if(!isVectorAlmostEqualToOneOfThePoints(v, startPoints, 2)) // må være 2% fra
 						return v;
 				}
 			}
@@ -145,7 +146,7 @@ public class Position {
 	}
 	
 	public Point getPositionFromPoints(Vector2 v1, Vector2 v2, Vector2 v3) {
-		float pixelsFromP1toP2 = (float) v1.distance(v2);
+		float pixelsFromP1toP2 = (float) v1.distance(v2); // .distance ikke testet
 		float pixelsFromP2toP3 = (float) v2.distance(v3);
 		return getPositionFromPoints(v1, v2, v3, pixelsFromP1toP2, pixelsFromP2toP3);
 	}
@@ -158,6 +159,40 @@ public class Position {
 		Circle c2 = getCircleFromPoints(v2, v3, pixelsFromP2toP3);
 		Vector2 position = getPositionVector(c1, c2, points);
 		return new Point((int) position.x, (int) position.y);
+	}
+	
+	/**
+	 * Giver et opencv.core.Point, der repræsenterer positionen, 
+	 * som udregnet fra de givne punkter i rummet, og pixelkoordinaterne fra kameraet. 
+	 * @param v1 rumkoordinater for punkt 1
+	 * @param v2 rumkoordinater for punkt 2
+	 * @param v3 rumkoordinater for punkt 3
+	 * @param p1 pixelkoordinater for punkt 1
+	 * @param p2 pixelkoordinater for punkt 2
+	 * @param p3 pixelkoordinater for punkt 3
+	 * @return opencv.core.Point med positionskoordinater
+	 */
+	public org.opencv.core.Point getPositionFromPoints(Vector2 v1, Vector2 v2, Vector2 v3,
+			org.opencv.core.Point p1, org.opencv.core.Point p2, org.opencv.core.Point p3) {
+		
+		Vector2[] realLocations = new Vector2[]{v1, v2, v3};
+		float pixelsFromP1toP2 = distance(p1, p2);
+		float pixelsFromP2toP3 = distance(p2, p3);
+		Circle c1 = getCircleFromPoints(v1, v2, pixelsFromP1toP2);
+		Circle c2 = getCircleFromPoints(v2, v3, pixelsFromP2toP3);
+		Vector2 position = getPositionVector(c1, c2, realLocations);
+		
+		return new org.opencv.core.Point(position.x, position.y);
+	}
+	
+	public float distance(org.opencv.core.Point p1, org.opencv.core.Point p2) {
+		return (float) Math.abs(Math.sqrt(
+						sq((float) (p2.x-p1.x)) +
+								sq((float) (p2.y-p1.y))));
+	}
+	
+	public float sq(float a) {
+		return a * a;
 	}
 
 
