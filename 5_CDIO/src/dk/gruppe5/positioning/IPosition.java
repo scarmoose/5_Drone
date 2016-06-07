@@ -8,5 +8,7 @@ public interface IPosition {
 	Point getPositionCoordinates();
 	float getAngleInDegreesFromPixelsOccupied(int pixels);
 	Circle getCircleFromPoints(Point p1, Point p2, int pixelsOccupiedByObject);
+	Circle getCircle(Point p1, Point p2, int pixelsOccupiedByObject);
+	Point getPosition(Circle c1, Circle c2, Point[] startPoints);
 
 }

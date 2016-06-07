@@ -110,5 +110,14 @@ public final class Vector2 implements Serializable {
 	public String toString() {
 		return getClass().getSimpleName() + "(" + x + ", " + y + ")";
 	}
+	
+	public static Point[] getPointArray(Vector2[] vectors) {
+		Point[] points = new Point[vectors.length];
+		int i = 0;
+		for(Vector2 v : vectors) {
+			points[i++] = new Point((int) v.x, (int) v.y);
+		}
+		return points;
+	}
 
 }

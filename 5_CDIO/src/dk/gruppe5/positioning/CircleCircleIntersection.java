@@ -2,6 +2,8 @@ package dk.gruppe5.positioning;
 
 import static java.lang.Math.*;
 
+import java.awt.Point;
+
 // References:
 // http://paulbourke.net/geometry/2circle/
 // http://mathworld.wolfram.com/Circle-CircleIntersection.html
@@ -94,7 +96,7 @@ public final class CircleCircleIntersection {
 			distanceRadicalPointIntersectionPoints = 0;
 			return;
 		}
-
+		
 		// Type determination is simpler if done later.
 		/* else
 		{
@@ -160,7 +162,7 @@ public final class CircleCircleIntersection {
 	}
 
 	// Valid for noncoincident circles:
-	public Vector2[] getIntersectionPoints() {
+	public Vector2[] getIntersectionVectors() {
 		switch (type.getIntersectionPointCount()) {
 		case 0:
 			return new Vector2[] {};
@@ -171,6 +173,18 @@ public final class CircleCircleIntersection {
 		default:
 			throw new IllegalStateException("Coincident circles");
 		}
+	}
+	
+	public Point[] getIntersectionPoints() {
+		Vector2[] vectors = getIntersectionVectors();
+		Point[] points = new Point[vectors.length];
+		Point p;
+		int i = 0;
+		for(Vector2 v : vectors) {
+			p = new Point((int) v.x, (int) v.y);
+			points[i++] = p;
+		}
+		return points;
 	}
 
 	private double sq(double a) {

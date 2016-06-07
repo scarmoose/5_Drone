@@ -23,12 +23,31 @@ public class Position implements IPosition {
 		return (float) ((distanceBetweenPoints/2) / Math.tan(Math.toRadians(angle)));
 	}
 
-
+	/**
+	 * 
+	 * @param c1 Circle 1
+	 * @param c2 Circle 2
+	 * @param startPoints Points that was used to create the circles
+	 * @return
+	 */
 	@Override
-	public Point getPositionCoordinates(Circle c1, Circle ) {
-		// TODO Auto-generated method stub
+	public Point getPosition(Circle c1, Circle c2, Point[] startPoints) {
+		CircleCircleIntersection cci = new CircleCircleIntersection(c1, c2);
+		Point[] points = Vector2.getPointArray(cci.getIntersectionVectors());
+		if(points != null && points.length > 0) {
+			if(points.length == 1) return new Point((int) points[0].x, (int) points[0].y);
+			if(points.length == 2) {
+				for(Point p : points) {
+					if(!p.equals(startPoints[0]) && !p.equals(startPoints[1])
+							&& !p.equals(startPoints[2]))
+						return p;
+				}
+			}
+		}
 		return null;
 	}
+	
+	
 
 	@Override
 	public Circle getCircleFromPoints(Point p1, Point p2, int pixelsOccupiedByObject) {
@@ -57,7 +76,4 @@ public class Position implements IPosition {
 		
 		return new Circle(center, radius);
 	}
-	
-	
-
 }

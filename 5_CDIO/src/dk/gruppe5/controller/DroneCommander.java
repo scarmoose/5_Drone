@@ -30,6 +30,7 @@ public class DroneCommander extends Canvas {
 			
 			drone.start();
 			cmd = drone.getCommandManager();
+			cmd.setMaxAltitude(2000);
 			cmd.setVideoChannel(VideoChannel.HORI);
 			System.out.println("Drone connected.");
 		
