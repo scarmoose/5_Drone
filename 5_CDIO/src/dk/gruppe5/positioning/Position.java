@@ -77,8 +77,8 @@ public class Position {
 		return null;
 	}
 	
-	public boolean isVectorAlmostEqualToOneOfThePoints(Vector2 v, Vector2[] vectors, float thresholdPercent) {
-		for(Vector2 vector : vectors) {
+	public boolean isVectorAlmostEqualToOneOfThePoints(Vector2 v, Vector2[] points, float thresholdPercent) {
+		for(Vector2 vector : points) {
 			double x = vector.x;
 			double y = vector.y;
 			if((v.x <= x * (1 + thresholdPercent/100.0) && v.x >= x * (1 - thresholdPercent/100.0)
@@ -131,6 +131,17 @@ public class Position {
 		System.out.println("radius: "+ radius);
 		
 		return new Circle(center, radius);
+	}
+	
+	public Point getPositionFromPoints(Point p1, Point p2, Point p3, int pixelsFromP1toP2, int pixelsFromP2toP3) {
+		Vector2 v1 = new Vector2(p1);
+		Vector2 v2 = new Vector2(p2);
+		Vector2 v3 = new Vector2(p3);
+		Vector2[] points = new Vector2[]{v1, v2, v3};
+		Circle c1 = getCircleFromPoints(v1, v2, pixelsFromP1toP2);
+		Circle c2 = getCircleFromPoints(v2, v3, pixelsFromP2toP3);
+		Vector2 position = getPositionVector(c1, c2, points);
+		return new Point((int) position.x, (int) position.y);
 	}
 
 
