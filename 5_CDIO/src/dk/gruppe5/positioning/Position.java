@@ -82,6 +82,35 @@ public class Position implements IPosition {
 		
 		return new Circle(center, radius);
 	}
+	
+	public Circle getCircleFromPointsWithAngle(Point p1, Point p2, float angle) {
+		int 	x1 = p1.x,
+				y1 = p1.y,
+				x2 = p2.x,
+				y2 = p2.y;
+		
+		double alpha = angle;
+		double a = Math . sqrt ( Math . pow ( x1 - x2 ,2) + Math . pow ( y1 - y2 , 2) ) ;
+		double t1 = a * a ;
+		double t2 = Math . sin ( alpha ) ;
+		double t3 = t2 * t2 ;
+		double t7 = Math . sqrt (1.0 / t3 * t1 - t1 ) ;
+		double t8 = y1 - y2 ;
+		double t10 = t8 * t8 ;
+		double t12 = x1 - x2 ;
+		double t13 = t12 * t12 ;
+		double t15 = Math . sqrt (( t10 + t13 ) ) ;
+		double x_c = - t8 / t15 * t7 / 2.0 + x1 / 2.0 + x2 / 2.0;
+		double y_c = t12 / t15 * t7 / 2.0 + y1 / 2.0 + y2 / 2.0;
+		
+		Point center = new Point((int) x_c, (int) y_c);
+		
+		System.out.println("alpha: "+ alpha);
+		double radius = (1.0/2) * a/Math.sin(Math.toRadians(alpha));
+		System.out.println("radius: "+ radius);
+		
+		return new Circle(center, radius);
+	}
 
 
 }
