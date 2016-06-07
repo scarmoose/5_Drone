@@ -861,12 +861,15 @@ public class ImageProcessor {
 
 		Point[] points = { leftAverage, QrAverage, rightAverage };
 		//hent de 3 gemte felters navne
-		String[] qrNames = { nameOfQROnTheRight, nameOfQROnTheLeft, nameOfQRCodeFound };
+		String[] qrNames = { nameOfQROnTheRight,nameOfQRCodeFound, nameOfQROnTheLeft};
+		
+		System.out.println("Names: -->  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
+		System.out.println("Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
 		if (Double.isNaN(points[0].x) || Double.isNaN(points[1].x) || Double.isNaN(points[2].x)) {
-			System.out.println("points null");
+			//System.out.println("points null");
 			return null;
 		} else if (qrNames[0] == null || qrNames[1] == null || qrNames[2] == null) {
-			System.out.println("names null");
+			//System.out.println("names null");
 			return null;
 		}
 		DetectedWallmarksAndNames data = new DetectedWallmarksAndNames(qrNames, points);
