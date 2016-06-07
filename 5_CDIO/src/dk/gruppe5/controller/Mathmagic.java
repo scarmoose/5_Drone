@@ -13,7 +13,9 @@ public class Mathmagic {
 	int pixels = 720;
 	int cameraDegrees = 68;
 	
-	public final static Map<String, Point> map = new HashMap<String, Point>();
+	public final static Map<String, Point> spMap = new HashMap<String, Point>();
+	public final static Map<Integer, String> isMap = new HashMap<Integer, String>();
+	{spMap.get(isMap.get(1)); }
 
 	static Wallmark[] wallmarks = {
 			new Wallmark("W00.00",new Point(188,1055)), new Wallmark("W00.01",new Point(338, 1060)), new Wallmark("W00.02",new Point(515,1055)), new Wallmark("W00.03",new Point(694, 1060)), new Wallmark("W00.04",new Point(840, 1055)),
@@ -25,12 +27,25 @@ public class Mathmagic {
 	public static Wallmark[] getArray(){
 		return wallmarks;
 	}
+	
+	public Point getPointFromInt(int i) {
+		return spMap.get(isMap.get(i));
+	}
+	
+	public Point getPointFromName(String name) {
+		return spMap.get(name);
+	}
+	
+	public String getNameFromInt(int i) {
+		return isMap.get(i);
+	}
 
 	public float[][] wallmarkDistances = new float[20][20];
 
 	public Mathmagic(){
 		for(int i = 0; i < wallmarks.length; i++){
-			map.put(wallmarks[i].getName(), wallmarks[i].getPosition());
+			isMap.put(i, wallmarks[i].getName());
+			spMap.put(wallmarks[i].getName(), wallmarks[i].getPosition());
 			for(int j  = 0; j < wallmarks.length; j++){
 				float distance = getDistanceBetweenPoints(new Vector2(wallmarks[i].getPosition()), new Vector2(wallmarks[j].getPosition()));
 				wallmarkDistances[i][j] = distance;
