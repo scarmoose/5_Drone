@@ -49,6 +49,46 @@ public class Position {
 		return null;
 	}
 	
+	public Vector2[] getIntersectionVectors(Circle c1, Circle c2) {
+		CircleCircleIntersection cci = new CircleCircleIntersection(c1, c2);
+		Vector2[] points = cci.getIntersectionVectors();
+		if(points != null && points.length > 0) {
+			return points;
+		}
+		return null;
+	}
+	
+	public Vector2 getPositionVector(Circle c1, Circle c2, Vector2[] startPoints) {
+		CircleCircleIntersection cci = new CircleCircleIntersection(c1, c2);
+		Vector2[] vectors = cci.getIntersectionVectors();
+		if(vectors != null && vectors.length > 0) {
+			if(vectors.length == 1) {
+				System.out.println("Der var 1 point");
+				return new Vector2(startPoints[0].x, startPoints[0].y);
+			}
+			if(vectors.length == 2) {
+				System.out.println("Der var 2 points");
+				for(Vector2 v : vectors) {
+					if(!isVectorAlmostEqualToOneOfThePoints(v, startPoints, 2))
+						return v;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public boolean isVectorAlmostEqualToOneOfThePoints(Vector2 v, Vector2[] vectors, float thresholdPercent) {
+		for(Vector2 vector : vectors) {
+			double x = vector.x;
+			double y = vector.y;
+			if((v.x <= x * (1 + thresholdPercent/100.0) && v.x >= x * (1 - thresholdPercent/100.0)
+					&& v.y <= y * (1 + thresholdPercent/100.0) && v.y >= y * (1 - thresholdPercent/100.0))) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	
 
 	public Circle getCircleFromPoints(Vector2 p1, Vector2 p2, int pixelsOccupiedByObject) {
