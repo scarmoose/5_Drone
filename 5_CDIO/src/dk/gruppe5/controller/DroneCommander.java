@@ -6,6 +6,7 @@ import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.VideoChannel;
+import dk.gruppe5.app.App;
 
 public class DroneCommander extends Canvas {
 	
@@ -14,8 +15,7 @@ public class DroneCommander extends Canvas {
 	 */
 	private static final long serialVersionUID = -869265015784363288L;
 	
-	private IARDrone drone;
-	private CommandManager cmd;
+	CommandManager cmd = App.drone.getCommandManager();
 	private NavDataListener navl;
 
 
@@ -25,11 +25,11 @@ public class DroneCommander extends Canvas {
 			
 			System.out.println("Connecting to drone...");
 			
-			drone = new ARDrone();
-			navl = new NavDataListener((ARDrone) drone);
+			//drone = new app.drone();
+			navl = new NavDataListener((ARDrone) App.drone);
 			
-			drone.start();
-			cmd = drone.getCommandManager();
+			App.drone.start();
+			cmd = App.drone.getCommandManager();
 			cmd.setMaxAltitude(2000);
 			cmd.setVideoChannel(VideoChannel.HORI);
 			System.out.println("Drone connected.");
@@ -51,21 +51,37 @@ public class DroneCommander extends Canvas {
 	//	takeOffAndLand(1000);
 	//	System.out.println("--> Takeoff and landing complete.");
 		
-	}
-	
-	public void takeOffAndLand(long interval) {
+	}	
+	public void testFlight(long interval){
+		System.out.println("We have Liftoff");
+		cmd.flatTrim();
 		cmd.takeOff();
 		cmd.waitFor(interval);
-		//cmd.hover().doFor(interval);
+		cmd.hover().spinLeft(10).doFor(interval);
+		cmd.landing();
+		System.out.println("Test Landing complete");
+	}
+	public void takeOffAndLand(long interval){
+		cmd.flatTrim();
+		cmd.takeOff();
+		cmd.waitFor(interval);
 		cmd.landing();
 	}
-
+	public void hover(long interval){
+		cmd.flatTrim();
+		cmd.takeOff();
+		cmd.hover().doFor(interval);
+		cmd.landing();
+	}
+	public void killAll(){
+		cmd.emergency();
+	}
 	public CommandManager getCmd() {
 		return cmd;
 	}
 	
 	public IARDrone getDrone() {
-		return drone;
+		return App.drone;
 	}
 
 
