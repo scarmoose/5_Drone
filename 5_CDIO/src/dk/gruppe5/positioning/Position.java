@@ -1,11 +1,11 @@
 package dk.gruppe5.positioning;
 
 import java.awt.Point;
-import org.opencv.*;
+
+import dk.gruppe5.controller.Mathmagic;
 
 public class Position {
 	
-	private Vector2 currentPos;
 	final static float TOTAL_PIXELS = 720.0f;
 	final static float TOTAL_ANGLE = 67.7f;
 	
@@ -106,24 +106,24 @@ public class Position {
 	 * @return
 	 */
 	public Circle getCircleFromPointsWithAngle(Vector2 p1, Vector2 p2, float angle) {
-		double 	x1 = p1.x,
-						y1 = p1.y,
-						x2 = p2.x,
-						y2 = p2.y;
+		double 		x1 = p1.x,
+					y1 = p1.y,
+					x2 = p2.x,
+					y2 = p2.y;
 		
 		double alpha = Math.toRadians(angle);
-		double a = Math . sqrt ( Math . pow ( x1 - x2 ,2) + Math . pow ( y1 - y2 , 2) ) ;
-		double t1 = a * a ;
-		double t2 = Math . sin ( alpha ) ;
-		double t3 = t2 * t2 ;
-		double t7 = Math . sqrt (1.0 / t3 * t1 - t1 ) ;
-		double t8 = y1 - y2 ;
-		double t10 = t8 * t8 ;
-		double t12 = x1 - x2 ;
-		double t13 = t12 * t12 ;
-		double t15 = Math . sqrt (( t10 + t13 ) ) ;
-		double x_c = - t8 / t15 * t7 / 2.0 + x1 / 2.0 + x2 / 2.0;
-		double y_c = t12 / t15 * t7 / 2.0 + y1 / 2.0 + y2 / 2.0;
+		double a = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+		double t1 = a * a;
+		double t2 = Math.sin(alpha);
+		double t3 = t2 * t2;
+		double t7 = Math.sqrt(1.0/t3 * t1 - t1 ) ;
+		double t8 = y1 - y2;
+		double t10 = t8 * t8;
+		double t12 = x1 - x2;
+		double t13 = t12 * t12;
+		double t15 = Math.sqrt((t10 + t13));
+		double x_c = -t8/t15 * t7/2.0 + x1/2.0 + x2/2.0;
+		double y_c = t12/t15 * t7/2.0 + y1/2.0 + y2/2.0;
 		
 		Vector2 center = new Vector2(x_c, y_c);
 		
@@ -174,15 +174,49 @@ public class Position {
 	 */
 	public org.opencv.core.Point getPositionFromPoints(Vector2 v1, Vector2 v2, Vector2 v3,
 			org.opencv.core.Point p1, org.opencv.core.Point p2, org.opencv.core.Point p3) {
-		
 		Vector2[] realLocations = new Vector2[]{v1, v2, v3};
+		return getPositionFromPoints(realLocations, p1, p2, p3);
+	}
+	
+	/**
+	 * Giver et opencv.core.Point, der repræsenterer positionen, 
+	 * som udregnet fra de givne punkter i rummet, og pixelkoordinaterne fra kameraet. 
+	 * @param vectors array af rumkoordinater for punkterne. I rækkefølge.
+	 * @param p1 pixelkoordinater for punkt 1
+	 * @param p2 pixelkoordinater for punkt 2
+	 * @param p3 pixelkoordinater for punkt 3
+	 * @return opencv.core.Point med positionskoordinater
+	 */
+	public org.opencv.core.Point getPositionFromPoints(Vector2[] vectors,
+			org.opencv.core.Point p1, org.opencv.core.Point p2, org.opencv.core.Point p3) {
+	
 		float pixelsFromP1toP2 = distance(p1, p2);
 		float pixelsFromP2toP3 = distance(p2, p3);
-		Circle c1 = getCircleFromPoints(v1, v2, pixelsFromP1toP2);
-		Circle c2 = getCircleFromPoints(v2, v3, pixelsFromP2toP3);
-		Vector2 position = getPositionVector(c1, c2, realLocations);
+		Circle c1 = getCircleFromPoints(vectors[0], vectors[1], pixelsFromP1toP2);
+		Circle c2 = getCircleFromPoints(vectors[1], vectors[2], pixelsFromP2toP3);
+		Vector2 position = getPositionVector(c1, c2, vectors);
 		
 		return new org.opencv.core.Point(position.x, position.y);
+	}
+	
+	/**
+	 * Giver et opencv.core.Point, der repræsenterer positionen, 
+	 * som udregnet fra de givne punkter i rummet, og pixelkoordinaterne fra kameraet. 
+	 * @param names array af navne på punkterne der er fundet. I rækkefølge.
+	 * @param p1 pixelkoordinater for punkt 1
+	 * @param p2 pixelkoordinater for punkt 2
+	 * @param p3 pixelkoordinater for punkt 3
+	 * @return opencv.core.Point med positionskoordinater
+	 */
+	public org.opencv.core.Point getPositionFromPoints(String[] names,
+			org.opencv.core.Point p1, org.opencv.core.Point p2, org.opencv.core.Point p3) {
+		Mathmagic mm = new Mathmagic();
+		Vector2[] vectors = new Vector2[] { 
+			mm.spMap.get(names[0]),
+			mm.spMap.get(names[1]),
+			mm.spMap.get(names[2])
+		};
+		return getPositionFromPoints(vectors, p1, p2, p3);
 	}
 	
 	public float distance(org.opencv.core.Point p1, org.opencv.core.Point p2) {
@@ -193,6 +227,10 @@ public class Position {
 	
 	public float sq(float a) {
 		return a * a;
+	}
+	
+	public static float getDistanceBetweenPoints(Vector2 p1, Vector2 p2) {
+		return (float) p1.distance(p2);
 	}
 
 
