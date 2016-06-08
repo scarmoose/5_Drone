@@ -67,7 +67,21 @@ public class VideoListenerPanel extends JPanel {
 				
 				if(Values_cam.getMethod() == 0){
 					image = imgProc.toBufferedImage(frame);
-				} else 	if(Values_cam.getMethod() == 5){
+				} else if(Values_cam.getMethod() == 4) {
+					
+					frame = imgProc.toGrayScale(frame);
+					frame = imgProc.blur(frame);
+					frame = imgProc.toCanny(frame);
+					
+					frame = imgProc.findAirfield(frame);
+					
+					
+					image = imgProc.toBufferedImage(frame);
+					
+					
+				
+				}else 	if(Values_cam.getMethod() == 5){
+				
 					Mat backUp = new Mat();
 					backUp = frame;
 					//kig på whitebalancing og eventuelt at reducere området som vi kigger igennem for firkanter.
