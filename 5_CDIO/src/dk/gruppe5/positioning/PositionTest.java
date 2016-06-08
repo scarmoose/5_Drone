@@ -13,7 +13,7 @@ import dk.gruppe5.controller.Mathmagic;
  */
 public class PositionTest {
 	
-	Position pos;
+	IPosition pos;
 	Mathmagic mm;
 
 	/**

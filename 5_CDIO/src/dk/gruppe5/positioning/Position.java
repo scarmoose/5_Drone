@@ -86,7 +86,7 @@ public class Position {
 			if(vectors.length == 2) {
 				System.out.println("Der var 2 points");
 				for(Vector2 v : vectors) {
-					if(!isVectorAlmostEqualToOneOfThePoints(v, startPoints, 2)) // må ikke være inden for 2% af startPoints
+					if(!isVectorAlmostEqualToOneOfThePoints(v, startPoints, 2)) // 2% afvigelse tilladt
 						return v;
 				}
 			}
@@ -129,7 +129,7 @@ public class Position {
 	}
 
 	/**
-	 * This creates a circle with the two observed points, and the observer points on the peripheral line
+	 * This creates a circle with the two observed points, and the observer point on the peripheral line
 	 * @param p1 point number 1
 	 * @param p2 point number 2
  	 * @param angle observed angle between the objects

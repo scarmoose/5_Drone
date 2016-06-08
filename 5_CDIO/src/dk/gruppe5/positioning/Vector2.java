@@ -6,6 +6,8 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.io.Serializable;
 
+//tyvstjålet fra https://github.com/Lanchon/circle-circle-intersection
+
 public final class Vector2 implements Serializable {
 
 	private static final long serialVersionUID = 1L;

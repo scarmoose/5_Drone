@@ -3,6 +3,8 @@ package dk.gruppe5.positioning;
 import java.awt.Point;
 import java.io.Serializable;
 
+//tyvstjålet fra https://github.com/Lanchon/circle-circle-intersection
+
 public final class Circle implements Serializable {
 
 	private static final long serialVersionUID = 1L;
