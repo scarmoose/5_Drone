@@ -78,7 +78,7 @@ public class Lines extends JFrame {
         public void run() {
             while (true) {
                 try {
-                    Thread.sleep(40);
+                    Thread.sleep(10);
                 } catch (InterruptedException ex) {
                 }
                 model.update();
@@ -174,6 +174,12 @@ public class Lines extends JFrame {
 
         private Model model;
 
+        BasicStroke bs1 = new BasicStroke(8, BasicStroke.CAP_BUTT,
+		        BasicStroke.JOIN_BEVEL);
+        BasicStroke bs2 = new BasicStroke(1, BasicStroke.CAP_BUTT,
+		        BasicStroke.JOIN_BEVEL);
+
+        
         public View(Model model) {
             this.model = model;
             this.model.addChangeListener(this);
@@ -189,25 +195,21 @@ public class Lines extends JFrame {
         protected void paintComponent(Graphics g) {
             //super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g.create();
-            int x = this.getWidth() / 2;
-            int y = this.getHeight() / 2;
-            g2d.rotate(Math.toRadians(180.0), x, y);
             g2d.setColor(getBackground());
             g2d.fillRect(0, 0, getWidth(), getHeight());
             //Rectangle bounds = model.getBounds();
             g2d.setColor(Color.BLUE);
             //The four walls
-            g2d.drawLine(20, 50, 30/2+20, 50);
-            g2d.drawLine(30/2+20, 50-(10/2), 150/2+20, 50-(10/2));
-            g2d.drawLine(150/2+20, 50-(77/2), 480/2+20, 50-(77/2));
-            g2d.drawLine(480/2+20, 50, 930/2+20, 50);
-            
-            g2d.drawLine(150/2+20, 50-(10/2), 150/2+20, 50-(77/2));
-            g2d.drawLine(30/2+20, 50-(10/2), 30/2+20, 50);
-            g2d.drawLine(480/2+20, 50-(77/2), 480/2+20, 50);
-            
+            g2d.drawLine(20, 50, 930/2+20, 50);
             g2d.drawLine(20, 50, 20, 1060/2+50);
-            g2d.drawLine(20, 1060/2+50, 930/2+20, 1060/2+50);
+            g2d.drawLine(20, 1060/2+50, 450/2+20, 1060/2+50);
+            g2d.drawLine(450/2+20, 1060/2+50+(77/2), 450/2+20, 1060/2+50);
+            g2d.drawLine(450/2+20, 1060/2+50+(77/2), 750/2+20, 1060/2+50+(77/2));
+            g2d.drawLine(450/2+20, 1060/2+50+(77/2), 450/2+20, 1060/2+50);
+            g2d.drawLine(900/2+20, 1060/2+50+(10/2), 750/2+20, 1060/2+50+(10/2));
+            g2d.drawLine(750/2+20, 1060/2+50+(77/2), 750/2+20, 1060/2+50+(10/2));
+            g2d.drawLine(900/2+20, 1060/2+50, 900/2+20, 1060/2+50+(10/2));
+            g2d.drawLine(900/2+20, 1060/2+50, 930/2+20, 1060/2+50);
             g2d.drawLine(930/2+20, 1060/2+50, 930/2+20, 50);
             
             ArrayList<Integer> Xelements = new ArrayList<>();
@@ -217,21 +219,20 @@ public class Lines extends JFrame {
     			Yelements.add((int) Mathmagic.getArray()[i].getPosition().getY());
     		}
         	
-    		for (int k = 0;k< Xelements.size();k++){
-    			int xplace = 0;
+    		for (int k = 0;k< Yelements.size();k++){
+    			int yplace = 0;
     			int xvalue = Xelements.get(k);
     			int yvalue = Yelements.get(k);
-    			if (xvalue < 465){
-    				xplace = 465-(xvalue - 465);
+    			if (yvalue < 530){
+    				yplace = 530-(yvalue - 530);
     			}
-    			if (xvalue > 465){
-    				xplace= (465-xvalue)+465;
+    			if (yvalue > 530){
+    				yplace= (530-yvalue)+530;
     			}
-    			BasicStroke bs1 = new BasicStroke(8, BasicStroke.CAP_BUTT,
-    			        BasicStroke.JOIN_BEVEL);
     			g2d.setStroke(bs1);
     			g2d.setPaint(Color.red);
-    			g2d.drawRoundRect(xplace/2+20, yvalue/2+50, 4, 4, 4, 4);
+    			g2d.drawRoundRect(xvalue/2+20, yplace/2+50, 4, 4, 4, 4);
+    			g2d.drawString(Mathmagic.getArray()[k].getName(), xvalue/2+20, yplace/2+70);
     			//System.out.println("x = " + xplace + ", y= "+yvalue);
     		}
             
@@ -240,12 +241,23 @@ public class Lines extends JFrame {
             Image img1 = Toolkit.getDefaultToolkit().getImage("rsz_he291.jpg");
             g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYPoint()/2+50, this);
             if(DronePosition.getXPoint() < 930 && DronePosition.getYPoint() < 1060){
-            g2d.setPaint(Color.blue);
-            g2d.drawRect(331, 395, 5, 5);
-            g2d.drawRect(321, 500, 5, 5);
-            g2d.drawRect(400, 200, 5, 5);
-            }
             
+        	g2d.setStroke(bs2);
+            g2d.setPaint(Color.blue);
+            int pointx = 10;
+            int pointy = 10;
+            
+            if (pointy < 530){
+            	pointy = 530-(pointy - 530);
+			}
+            else if (pointy > 530){
+            	pointy = (530-pointy)+530;
+			}
+            
+            g2d.drawRect(10/2+50, pointy/2+20, 50, -50);
+            //g2d.drawRect(321, 500, 5, 5);
+            //g2d.drawRect(400, 200, 5, 5);
+            }
             
             System.out.println(DronePosition.getXPoint()+" + "+DronePosition.getYPoint());
             //g2d.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);

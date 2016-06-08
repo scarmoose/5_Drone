@@ -86,7 +86,7 @@ public class Position {
 			if(vectors.length == 2) {
 				System.out.println("Der var 2 points");
 				for(Vector2 v : vectors) {
-					if(!isVectorAlmostEqualToOneOfThePoints(v, startPoints, 2)) // må ikke være inden for 2% af startPoints
+					if(!isVectorAlmostEqualToOneOfThePoints(v, startPoints, 10)) // 2% afvigelse tilladt
 						return v;
 				}
 			}
@@ -129,7 +129,7 @@ public class Position {
 	}
 
 	/**
-	 * This creates a circle with the two observed points, and the observer points on the peripheral line
+	 * This creates a circle with the two observed points, and the observer point on the peripheral line
 	 * @param p1 point number 1
 	 * @param p2 point number 2
  	 * @param angle observed angle between the objects
@@ -141,7 +141,8 @@ public class Position {
 					y1 = p1.y,
 					x2 = p2.x,
 					y2 = p2.y;
-		
+
+		System.out.println("Angle: " + angle);
 		double alpha = Math.toRadians(angle);
 		double a = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
 		double t1 = a * a;
@@ -193,10 +194,11 @@ public class Position {
 	 * @param pixelsFromP2toP3
 	 * @return
 	 */
+	
 	public Vector2 getPositionFromPoints(Vector2 v1, Vector2 v2, Vector2 v3,
 			float pixelsFromP1toP2, float pixelsFromP2toP3){
 		
-		Vector2[] points = new Vector2[]{v1, v2, v3};
+		Vector2[] points = new Vector2[]{v1, v2, v3}; // startpoints som cirkler er lavet ud fra
 		Circle c1 = getCircleFromPoints(v1, v2, pixelsFromP1toP2);
 		Circle c2 = getCircleFromPoints(v2, v3, pixelsFromP2toP3);
 		return getPositionVector(c1, c2, points);

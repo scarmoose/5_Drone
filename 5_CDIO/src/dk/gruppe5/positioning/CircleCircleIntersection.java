@@ -8,6 +8,8 @@ import java.awt.Point;
 // http://paulbourke.net/geometry/2circle/
 // http://mathworld.wolfram.com/Circle-CircleIntersection.html
 
+// tyvstjålet fra https://github.com/Lanchon/circle-circle-intersection
+
 public final class CircleCircleIntersection {
 
 	public static enum Type {
