@@ -78,7 +78,7 @@ public class Lines extends JFrame {
         public void run() {
             while (true) {
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(5);
                 } catch (InterruptedException ex) {
                 }
                 model.update();
@@ -164,7 +164,12 @@ public class Lines extends JFrame {
             } else if (DronePosition.getYPoint() + 20 > 1060) {
             	DronePosition.setYPoint(1060 - 20);
                 yDelta *= -1;
-            } 
+            }
+            
+            if (((DronePosition.getYPoint() > 345 - 50 && DronePosition.getYPoint() < 705 - 50 && DronePosition.getXPoint() > 345 + 50 && DronePosition.getXPoint() < 355 + 50) || (DronePosition.getYPoint() > 345 - 50 && DronePosition.getYPoint() < 705 - 50 && DronePosition.getXPoint() > 695 + 50 && DronePosition.getXPoint() < 705 + 50)) || ((DronePosition.getXPoint() > 345 + 50 && DronePosition.getXPoint() < 705 + 50 && DronePosition.getYPoint() > 345 - 50 && DronePosition.getYPoint() < 355 - 50) || (DronePosition.getXPoint() > 345 + 50 && DronePosition.getXPoint() < 705 + 50 && DronePosition.getYPoint() > 695 - 50 && DronePosition.getYPoint() < 705 - 50)) ) {
+                DronePosition.setFound(true);
+            }
+            
             fireStateChanged();
         }
 
@@ -240,12 +245,12 @@ public class Lines extends JFrame {
             //g2d.drawRoundRect(Points.getXPoint()/2+20, Points.getYPoint()/2+50, 2, 2, 2, 2);
             Image img1 = Toolkit.getDefaultToolkit().getImage("rsz_he291.jpg");
             g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYPoint()/2+50, this);
-            if(DronePosition.getXPoint() < 930 && DronePosition.getYPoint() < 1060){
+            if(DronePosition.getXPoint() < 930 && DronePosition.getYPoint() < 1060 && DronePosition.getFound()==true){
             
         	g2d.setStroke(bs2);
             g2d.setPaint(Color.blue);
-            int pointx = 10;
-            int pointy = 10;
+            int pointx = 350;
+            int pointy = 700;
             
             if (pointy < 530){
             	pointy = 530-(pointy - 530);
@@ -254,12 +259,15 @@ public class Lines extends JFrame {
             	pointy = (530-pointy)+530;
 			}
             
-            g2d.drawRect(10/2+50, pointy/2+20, 50, -50);
+            g2d.drawRect(pointx/2+50, pointy/2+20, (DronePosition.getxLen())/2, DronePosition.getyLen()/2);
+
+            /*g2d.setPaint(Color.blue);
+			g2d.drawRoundRect(pointx/2+20, pointy/2+50, 4, 4, 4, 4);*/
+            
             //g2d.drawRect(321, 500, 5, 5);
             //g2d.drawRect(400, 200, 5, 5);
             }
             
-            System.out.println(DronePosition.getXPoint()+" + "+DronePosition.getYPoint());
             //g2d.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);
             g2d.dispose();
         }
