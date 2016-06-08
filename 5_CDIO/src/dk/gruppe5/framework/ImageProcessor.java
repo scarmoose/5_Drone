@@ -904,8 +904,8 @@ public class ImageProcessor {
 			//System.out.println("not valid Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
 			return null;
 		} 
-		System.out.println("Names: -->  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
-		System.out.println("Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
+//		System.out.println("Names: -->  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
+//		System.out.println("Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
 		DetectedWallmarksAndNames data = new DetectedWallmarksAndNames(qrNames, points, distance/qrCodeShapeConfirms.size());
 
 		return data;
