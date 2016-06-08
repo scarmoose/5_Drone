@@ -34,6 +34,7 @@ import com.google.zxing.ResultPoint;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 
+import dk.gruppe5.controller.DistanceCalc;
 import dk.gruppe5.controller.Mathmagic;
 import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
@@ -533,8 +534,8 @@ public class ImageProcessor {
 			}
 
 		}
-		
-		System.out.println(pixelWidth/(double)nr);
+		double pixelWidthAverage = pixelWidth/(double)nr;
+		System.out.println(DistanceCalc.distanceFromCamera(pixelWidthAverage));
 		
 		
 
@@ -810,6 +811,8 @@ public class ImageProcessor {
 		List<Point> rightPoints = new ArrayList<Point>();
 		List<Point> QrPointsPoints = new ArrayList<Point>();
 
+		
+		double distance = 0;
 		for (int i = 0; i < results.size(); i++) {
 			if (results.get(i) != null) {
 				// draw the shape and write the result in the area
@@ -881,6 +884,7 @@ public class ImageProcessor {
 			}
 			//System.out.println("qr code name set");
 			nameOfQRCodeFound = qrCodeResultConfirms.get(z).getText();
+			distance += DistanceCalc.distanceFromCamera(qrCodeConfirmedShape.getWidth());
 		}
 		
 
@@ -902,7 +906,7 @@ public class ImageProcessor {
 		} 
 		System.out.println("Names: -->  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
 		System.out.println("Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
-		DetectedWallmarksAndNames data = new DetectedWallmarksAndNames(qrNames, points);
+		DetectedWallmarksAndNames data = new DetectedWallmarksAndNames(qrNames, points, distance/qrCodeShapeConfirms.size());
 
 		return data;
 	}

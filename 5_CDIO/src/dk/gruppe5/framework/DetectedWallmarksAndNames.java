@@ -6,11 +6,13 @@ public class DetectedWallmarksAndNames {
 
 	String[] qrNames;
 	Point[] points;
+	double distance;
 	
-	public DetectedWallmarksAndNames(String[] qrNames, Point[] points) {
+	public DetectedWallmarksAndNames(String[] qrNames, Point[] points, double distance) {
 		super();
 		this.qrNames = qrNames;
 		this.points = points;
+		this.distance = distance;
 	}
 
 	public String[] getQrNames() {
@@ -19,6 +21,9 @@ public class DetectedWallmarksAndNames {
 
 	public Point[] getPoints() {
 		return points;
+	}
+	public double getDistance(){
+		return distance;
 	}
 	
 }

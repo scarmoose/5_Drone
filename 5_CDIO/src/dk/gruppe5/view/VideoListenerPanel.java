@@ -144,6 +144,7 @@ public class VideoListenerPanel extends JPanel {
 						}else if(!Double.isNaN(data.getPoints()[1].x)){
 							Scalar color = new Scalar(255, 0, 0);
 							Imgproc.putText(backUp, data.getQrNames()[1], data.getPoints()[1], 5, 2, color);
+							Imgproc.putText(backUp, data.getDistance()+"", new Point(30,30), 5, 2, color);
 							
 						}
 							
