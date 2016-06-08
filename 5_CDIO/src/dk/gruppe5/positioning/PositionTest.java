@@ -13,14 +13,14 @@ import dk.gruppe5.controller.Mathmagic;
  */
 public class PositionTest {
 	
-	IPosition pos;
+	Position pos;
 	Mathmagic mm;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new PositionTest().test2();
+		new PositionTest().test3();
 	}
 	
 	public void test2() {
@@ -69,6 +69,17 @@ public class PositionTest {
 		
 		Vector2 vector = pos.getPositionVector(c1, c2, points);
 		System.out.println("Position: "+vector);
+	}
+	
+	public void test3(){
+		mm = new Mathmagic();
+		pos = new Position();
+		
+		String[] testNames = {"W02.02","W02.03","W02.04"};
+		org.opencv.core.Point[] testPoints = {new org.opencv.core.Point(68.0, 142.0),new org.opencv.core.Point(352.25, 149.25),new org.opencv.core.Point(622.5, 144.5)};
+		
+		System.out.println(pos.getPositionFromPoints(testNames, testPoints[0], testPoints[1], testPoints[2]));
+		
 	}
 
 }
