@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_91"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="libs/yadrone_032.jar"/>
 	<classpathentry kind="lib" path="libs/xuggle-xuggler-5.4.jar"/>
 	<classpathentry kind="lib" path="libs/slf4j-jdk14-1.7.2.jar"/>
 	<classpathentry kind="lib" path="libs/slf4j-api-1.7.2.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/ffmpeg-windows-x86_64.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/ffmpeg.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/flandmark-windows-x86_64.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/flandmark.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/flycapture-windows-x86_64.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/flycapture.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/javacpp.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/javacv.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/libdc1394-windows-x86_64.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/libdc1394.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/libfreenect-windows-x86_64.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/libfreenect.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/opencv-windows-x86_64.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/opencv.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/videoinput-windows-x86_64.jar"/>
+	<classpathentry kind="lib" path="libs/javacv/videoinput.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/opencv3.1.0_1">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/usr/local/Cellar/opencv3/3.1.0_1/share/OpenCV/java"/>
@@ -21,5 +37,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="libs/zxing/core-2.2.jar"/>
 	<classpathentry kind="lib" path="libs/zxing/javase-2.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/javacv"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

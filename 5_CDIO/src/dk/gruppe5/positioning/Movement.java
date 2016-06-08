@@ -5,7 +5,7 @@ import dk.gruppe5.model.DPoint;
 
 public class Movement {
 
-	Runnable thread = new Runnable(){
+	Runnable rthread = new Runnable(){
 		@Override 
 		public void run() {
 
@@ -85,7 +85,5 @@ public class Movement {
 		} 
 		return new DPoint(cx, cy); 
 	}
-
-
 
 }
