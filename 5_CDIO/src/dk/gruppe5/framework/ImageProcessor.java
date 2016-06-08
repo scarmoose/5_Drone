@@ -946,5 +946,4 @@ public class ImageProcessor {
 
 		return backUp;
 	}
-
 }
