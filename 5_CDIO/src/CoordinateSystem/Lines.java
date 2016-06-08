@@ -263,6 +263,16 @@ public class Lines extends JFrame {
             //g2d.drawOval(bounds.x, bounds.y, bounds.width, bounds.height);
             g2d.dispose();
         }
+        
+        public void isAirfieldAvailable(){
+            
+        	ArrayList<Integer> airfield = new ArrayList<Integer>(3);
+        	for(int i = 0; i < DronePosition.getXPoint(); i++){
+        		airfield.add(i);
+        		for (int j = 0; i < DronePosition.getYPoint(); i++)
+        			airfield.add(j);
+        	} 
+        }
 
         @Override
         public void stateChanged(ChangeEvent e) {
