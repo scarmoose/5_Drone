@@ -33,13 +33,14 @@ public class PositionTest {
 		System.out.println("p1.x: "+p1.x+", p1.y: "+p1.y);
 		System.out.println("p2.x: "+p2.x+", p2.y: "+p2.y);
 		
+		/*
 		System.out.println(pos.distance(p1, p2));
 		System.out.println("float max: "+Float.MAX_VALUE);
 		System.out.println("double max: "+Double.MAX_VALUE);
 		System.out.println("integer max: "+Integer.MAX_VALUE);
 		System.out.println("short max: "+Short.MAX_VALUE);
 		System.out.println("long max: "+Long.MAX_VALUE);
-		
+		*/
 	}
 	
 	public void test1() {
@@ -64,8 +65,9 @@ public class PositionTest {
 		System.out.println(c2);
 		
 		Vector2[] vectors = pos.getIntersectionVectors(c1, c2);
-		for(Vector2 v : vectors) 
-			System.out.println(v);
+		for(Vector2 v : vectors)  {
+			//System.out.println(v);
+		}
 		
 		Vector2 vector = pos.getPositionVector(c1, c2, points);
 		System.out.println("Position: "+vector);
@@ -76,9 +78,10 @@ public class PositionTest {
 		pos = new Position();
 		
 		String[] testNames = {"W02.02","W02.03","W02.04"};
+		
 		org.opencv.core.Point[] testPoints = {new org.opencv.core.Point(68.0, 142.0),new org.opencv.core.Point(352.25, 149.25),new org.opencv.core.Point(622.5, 144.5)};
 		
-		System.out.println(pos.getPositionFromPoints(testNames, testPoints[0], testPoints[1], testPoints[2]));
+		System.out.println("position hentet er: "+pos.getPositionFromPoints(testNames, testPoints[0], testPoints[1], testPoints[2]));
 		
 	}
 
