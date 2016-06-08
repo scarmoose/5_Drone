@@ -17,6 +17,7 @@ public class DronePosition {
 	private static int ycorn=700;
 	private static int xlen=350;
 	private static int ylen=350;
+	private static int ymirror = 0;
 	
 	
 	public static int getXPoint(){return x;}
@@ -32,6 +33,9 @@ public class DronePosition {
 		x = (int) v.x;
 		y = (int) v.y;
 	}
+	
+	public static int getYMirror(){return ymirror;}
+	public static void setYMirror(int input) {ymirror = input;}
 	
 	public static int getxCorn(){return xcorn;}
 	public static void setxCorn(int input) {xcorn = input;}

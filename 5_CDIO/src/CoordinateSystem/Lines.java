@@ -29,14 +29,6 @@ public class Lines extends JFrame {
 
     private void initUI() {
 
-        add(new Surface());
-
-/*        setTitle("Lines");
-        //Size of window
-        setSize(900/2+80, 1100/2+80);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
- */       
         MutableModel model = new DefaultModel();
         Controller controller = new Controller(model);
 
@@ -74,7 +66,7 @@ public class Lines extends JFrame {
             setDaemon(true);
         }
 
-        @Override
+
         public void run() {
             while (true) {
                 try {
@@ -147,6 +139,13 @@ public class Lines extends JFrame {
         public void update() {
             DronePosition.setXPoint(DronePosition.getXPoint());
             DronePosition.setYPoint(DronePosition.getYPoint());
+            
+            if (DronePosition.getYPoint() < 530){
+				DronePosition.setYMirror(530-(DronePosition.getYPoint() - 530));
+			}
+			if (DronePosition.getYPoint() > 530){
+				DronePosition.setYMirror((530-DronePosition.getYPoint())+530);
+			}
             
             
             if (DronePosition.getXPoint() < 0) {
@@ -241,7 +240,7 @@ public class Lines extends JFrame {
     		}
             
             Image img1 = Toolkit.getDefaultToolkit().getImage("rsz_he291.jpg");
-            g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYPoint()/2+50, this);
+            g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYMirror()/2+50, this);
             if(DronePosition.getXPoint() < 930 && DronePosition.getYPoint() < 1060 && DronePosition.getFound()==true){
             
         	g2d.setStroke(bs2);
