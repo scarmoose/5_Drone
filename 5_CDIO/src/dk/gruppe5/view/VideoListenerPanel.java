@@ -67,7 +67,21 @@ public class VideoListenerPanel extends JPanel {
 				
 				if(Values_cam.getMethod() == 0){
 					image = imgProc.toBufferedImage(frame);
-				} else 	if(Values_cam.getMethod() == 5){
+				} else if(Values_cam.getMethod() == 4) {
+					
+					frame = imgProc.toGrayScale(frame);
+					frame = imgProc.blur(frame);
+					frame = imgProc.toCanny(frame);
+					
+					frame = imgProc.findAirfield(frame);
+					
+					
+					image = imgProc.toBufferedImage(frame);
+					
+					
+				
+				}else 	if(Values_cam.getMethod() == 5){
+				
 					Mat backUp = new Mat();
 					backUp = frame;
 					//kig på whitebalancing og eventuelt at reducere området som vi kigger igennem for firkanter.
@@ -119,18 +133,18 @@ public class VideoListenerPanel extends JPanel {
 								System.out.println("point1:" +data.getQrNames()[0]+"   point 2:" +data.getQrNames()[1]+ "   point 3:"+data.getQrNames()[2]);
 								System.out.println("point1:" +data.getPoints()[0]+"   point 2:" +data.getPoints()[1]+ "   point 3:"+data.getPoints()[2]);
 								Position test = new Position();
-								Vector2 left = new Vector2(data.getPoints()[0]);
-								Vector2 qrCode = new Vector2(data.getPoints()[1]);
-								Vector2 right  = new Vector2(data.getPoints()[2]);
-								
-								//mangles at testes, thomas skal kigge på om QRcode navn skal bruges til noget???
-								System.out.println(test.getPositionFromPoints(left, qrCode, right));
+								/*
+								 * Vi skal hente punkterne for de navne vi finder, de skal sendes, også skal der sendes de pixel positions værdier vi har fundet
+								 */
+								Point mapPosition = test.getPositionFromPoints(data.getQrNames(), data.getPoints()[0], data.getPoints()[1], data.getPoints()[2]);
+								System.out.println(mapPosition);
 								//test.getPositionFromPoints(data.getPoints()[0], data.getPoints()[1], data.getPoints()[3]);
 							}
 							
 						}else if(!Double.isNaN(data.getPoints()[1].x)){
 							Scalar color = new Scalar(255, 0, 0);
 							Imgproc.putText(backUp, data.getQrNames()[1], data.getPoints()[1], 5, 2, color);
+							Imgproc.putText(backUp, data.getDistance()+"", new Point(30,30), 5, 2, color);
 							
 						}
 							

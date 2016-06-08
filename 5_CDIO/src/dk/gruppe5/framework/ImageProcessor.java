@@ -34,6 +34,7 @@ import com.google.zxing.ResultPoint;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 
+import dk.gruppe5.controller.DistanceCalc;
 import dk.gruppe5.controller.Mathmagic;
 import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
@@ -440,27 +441,31 @@ public class ImageProcessor {
 				// We find the rect that surronds the square and adds it to
 				// rects
 				Rect r = Imgproc.boundingRect(contours_1.get(i));
+				
+				if((r.width*2> r.height) && (r.height/2 < r.width)){
+					
 				rects.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
-				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
+			//	Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
+				//Imgproc.rectangle(standIn, r.br(), r.tl(), color);
+				}
 				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
 
 			}
 			// we just say any contour/shap with more than 6 edges we call it a
 			// circle
-			if (approxCurve.height() > 6) {
+			if (approxCurve.height() > 10) {
 
-				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
+				//Scalar color = new Scalar(0, 0, 255);
 				Rect r = Imgproc.boundingRect(contours_1.get(i));
 				double area = Imgproc.contourArea(contours_1.get(i));
 				int radius = r.width / 2;
 
-				// Imgproc.rectangle(standIn, r.br(), r.tl(), color);
-				if (Math.abs(1 - (r.width / r.height)) <= 0.2
-						&& Math.abs(1 - (area / (Math.PI * Math.pow(radius, 2)))) <= 0.2) {
-					if (area > 20) {
-						// Imgproc.drawContours(standIn, contours_1, i, color,
-						// 2);
-						// Imgproc.rectangle(standIn, r.br(), r.tl(), color, 3);
+				//Imgproc.rectangle(standIn, r.br(), r.tl(), color);
+				//System.out.println(Math.abs(1 - (r.width / r.height)));
+				if (Math.abs(1 - ((double)r.width / (double)r.height)) <= 0.2 && Math.abs(1-(area/(Math.PI * Math.pow((double)radius, 2))))<= 0.1) {
+					if (r.area() > 80) {
+					//	System.out.println(r.area());
+						 //Imgproc.drawContours(standIn, contours_1, i, color,2);
 						cirRects.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
 
 					}
@@ -470,9 +475,12 @@ public class ImageProcessor {
 			}
 
 		}
+		
+		double pixelWidth = 0.0;
+		int nr = 0;
 		// check if circles are contained in a rect
 		for (Shape rect : rects) {
-			double area = rect.getArea();
+		
 			Point tlPt = rect.getTlPoint();
 			Point brPt = rect.getBrPoint();
 			int containedCircles = 0;
@@ -482,16 +490,20 @@ public class ImageProcessor {
 				Point cbrPt = cirRect.getBrPoint();
 				// area check dosent work, buuut its unlikely anything will
 				// match the requirements for airfield1 or 2
-				if (/* carea > ((area / 100) * 3) && */ ctlPt.x > tlPt.x && ctlPt.y > tlPt.y && cbrPt.x < brPt.x
-						&& cbrPt.y < brPt.y) {
+				if(cirRect.getArea() > rect.getArea()*0.15 && true ){
+					
+				if (ctlPt.inside(rect.getRect())) {
 					containedCircles++;
+					Scalar color = new Scalar(255, 0, 0);
+						 Imgproc.rectangle(standIn, cirRect.getBrPoint(), cirRect.getTlPoint(), color, 3);
+				}
 				}
 
 			}
 			// Den t�ller hver cirkel dobbelt wat, noget med canny og de kanter
 			// den giver tror jeg
 			// indre cirkel og ydre cirkel. G�r det nok ogs� med firkant...
-
+			
 			if (containedCircles == 6) {
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
@@ -505,9 +517,27 @@ public class ImageProcessor {
 				Point txtPoint = new Point(tlPt.x + rect.getWidth() / 4, tlPt.y + rect.getHeight() / 2);
 
 				Imgproc.putText(standIn, "Airfield2", txtPoint, 5, 2, color);
+			}else if (containedCircles == 2) {
+				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
+				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
+				Point txtPoint = new Point(tlPt.x + rect.getWidth() / 4, tlPt.y + rect.getHeight() / 2);
+				if(rect.getWidth() > rect.getHeight()){
+					//System.out.println(rect.getHeight());
+					pixelWidth += rect.getHeight();
+					nr++;
+				}else{
+					//System.out.println(rect.getWidth());
+					pixelWidth += rect.getWidth();
+					nr++;
+				}
+				Imgproc.putText(standIn, "testAirfield", txtPoint, 5, 2, color);
 			}
 
 		}
+		double pixelWidthAverage = pixelWidth/(double)nr;
+		System.out.println(DistanceCalc.distanceFromCamera(pixelWidthAverage));
+		
+		
 
 		return standIn;
 	}
@@ -781,6 +811,8 @@ public class ImageProcessor {
 		List<Point> rightPoints = new ArrayList<Point>();
 		List<Point> QrPointsPoints = new ArrayList<Point>();
 
+		
+		double distance = 0;
 		for (int i = 0; i < results.size(); i++) {
 			if (results.get(i) != null) {
 				// draw the shape and write the result in the area
@@ -823,7 +855,7 @@ public class ImageProcessor {
 							if (wallmark.getName().equals(qrCodeResultText)) {
 								Point txtPoint = shape.getCenter();
 								rightPoints.add(txtPoint);
-								System.out.println("name on right set");
+								//System.out.println("name on right set");
 								nameOfQROnTheRight = Mathmagic.getNameFromInt(nrWallMark+1);
 								break;
 							}
@@ -838,7 +870,7 @@ public class ImageProcessor {
 							if (wallmark.getName().equals(qrCodeResultConfirms.get(z).getText())) {
 								Point txtPoint = shape.getCenter();
 								leftPoints.add(txtPoint);
-								System.out.println("name on left set");
+								//System.out.println("name on left set");
 								nameOfQROnTheLeft = Mathmagic.getNameFromInt(nrWallMark-1);
 								break;
 							}
@@ -846,13 +878,15 @@ public class ImageProcessor {
 						}
 
 					}
-					System.out.println("qr code name set");
-					nameOfQRCodeFound = qrCodeResultConfirms.get(z).getText();
+					
 				}
-
+				
 			}
-
+			//System.out.println("qr code name set");
+			nameOfQRCodeFound = qrCodeResultConfirms.get(z).getText();
+			distance += DistanceCalc.distanceFromCamera(qrCodeConfirmedShape.getWidth());
 		}
+		
 
 		// find gennemsnit af punkter og returner 3 punkter, [left,middle,right]
 		Point leftAverage = averagePoint(leftPoints);
@@ -863,16 +897,16 @@ public class ImageProcessor {
 		//hent de 3 gemte felters navne
 		String[] qrNames = {nameOfQROnTheLeft,nameOfQRCodeFound,nameOfQROnTheRight};
 		
-		//System.out.println("Names: -->  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
-		//System.out.println("Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
-		if ( Double.isNaN(points[1].x)) {
+
+		if ( Double.isNaN(points[1].x) || qrNames[1] == null) {
 			//System.out.println("points null");
+			//System.out.println("not valid names  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
+			//System.out.println("not valid Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
 			return null;
-		} else if (qrNames[1] == null) {
-			//System.out.println("names null");
-			return null;
-		}
-		DetectedWallmarksAndNames data = new DetectedWallmarksAndNames(qrNames, points);
+		} 
+		System.out.println("Names: -->  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
+		System.out.println("Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
+		DetectedWallmarksAndNames data = new DetectedWallmarksAndNames(qrNames, points, distance/qrCodeShapeConfirms.size());
 
 		return data;
 	}
@@ -946,5 +980,4 @@ public class ImageProcessor {
 
 		return backUp;
 	}
-
 }

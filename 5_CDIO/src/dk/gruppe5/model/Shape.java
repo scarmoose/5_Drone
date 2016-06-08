@@ -1,6 +1,7 @@
 package dk.gruppe5.model;
 
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 
 public class Shape {
 
@@ -43,5 +44,10 @@ public class Shape {
 	public Point getCenter(){
 		return  new Point(tlPoint.x+getHeight()/2,tlPoint.y+getWidth()/2);
 		
+	}
+	public Rect getRect(){
+		Rect r = new Rect(tlPoint,brPoint);
+		
+		return r;
 	}
 }
