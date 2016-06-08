@@ -79,22 +79,22 @@ public class Position {
 	public Vector2 getPositionVector(Circle c1, Circle c2, Vector2[] startPoints) {
 		CircleCircleIntersection cci = new CircleCircleIntersection(c1, c2);
 		Vector2[] vectors = cci.getIntersectionVectors();
-		for(Vector2 v : vectors)
-			System.out.println("getPositionVector - Skæringspunkt: "+v);
+//		for(Vector2 v : vectors)
+//			System.out.println("getPositionVector - Skæringspunkt: "+v);
 		if(vectors != null && vectors.length > 0) {
 			if(vectors.length == 1) {
-				System.out.println("Der var 1 point");
+//				System.out.println("Der var 1 point");
 				return new Vector2(startPoints[0].x, startPoints[0].y);
 			}
 			if(vectors.length == 2) {
-				System.out.println("Der var 2 points");
-				int i = 0;
-				for(Vector2 v : vectors) {
-					System.out.println("----> vector "+i++ +" er: "+v);
-				}
-				for(Vector2 v : vectors) { // noget er galt
+//				System.out.println("Der var 2 points");
+//				int i = 0;
+//				for(Vector2 v : vectors) {
+//					System.out.println("----> vector "+i++ +" er: "+v);
+//				}
+				for(Vector2 v : vectors) { 
 					if(isVectorSignificantlyDifferentFromAllPoints(v, startPoints, 2)) {// 2% afvigelse tilladt
-						System.out.println("Position er: "+v);
+//						System.out.println("Position er: "+v);
 						return v;
 					}
 				}
@@ -112,11 +112,11 @@ public class Position {
 	 */
 	
 	public boolean isVectorSignificantlyDifferentFromAllPoints(Vector2 v, Vector2[] startPoints, float thresholdPercent) {
-		System.out.println("isVector - v der tjekkes for: "+ v);
+//		System.out.println("isVector - v der tjekkes for: "+ v);
 		boolean[] barray = new boolean[3];
 		int i = 0;
 		for(Vector2 vector : startPoints) {
-			System.out.println("isVector - i: "+i);
+//			System.out.println("isVector - i: "+i);
 			double x = vector.x;
 			double y = vector.y;
 			double x_upper = (x <= 0.001 && x >= -0.001) ? 0.1 : (x * (1 + thresholdPercent/100.0));
@@ -124,20 +124,20 @@ public class Position {
 			double y_upper = (y <= 0.001 && y >= -0.001) ? 0.1 : (y * (1 + thresholdPercent/100.0));
 			double y_lower = (y <= 0.001 && y >= -0.001) ? -0.1 : (y * (1 - thresholdPercent/100.0));
 			
-			System.out.println("isVector - Der tjekkes mod x: "+x+" y: "+y);
-			System.out.println("isVector - øvre grænse x: "+x_upper);
-			System.out.println("isVector - nedre grænse x: "+x_lower);
-			System.out.println("isVector - øvre grænse x: "+y_upper);
-			System.out.println("isVector - nedre grænse x: "+y_lower);
+//			System.out.println("isVector - Der tjekkes mod x: "+x+" y: "+y);
+//			System.out.println("isVector - øvre grænse x: "+x_upper);
+//			System.out.println("isVector - nedre grænse x: "+x_lower);
+//			System.out.println("isVector - øvre grænse x: "+y_upper);
+//			System.out.println("isVector - nedre grænse x: "+y_lower);
 			
 			if(!(v.x <= x_upper && v.x >= x_lower
 					&& v.y <= y_upper && v.y >= y_lower)) {
 				// virker ikke med nul.............
-				System.out.println("isVector - punktet "+v+" returnerer true mod "+ vector);
+//				System.out.println("isVector - punktet "+v+" returnerer true mod "+ vector);
 				barray[i] = true;
 			} else {
 				barray[i] = false;
-				System.out.println("isVector - punktet "+v+" returnerer false mod "+ vector);
+//				System.out.println("isVector - punktet "+v+" returnerer false mod "+ vector);
 			}
 			i++;
 			
@@ -146,7 +146,7 @@ public class Position {
 			if(!b)
 				return false;
 		}
-		System.out.println("isVector - Der returneres true i isVetorDifferentFromAllPoints()");
+//		System.out.println("isVector - Der returneres true i isVetorDifferentFromAllPoints()");
 		return true;
 	}
 	/*
@@ -204,7 +204,7 @@ public class Position {
 					x2 = p2.x,
 					y2 = p2.y;
 
-		System.out.println("getCircle - Angle: " + angle);
+//		System.out.println("getCircle - Angle: " + angle);
 		double alpha = Math.toRadians(angle);
 		double a = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
 		double t1 = a * a;
@@ -221,9 +221,9 @@ public class Position {
 		
 		Vector2 center = new Vector2(x_c, y_c);
 		
-		System.out.println("getCircle - alpha: "+ alpha);
+//		System.out.println("getCircle - alpha: "+ alpha);
 		double radius = (1.0/2) * a/Math.sin(alpha);
-		System.out.println("getCircle - radius: "+ radius);
+//		System.out.println("getCircle - radius: "+ radius);
 		
 		return new Circle(center, radius);
 	}
@@ -323,10 +323,10 @@ public class Position {
 			mm.spMap.get(names[2])
 		};
 		int i = 0;
-		for(Vector2 v : vectors) {
-			System.out.println("getPositionFromPoints - vector "+i++ +" er: "+v);
-			
-		}
+//		for(Vector2 v : vectors) {
+//			System.out.println("getPositionFromPoints - vector "+i++ +" er: "+v);
+//			
+//		}
 		return getPositionFromPoints(vectors, p1, p2, p3);
 	}
 	

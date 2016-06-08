@@ -130,8 +130,8 @@ public class VideoListenerPanel extends JPanel {
 							if(data.getQrNames()[0] != null && data.getQrNames()[1] != null && data.getQrNames()[2] != null){
 								backUp = imgProc.drawLine( data.getPoints()[0],data.getPoints()[1],backUp);
 								backUp = imgProc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp);
-								System.out.println("point1:" +data.getQrNames()[0]+"   point 2:" +data.getQrNames()[1]+ "   point 3:"+data.getQrNames()[2]);
-								System.out.println("point1:" +data.getPoints()[0]+"   point 2:" +data.getPoints()[1]+ "   point 3:"+data.getPoints()[2]);
+								//System.out.println("point1:" +data.getQrNames()[0]+"   point 2:" +data.getQrNames()[1]+ "   point 3:"+data.getQrNames()[2]);
+								//System.out.println("point1:" +data.getPoints()[0]+"   point 2:" +data.getPoints()[1]+ "   point 3:"+data.getPoints()[2]);
 								Position test = new Position();
 								/*
 								 * Vi skal hente punkterne for de navne vi finder, de skal sendes, også skal der sendes de pixel positions værdier vi har fundet
