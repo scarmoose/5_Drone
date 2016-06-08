@@ -1,4 +1,4 @@
-package dk.gruppe5.positioning;
+package dk.gruppe5.model;
 
 import java.awt.Point;
 import java.io.Serializable;
@@ -9,10 +9,10 @@ public final class Circle implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public final Vector2 c;
+	public final DPoint c;
 	public final double r;
 
-	public Circle(Vector2 c, double r) {
+	public Circle(DPoint c, double r) {
 		if (!(r > 0)) throw new IllegalArgumentException("Radius must be positive");
 		this.c = c;
 		this.r = r;
@@ -20,7 +20,7 @@ public final class Circle implements Serializable {
 	
 	public Circle(Point p, double r) {
 		if (!(r > 0)) throw new IllegalArgumentException("Radius must be positive");
-		this.c = new Vector2(p);
+		this.c = new DPoint(p);
 		this.r = r;
 	}
 

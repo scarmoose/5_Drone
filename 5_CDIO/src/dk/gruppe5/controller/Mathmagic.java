@@ -5,15 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.HashMap;
 
+import dk.gruppe5.model.DPoint;
 import dk.gruppe5.model.Wallmark;
-import dk.gruppe5.positioning.Vector2;
 
 public class Mathmagic {
 	
 	int pixels = 720;
 	int cameraDegrees = 68;
 	
-	public final static Map<String, Vector2> spMap = new HashMap<String, Vector2>();
+	public final static Map<String, DPoint> spMap = new HashMap<String, DPoint>();
 	public final static Map<Integer, String> isMap = new HashMap<Integer, String>();
 //	public final static float[][] wallmarkDistances = new float[20][20]; 
 	public final static Wallmark[] wallmarks = {
@@ -28,7 +28,7 @@ public class Mathmagic {
 			Wallmark m = wallmarks[i];
 			isMap.put(i, m.getName());
 			Point p = m.getPosition();
-			spMap.put(m.getName(), new Vector2(p.x, p.y));
+			spMap.put(m.getName(), new DPoint(p.x, p.y));
 //			for(int j  = 0; j < wallmarks.length; j++){
 //				Wallmark m2 = wallmarks[j];
 //				float distance = getDistanceBetweenPoints(new Vector2(m.getPosition()), new Vector2(m2.getPosition()));
@@ -41,11 +41,11 @@ public class Mathmagic {
 		return wallmarks;
 	}
 	
-	public static Vector2 getPointFromInt(int i) {
+	public static DPoint getPointFromInt(int i) {
 		return spMap.get(isMap.get(i));
 	}
 	
-	public static Vector2 getPointFromName(String name) {
+	public static DPoint getPointFromName(String name) {
 		return spMap.get(name);
 	}
 	
@@ -55,7 +55,7 @@ public class Mathmagic {
 
 	
 
-	private static float getDistanceBetweenPoints(Vector2 p1, Vector2 p2) {
+	private static float getDistanceBetweenPoints(DPoint p1, DPoint p2) {
 		return (float) p1.distance(p2);
 	}
 	

@@ -1,4 +1,4 @@
-package dk.gruppe5.positioning;
+package dk.gruppe5.model;
 
 import static java.lang.Math.*;
 
@@ -59,18 +59,18 @@ public final class CircleCircleIntersection {
 	public final double distanceC1cC2c;
 
 	// Results valid for eccentric circles:
-	public final Vector2 radicalPoint;
+	public final DPoint radicalPoint;
 	public final double distanceC1cRadicalLine;
 	public final double distanceC2cRadicalLine;
-	public final Vector2 versorC1cC2c;
-	public final Vector2 versorRadicalLine;
+	public final DPoint versorC1cC2c;
+	public final DPoint versorRadicalLine;
 
 	// Results valid for tangent circles:
-	public final Vector2 intersectionPoint;
+	public final DPoint intersectionPoint;
 
 	// Results valid for overlapping circles:
-	public final Vector2 intersectionPoint1;
-	public final Vector2 intersectionPoint2;
+	public final DPoint intersectionPoint1;
+	public final DPoint intersectionPoint2;
 	public final double distanceRadicalPointIntersectionPoints;
 
 	public CircleCircleIntersection(Circle c1, Circle c2) {
@@ -78,7 +78,7 @@ public final class CircleCircleIntersection {
 		this.c2 = c2;
 
 		// Vector going from c1 center to c2 center:
-		Vector2 vectorC1cC2c = c2.c.sub(c1.c);
+		DPoint vectorC1cC2c = c2.c.sub(c1.c);
 		// Distance between circle centers:
 		distanceC1cC2c = vectorC1cC2c.mod();
 
@@ -164,25 +164,25 @@ public final class CircleCircleIntersection {
 	}
 
 	// Valid for noncoincident circles:
-	public Vector2[] getIntersectionVectors() {
+	public DPoint[] getIntersectionVectors() {
 		switch (type.getIntersectionPointCount()) {
 		case 0:
-			return new Vector2[] {};
+			return new DPoint[] {};
 		case 1:
-			return new Vector2[] { intersectionPoint };
+			return new DPoint[] { intersectionPoint };
 		case 2:
-			return new Vector2[] { intersectionPoint1, intersectionPoint2 };
+			return new DPoint[] { intersectionPoint1, intersectionPoint2 };
 		default:
 			throw new IllegalStateException("Coincident circles");
 		}
 	}
 	
 	public Point[] getIntersectionPoints() {
-		Vector2[] vectors = getIntersectionVectors();
+		DPoint[] vectors = getIntersectionVectors();
 		Point[] points = new Point[vectors.length];
 		Point p;
 		int i = 0;
-		for(Vector2 v : vectors) {
+		for(DPoint v : vectors) {
 			p = new Point((int) v.x, (int) v.y);
 			points[i++] = p;
 		}
