@@ -18,6 +18,7 @@ import org.opencv.videoio.VideoCapture;
 
 import com.google.zxing.Result;
 
+import CoordinateSystem.DronePosition;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.video.ImageListener;
@@ -137,6 +138,7 @@ public class VideoListenerPanel extends JPanel {
 								 * Vi skal hente punkterne for de navne vi finder, de skal sendes, også skal der sendes de pixel positions værdier vi har fundet
 								 */
 								Point mapPosition = test.getPositionFromPoints(data.getQrNames(), data.getPoints()[0], data.getPoints()[1], data.getPoints()[2]);
+								DronePosition.setPosition(mapPosition);
 								System.out.println(mapPosition);
 								//test.getPositionFromPoints(data.getPoints()[0], data.getPoints()[1], data.getPoints()[3]);
 							}
