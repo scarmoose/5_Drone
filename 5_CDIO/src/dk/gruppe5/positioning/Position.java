@@ -86,7 +86,7 @@ public class Position {
 			if(vectors.length == 2) {
 				System.out.println("Der var 2 points");
 				for(Vector2 v : vectors) {
-					if(!isVectorAlmostEqualToOneOfThePoints(v, startPoints, 2)) // 2% afvigelse tilladt
+					if(!isVectorAlmostEqualToOneOfThePoints(v, startPoints, 10)) // 2% afvigelse tilladt
 						return v;
 				}
 			}
@@ -141,6 +141,8 @@ public class Position {
 					y1 = p1.y,
 					x2 = p2.x,
 					y2 = p2.y;
+
+		System.out.println("Angle: " + angle);
 		double alpha = Math.toRadians(angle);
 		double a = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
 		double t1 = a * a;

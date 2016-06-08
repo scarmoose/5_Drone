@@ -823,7 +823,7 @@ public class ImageProcessor {
 							if (wallmark.getName().equals(qrCodeResultText)) {
 								Point txtPoint = shape.getCenter();
 								rightPoints.add(txtPoint);
-								System.out.println("name on right set");
+								//System.out.println("name on right set");
 								nameOfQROnTheRight = Mathmagic.getNameFromInt(nrWallMark+1);
 								break;
 							}
@@ -838,7 +838,7 @@ public class ImageProcessor {
 							if (wallmark.getName().equals(qrCodeResultConfirms.get(z).getText())) {
 								Point txtPoint = shape.getCenter();
 								leftPoints.add(txtPoint);
-								System.out.println("name on left set");
+								//System.out.println("name on left set");
 								nameOfQROnTheLeft = Mathmagic.getNameFromInt(nrWallMark-1);
 								break;
 							}
@@ -846,13 +846,14 @@ public class ImageProcessor {
 						}
 
 					}
-					System.out.println("qr code name set");
-					nameOfQRCodeFound = qrCodeResultConfirms.get(z).getText();
+					
 				}
-
+				
 			}
-
+			//System.out.println("qr code name set");
+			nameOfQRCodeFound = qrCodeResultConfirms.get(z).getText();
 		}
+		
 
 		// find gennemsnit af punkter og returner 3 punkter, [left,middle,right]
 		Point leftAverage = averagePoint(leftPoints);
@@ -863,15 +864,15 @@ public class ImageProcessor {
 		//hent de 3 gemte felters navne
 		String[] qrNames = {nameOfQROnTheLeft,nameOfQRCodeFound,nameOfQROnTheRight};
 		
-		//System.out.println("Names: -->  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
-		//System.out.println("Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
-		if ( Double.isNaN(points[1].x)) {
+
+		if ( Double.isNaN(points[1].x) || qrNames[1] == null) {
 			//System.out.println("points null");
+			//System.out.println("not valid names  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
+			//System.out.println("not valid Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
 			return null;
-		} else if (qrNames[1] == null) {
-			//System.out.println("names null");
-			return null;
-		}
+		} 
+		System.out.println("Names: -->  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
+		System.out.println("Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
 		DetectedWallmarksAndNames data = new DetectedWallmarksAndNames(qrNames, points);
 
 		return data;
