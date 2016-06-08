@@ -15,6 +15,27 @@ public class Movement {
 	
 	
 	/**
+	 * Udregner gennemsnitsvektoren for et array vektorer
+	 * @param vectors vektorer, der skal findes gennemsnit af
+	 * @return gennemsnitsvektoren
+	 */
+	
+	public DPoint getAverageVector(DPoint[] vectors) {		
+		double sumx = 0;
+		double sumy = 0;
+		for(DPoint v : vectors) {
+			sumx += v.x;
+			sumy += v.y;
+		}
+		
+		int n = vectors.length;
+		double avgx = sumx/n;
+		double avgy = sumy/n;
+		
+		return new DPoint(avgx, avgy);		
+	}
+	
+	/**
 	 * Afgør om en linje, der går gennem <param>lStart</param> og <param>lEnd</param>, 
 	 * skærer en cirkel 
 	 * @param lStart startpunkt på linjen
@@ -23,7 +44,7 @@ public class Movement {
 	 * @return
 	 */
 	
-	public boolean doesLineAndCircleIntersect(DPoint lStart, DPoint lEnd, Circle circle) {
+	public boolean doesLineAndCircleIntersect(DPoint lStart, DPoint lEnd, Circle circle) {		
 		DPoint closestOnLine = closestPointOnLine(lStart, lEnd, circle.c);
 		if(closestOnLine.distance(circle.c) < circle.r) {
 			return true;

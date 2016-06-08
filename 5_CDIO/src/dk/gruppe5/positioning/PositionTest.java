@@ -26,6 +26,7 @@ public class PositionTest {
 	}
 	
 	public void test2() {
+		
 		mm = new Mathmagic();
 		pos = new Position();
 		int x = 39;
@@ -35,17 +36,10 @@ public class PositionTest {
 		System.out.println("p1.x: "+p1.x+", p1.y: "+p1.y);
 		System.out.println("p2.x: "+p2.x+", p2.y: "+p2.y);
 		
-		/*
-		System.out.println(pos.distance(p1, p2));
-		System.out.println("float max: "+Float.MAX_VALUE);
-		System.out.println("double max: "+Double.MAX_VALUE);
-		System.out.println("integer max: "+Integer.MAX_VALUE);
-		System.out.println("short max: "+Short.MAX_VALUE);
-		System.out.println("long max: "+Long.MAX_VALUE);
-		*/
 	}
 	
 	public void test1() {
+		
 		mm = new Mathmagic();
 		pos = new Position();
 		
@@ -73,9 +67,11 @@ public class PositionTest {
 		
 		DPoint vector = pos.getPositionVector(c1, c2, points);
 		System.out.println("Position: "+vector);
+		
 	}
 	
 	public void test3(){
+		
 		mm = new Mathmagic();
 		pos = new Position();
 		
