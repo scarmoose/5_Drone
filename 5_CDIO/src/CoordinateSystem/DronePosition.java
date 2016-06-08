@@ -1,12 +1,6 @@
 package CoordinateSystem;
 
-import java.awt.geom.Point2D;
-import java.io.Serializable;
-import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import java.awt.Point;
 
 import dk.gruppe5.positioning.Vector2;
 
@@ -48,5 +42,18 @@ public class DronePosition {
 	public static void setxLen(int input) {xlen = input;}
 	public static int getyLen(){return ylen;}
 	public static void setyLen(int input) {ylen = input;}
+	
+	public static void setPosition(Point p) {
+		x = p.x;
+		y = p.y;
+	}
+	
+	public static void setPosition(org.opencv.core.Point p) {
+		x = (int) p.x;
+		y = (int) p.y;
+	}
+	
 }
+
+
 
