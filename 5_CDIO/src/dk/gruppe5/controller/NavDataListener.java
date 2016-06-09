@@ -2,6 +2,8 @@ package dk.gruppe5.controller;
 
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
+import de.yadrone.base.exception.ARDroneException;
+import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.navdata.Altitude;
 import de.yadrone.base.navdata.AltitudeListener;
 import de.yadrone.base.navdata.AttitudeListener;
@@ -21,8 +23,7 @@ public class NavDataListener {
 			
 			@Override
 			public void windCompensation(float pitch, float roll) {
-				// TODO Auto-generated method stub
-				
+				//System.out.println("windCompensation - pitch: "+roll+", roll: "+roll);
 			}
 			
 			@Override
@@ -32,8 +33,7 @@ public class NavDataListener {
 			
 			@Override
 			public void attitudeUpdated(float pitch, float roll) {
-				// TODO Auto-generated method stub
-				
+				//System.out.println("attitudeUpdated - pitch: "+pitch+", roll: "+roll);
 			}
 		});
 		
@@ -41,7 +41,7 @@ public class NavDataListener {
 			
 			@Override
 			public void voltageChanged(int vbat_raw) {
-				// TODO Auto-generated method stub	
+				//System.out.println("voltageChanged - vbat_raw: "+vbat_raw);
 			}
 			
 			@Override
@@ -55,17 +55,21 @@ public class NavDataListener {
 			@Override
 			public void receivedAltitude(int altitude) {
 				if (altitude > 0){
-				System.out.println("Altitude: " + altitude);
+				//System.out.println("Altitude: " + altitude);
 				}
-				// TODO Auto-generated method stub
 			}
 
 			@Override
 			public void receivedExtendedAltitude(Altitude exAltitude) {
-				// TODO Auto-generated method stub
-				
+				//System.out.println("receivedExtendedAltitude - Altitude: "+exAltitude);
 			}
 						
+		});
+		drone.addExceptionListener(new IExceptionListener() {
+		    public void exeptionOccurred(ARDroneException exc)
+		    {
+		        exc.printStackTrace();
+		    }
 		});
 		
 	}

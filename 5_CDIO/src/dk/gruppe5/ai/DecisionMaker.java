@@ -1,13 +1,13 @@
 package dk.gruppe5.ai;
 
-import dk.gruppe5.positioning.Vector2;
+import dk.gruppe5.model.DPoint;
 
 public class DecisionMaker implements Runnable {
 	
-	Vector2[] pastMovement;
-	Vector2[] possibleNextMove;
-	Vector2 currentPos;
-	Vector2 nextMove;
+	DPoint[] pastMovement;
+	DPoint[] possibleNextMove;
+	DPoint currentPos;
+	DPoint nextMove;
 	
 	Thread thinker;
 	

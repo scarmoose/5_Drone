@@ -16,7 +16,7 @@ public class DroneCommander extends Canvas {
 	 */
 	private static final long serialVersionUID = -869265015784363288L;
 	
-	CommandManager cmd = App.drone.getCommandManager();
+	CommandManager cmd;
 	private NavDataListener navl;
 
 
