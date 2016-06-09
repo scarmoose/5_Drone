@@ -5,6 +5,9 @@ import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
+import de.yadrone.base.navdata.AcceleroListener;
+import de.yadrone.base.navdata.AcceleroPhysData;
+import de.yadrone.base.navdata.AcceleroRawData;
 import de.yadrone.base.navdata.Altitude;
 import de.yadrone.base.navdata.AltitudeListener;
 import de.yadrone.base.navdata.AttitudeListener;
@@ -77,6 +80,7 @@ public class NavDataListener {
 		    }
 		});
 		
+
 	drone.getNavDataManager().addVelocityListener(new VelocityListener() {
 			
 			@Override
@@ -112,6 +116,22 @@ public class NavDataListener {
 		
 		drone.getSpeed();
 		System.out.println("Speedlol:"+drone.getSpeed());
+
+		drone.getNavDataManager().addAcceleroListener(new AcceleroListener() {
+			
+			@Override
+			public void receivedRawData(AcceleroRawData arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void receivedPhysData(AcceleroPhysData arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+
 		
 	}
 

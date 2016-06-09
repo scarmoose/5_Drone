@@ -1,9 +1,26 @@
 package dk.gruppe5.positioning;
 
+import de.yadrone.base.IARDrone;
+import de.yadrone.base.exception.ARDroneException;
+import de.yadrone.base.exception.IExceptionListener;
+import de.yadrone.base.navdata.AcceleroListener;
+import de.yadrone.base.navdata.AcceleroPhysData;
+import de.yadrone.base.navdata.AcceleroRawData;
+import de.yadrone.base.navdata.Altitude;
+import de.yadrone.base.navdata.AltitudeListener;
+import de.yadrone.base.navdata.AttitudeListener;
+import de.yadrone.base.navdata.BatteryListener;
+import de.yadrone.base.navdata.GyroListener;
+import de.yadrone.base.navdata.GyroPhysData;
+import de.yadrone.base.navdata.GyroRawData;
+import de.yadrone.base.navdata.VelocityListener;
+import dk.gruppe5.app.App;
 import dk.gruppe5.model.Circle;
 import dk.gruppe5.model.DPoint;
 
 public class Movement {
+
+	private final IARDrone drone;
 
 	Runnable rthread = new Runnable(){
 		@Override 
@@ -11,15 +28,33 @@ public class Movement {
 
 		}
 	};
+
+	public Movement(IARDrone drone) {
+		this.drone = drone;
+		init();
+	}
 	
-	
-	
+	public Movement() {
+		this(App.drone);
+	}
+
+	private void init() {
+		drone.addExceptionListener(new MyExceptionListener());
+		drone.getNavDataManager().addAltitudeListener(new MyAltitudeListener());
+		drone.getNavDataManager().addAttitudeListener(new MyAttitudeListener());
+		drone.getNavDataManager().addBatteryListener(new MyBatteryListener());
+		drone.getNavDataManager().addAcceleroListener(new MyAcceleroListener());
+		drone.getNavDataManager().addVelocityListener(new MyVelocityListener());
+	}
+
+
+
 	/**
 	 * Udregner gennemsnitsvektoren for et array vektorer
 	 * @param vectors vektorer, der skal findes gennemsnit af
 	 * @return gennemsnitsvektoren
 	 */
-	
+
 	public DPoint getAverageVector(DPoint[] vectors) {		
 		double sumx = 0;
 		double sumy = 0;
@@ -27,14 +62,14 @@ public class Movement {
 			sumx += v.x;
 			sumy += v.y;
 		}
-		
+
 		int n = vectors.length;
 		double avgx = sumx/n;
 		double avgy = sumy/n;
-		
+
 		return new DPoint(avgx, avgy);		
 	}
-	
+
 	/**
 	 * Afgør om en linje, der går gennem <param>lStart</param> og <param>lEnd</param>, 
 	 * skærer en cirkel 
@@ -43,7 +78,7 @@ public class Movement {
 	 * @param circle den cirkel der skal tjekkes for
 	 * @return
 	 */
-	
+
 	public boolean doesLineAndCircleIntersect(DPoint lStart, DPoint lEnd, Circle circle) {		
 		DPoint closestOnLine = closestPointOnLine(lStart, lEnd, circle.c);
 		if(closestOnLine.distance(circle.c) < circle.r) {
@@ -51,7 +86,7 @@ public class Movement {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Giver det punkt på linjen, der går gennem <param>lStart</param> og <param>lEnd</param>, 
 	 * som ligger tættest på cirklens centrum.
@@ -60,7 +95,7 @@ public class Movement {
 	 * @param circleC centrum på cirklen
 	 * @return det punkt på linjen, der er tættest på cirklens centrum
 	 */
-	
+
 	public DPoint closestPointOnLine(DPoint lStart, 
 			DPoint lEnd, DPoint circleC){
 		double 	ly2 = lEnd.y,
@@ -87,3 +122,111 @@ public class Movement {
 	}
 
 }
+
+class MyVelocityListener implements VelocityListener {
+
+	@Override
+	public void velocityChanged(float vx, float vy, float vz) {
+		System.out.println("Velocity - vx: "+vx+", vy: "+vy+", vz: "+vz);
+	}
+	
+}
+
+class MyGyroListener implements GyroListener {
+
+	@Override
+	public void receivedOffsets(float[] offset_g) {
+		System.out.println("Gyro - offset_g: "+offset_g);
+	}
+
+	@Override
+	public void receivedPhysData(GyroPhysData arg0) {
+		System.out.println(arg0);	
+	}
+
+	@Override
+	public void receivedRawData(GyroRawData arg0) {
+		System.out.println(arg0);
+	}
+	
+}
+
+class MyAcceleroListener implements AcceleroListener {
+
+	@Override
+	public void receivedPhysData(AcceleroPhysData d) {
+		System.out.println(d);
+		
+	}
+
+	@Override
+	public void receivedRawData(AcceleroRawData d) {
+		System.out.println(d);
+		
+	}
+	
+}
+
+class MyAttitudeListener implements AttitudeListener {
+
+	@Override
+	public void windCompensation(float pitch, float roll) {
+		System.out.println("windCompensation - pitch: "+roll+", roll: "+roll);
+	}
+
+	@Override
+	public void attitudeUpdated(float pitch, float roll, float yaw) {
+		System.out.println("Pitch: " + pitch + " Roll: " + roll + " Yaw: " + yaw);
+	}
+
+	@Override
+	public void attitudeUpdated(float pitch, float roll) {
+		System.out.println("attitudeUpdated - pitch: "+pitch+", roll: "+roll);
+	}
+
+}
+
+class MyBatteryListener implements BatteryListener {
+
+	@Override
+	public void voltageChanged(int vbat_raw) {
+		System.out.println("voltageChanged - vbat_raw: "+vbat_raw);
+	}
+
+	@Override
+	public void batteryLevelChanged(int percentage) {
+		System.out.println("Battery: " + percentage + " %");			
+	}
+
+}
+
+class MyAltitudeListener implements AltitudeListener {
+
+
+	@Override
+	public void receivedAltitude(int altitude) {
+		if (altitude > 0){
+			System.out.println("Altitude: " + altitude);
+		}
+	}
+
+	@Override
+	public void receivedExtendedAltitude(Altitude exAltitude) {
+		System.out.println("receivedExtendedAltitude - Altitude: "+exAltitude);
+	}
+
+}
+
+class MyExceptionListener implements IExceptionListener {
+	
+	@Override
+	public void exeptionOccurred(ARDroneException exc)
+	{
+		exc.printStackTrace();
+	}
+	
+}
+
+
+
+

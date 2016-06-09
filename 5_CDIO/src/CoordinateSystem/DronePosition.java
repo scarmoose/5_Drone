@@ -2,6 +2,7 @@ package CoordinateSystem;
 
 import java.awt.Point;
 
+import dk.gruppe5.model.Airfield;
 import dk.gruppe5.model.DPoint;
 
 public class DronePosition {
@@ -15,10 +16,10 @@ public class DronePosition {
 
 	private static int xcorn=350;
 	private static int ycorn=700;
-	private static int xlen=350;
-	private static int ylen=350;
+	private static int xlen=50;
+	private static int ylen=50;
 	private static int ymirror = 0;
-	
+	private static String airName ="";
 	
 	public static int getXPoint(){return x;}
 	public static void setXPoint(int input) {x = input;}
@@ -56,6 +57,8 @@ public class DronePosition {
 		x = (int) p.x;
 		y = (int) p.y;
 	}
+
+	
 	
 }
 
