@@ -700,7 +700,7 @@ public class ImageProcessor {
 			//
 
 			// sorting the squares found
-			if (r.area() > 500.0) {
+			if (r.area() > 50.0) {
 				// int width = r.width;
 				// int height = r.height;
 				// double difference = width / height;
@@ -968,8 +968,7 @@ public class ImageProcessor {
 			Shape shape = shapes.get(i);
 			Scalar color = new Scalar(255, 0, 0);
 			Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
-			Point txtPoint = new Point(shape.getTlPoint().x + shape.getWidth() / 4,
-					shape.getTlPoint().y + shape.getHeight() / 2);
+	
 		}
 		return backUp;
 	}
@@ -979,5 +978,18 @@ public class ImageProcessor {
 		Imgproc.line(backUp, point, point2, color);
 
 		return backUp;
+	}
+
+	public Mat drawShape(Shape shape, Mat image) {
+	
+		Scalar color = new Scalar(0, 255, 0);
+		Imgproc.rectangle(image, shape.getTlPoint(), shape.getBrPoint(), color, 3);
+		return image;
+	}
+
+	public Mat putText(String string,Point position, Mat image) {
+		Scalar color = new Scalar(0, 255, 0);
+		Imgproc.putText(image, string,position, 5, 2, color);
+		return image;
 	}
 }

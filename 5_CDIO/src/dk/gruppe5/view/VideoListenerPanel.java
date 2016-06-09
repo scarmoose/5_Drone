@@ -81,7 +81,69 @@ public class VideoListenerPanel extends JPanel {
 					
 					
 				
-				}else 	if(Values_cam.getMethod() == 5){
+				}else if(Values_cam.getMethod() == 10){
+					Mat backUp = new Mat();
+					backUp = frame;
+					//kig på whitebalancing og eventuelt at reducere området som vi kigger igennem for firkanter.
+					//frame = imgProc.equalizeHistogramBalance(frame);
+					
+					//først gør vi det sort hvidt
+					frame = imgProc.toGrayScale(frame);
+					
+					//
+					frame = imgProc.equalizeHistogramBalance(frame);
+					//Vi tester først med blur og ser hvor godt det bliver
+					//prøv også uden
+					//blur virker bedre
+					frame = imgProc.blur(frame);
+				
+					//Til canny for at nemmere kunne finde contourer
+					frame = imgProc.toCanny(frame);
+					
+					//Nu skal vi prøve at finde firkanter af en hvis størrelse
+					List<Shape> shapes = imgProc.findQRsquares(frame);
+					
+					//draw shapes:
+					backUp = imgProc.drawShapes(shapes, backUp);
+					//time how long it takes to read x qr codes, from y squares.
+					
+					final long startTime = System.currentTimeMillis();
+					
+					List<BufferedImage> potentialQRcodes = new ArrayList<BufferedImage>();
+					BufferedImage source = imgProc.toBufferedImage(backUp);
+					
+					//place shapes on the backup image to test
+					int z = 0;
+					for (Shape rect : shapes) {
+						int h = (int) rect.getHeight();
+						int w = (int) rect.getWidth();
+						BufferedImage dst = source.getSubimage((int)rect.getTlPoint().x, (int)rect.getTlPoint().y, w, h);
+						potentialQRcodes.add(dst);
+					}
+					//Vi aflæser de potentielle QR koder og ser om vi har nogen matches, hvis vi har!
+					//så marker dette og firkanter der har ca samme højde og størrelse!
+					
+					List<Result> results = imgProc.readQRCodes(potentialQRcodes);
+					for(int i = 0; i < results.size(); i ++){
+						Shape shape = shapes.get(i);
+						if(results.get(i) != null){
+							backUp = imgProc.drawShape(shapes.get(i), backUp);
+							backUp = imgProc.putText(results.get(i).getText(),shape.getCenter(),backUp);
+							
+						}
+						
+					}
+					final long endTime = System.currentTimeMillis();
+
+					System.out.println("Total execution time: " + (endTime - startTime) );
+					
+					
+					
+					
+					
+					
+					image = imgProc.toBufferedImage(backUp);
+				}else if(Values_cam.getMethod() == 5){
 				
 					Mat backUp = new Mat();
 					backUp = frame;
