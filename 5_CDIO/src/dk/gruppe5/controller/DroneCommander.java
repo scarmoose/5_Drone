@@ -5,6 +5,7 @@ import java.awt.Canvas;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
+import de.yadrone.base.command.LEDAnimation;
 import de.yadrone.base.command.VideoChannel;
 import dk.gruppe5.app.App;
 
@@ -28,6 +29,7 @@ public class DroneCommander extends Canvas {
 			//drone = new app.drone();
 			navl = new NavDataListener((ARDrone) App.drone);
 			
+		
 			App.drone.start();
 			cmd = App.drone.getCommandManager();
 			cmd.setMaxAltitude(2000);
@@ -46,18 +48,31 @@ public class DroneCommander extends Canvas {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
-	//	System.out.println("--> Trying to take off.");
-	//	takeOffAndLand(1000);
-	//	System.out.println("--> Takeoff and landing complete.");
-		
-	}	
+			
+	}
+/*	
+	public void droneFlightControl(){
+		cmd.flatTrim();
+		cmd.setLedsAnimation(LEDAnimation.BLINK_GREEN_RED, 3, 2);
+		cmd.takeOff();
+		cmd.hover().up(1).doFor(1);
+		cmd.spinLeft(1).doFor(1);
+		if (qr != 0){
+			cmd.hover();
+			cmd.spinLeft(1).doFor(1);
+			if (airfield != 0){
+			}
+		}
+	}
+	*/
 	public void testFlight(long interval){
 		System.out.println("We have Liftoff");
 		cmd.flatTrim();
+		cmd.setLedsAnimation(LEDAnimation.BLINK_GREEN_RED, 3, 2);
 		cmd.takeOff();
-		cmd.waitFor(interval);
-		cmd.hover().spinLeft(10).doFor(interval);
+		cmd.hover().doFor(interval);
+		cmd.spinLeft(40).doFor(interval);
+		cmd.spinRight(50).doFor(interval);
 		cmd.landing();
 		System.out.println("Test Landing complete");
 	}
@@ -74,6 +89,7 @@ public class DroneCommander extends Canvas {
 		cmd.landing();
 	}
 	public void killAll(){
+		cmd.setLedsAnimation(LEDAnimation.RED, 4, 3);
 		cmd.emergency();
 	}
 	public CommandManager getCmd() {
