@@ -1,13 +1,13 @@
 package CoordinateSystem;
 
 import java.awt.BasicStroke;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.util.ArrayList;
@@ -20,11 +20,18 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import dk.gruppe5.controller.Mathmagic;
+import dk.gruppe5.model.Airfield;
+import dk.gruppe5.model.AirfieldList;
 
 public class Lines {
 
+	AirfieldList airfields = new AirfieldList();
+	
     public Lines() {
         initUI();
+        AirfieldList.addAirfield(new Airfield("Airfield1",new Point(350,700)));
+        AirfieldList.addAirfield(new Airfield("Airfield2",new Point(530,200)));
+                
     }
 
     private void initUI() {
@@ -140,33 +147,11 @@ public class Lines {
             DronePosition.setYPoint(DronePosition.getYPoint());
             
             if (DronePosition.getYPoint() < 530){
-				DronePosition.setYMirror(530-(DronePosition.getYPoint() - 530));
+				DronePosition.setYMirror(530+(530-DronePosition.getYPoint()));
 			}
 			if (DronePosition.getYPoint() > 530){
-				DronePosition.setYMirror((530-DronePosition.getYPoint())+530);
+				DronePosition.setYMirror(530-(DronePosition.getYPoint()-530));
 			}
-            
-            
-            if (DronePosition.getXPoint() < 0) {
-            	DronePosition.setXPoint(0);
-                //xDelta *= -1;
-            } else if (DronePosition.getXPoint() + 20 > 930) {
-                //bounds.x = size.width - bounds.width;
-                DronePosition.setXPoint(930 - 20);
-                //xDelta *= -1;
-            }
-            
-            if (DronePosition.getYPoint() < 0) {
-                DronePosition.setYPoint(0);
-                //yDelta *= -1;
-            } else if (DronePosition.getYPoint() + 20 > 1060) {
-            	DronePosition.setYPoint(1060 - 20);
-                //yDelta *= -1;
-            }
-            
-            if (((DronePosition.getYPoint() > 345 - 50 && DronePosition.getYPoint() < 705 - 50 && DronePosition.getXPoint() > 345 + 50 && DronePosition.getXPoint() < 355 + 50) || (DronePosition.getYPoint() > 345 - 50 && DronePosition.getYPoint() < 705 - 50 && DronePosition.getXPoint() > 695 + 50 && DronePosition.getXPoint() < 705 + 50)) || ((DronePosition.getXPoint() > 345 + 50 && DronePosition.getXPoint() < 705 + 50 && DronePosition.getYPoint() > 345 - 50 && DronePosition.getYPoint() < 355 - 50) || (DronePosition.getXPoint() > 345 + 50 && DronePosition.getXPoint() < 705 + 50 && DronePosition.getYPoint() > 695 - 50 && DronePosition.getYPoint() < 705 - 50)) ) {
-                DronePosition.setFound(true);
-            }
             
             fireStateChanged();
         }
@@ -196,11 +181,9 @@ public class Lines {
 
         @Override
         protected void paintComponent(Graphics g) {
-            //super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g.create();
             g2d.setColor(getBackground());
             g2d.fillRect(0, 0, getWidth(), getHeight());
-            //Rectangle bounds = model.getBounds();
             g2d.setColor(Color.BLUE);
             //The four walls
             g2d.drawLine(20, 50, 930/2+20, 50);
@@ -240,21 +223,23 @@ public class Lines {
             
             Image img1 = Toolkit.getDefaultToolkit().getImage("rsz_he291.jpg");
             g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYMirror()/2+25, this);
-            if(DronePosition.getXPoint() < 930 && DronePosition.getYPoint() < 1060){
             
-        	g2d.setStroke(bs2);
-            g2d.setPaint(Color.blue);
-            int pointy=0;
-            if (DronePosition.getyCorn() < 530){
-            	pointy = 530-(DronePosition.getyCorn() - 530);
-			}
-            else if (DronePosition.getyCorn() > 530){
-            	pointy = (530-DronePosition.getyCorn())+530;
-			}
-            
-            g2d.drawRect((DronePosition.getXPoint()/2)-(DronePosition.getxLen()/4)+(40/2), (DronePosition.getYMirror())/2+(DronePosition.getyLen()/4)+(50/2), (DronePosition.getxLen())/2, DronePosition.getyLen()/2);
-
+            for(int j = 0; j<AirfieldList.getArray().size();j++ ){
+            	g2d.setStroke(bs2);
+                g2d.setPaint(Color.blue);
+                int pointy=0;
+                
+                if (AirfieldList.getArray().get(j).point.y < 530){
+                	pointy = 530+(530-AirfieldList.getArray().get(j).point.y);
+    			}
+                else if (AirfieldList.getArray().get(j).point.y > 530){
+                	pointy = 530-((AirfieldList.getArray().get(j).point.y)-530);
+    			}
+                g2d.drawRect((AirfieldList.getArray().get(j).point.x/2)-(DronePosition.getxLen()/4)+(40/2), (pointy)/4+(DronePosition.getyLen()/4)+(50/2), (DronePosition.getxLen())/2, DronePosition.getyLen()/2);
+                g2d.drawString(AirfieldList.getArray().get(j).name, (AirfieldList.getArray().get(j).point.x/2)-(DronePosition.getxLen()/4)+(40/2)-7, (pointy)/4+(DronePosition.getyLen()/4)+(50/2)-2);
             }
+                
+            
             g2d.dispose();
         }
         
