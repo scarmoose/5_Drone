@@ -22,7 +22,7 @@ public class Position {
 	
 	/**
 	 * Skal give vinkel fra dronens synsretning og til y-aksen.
-	 * Der bliver vist altid returneret den spidse vinkel.
+	 * Der bliver vist kun returneret vinkler op til 180 grader
 	 * @param dronePos dronens position
 	 * @param qrPos et QR mærkes position
 	 * @param pixelsFromMiddleToQr afstanden i pixels fra midten af skærmen til QR punktet.
@@ -36,7 +36,7 @@ public class Position {
 	
 	/**
 	 * Skal give vinkel fra dronens synsretning og til y-aksen.
-	 * Der bliver vist altid returneret den spidse vinkel.
+	 * Der bliver vist kun returneret vinkler op til 180 grader
 	 * @param dronePos dronens position
 	 * @param qrPos et QR mærkes position
 	 * @param angleToQr vinklen fra midten af dronens synsfelt, ud til QR koden
