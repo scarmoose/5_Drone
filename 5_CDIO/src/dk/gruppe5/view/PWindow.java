@@ -253,7 +253,7 @@ public class PWindow {
 		Button7.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("KILL IT");
-				dCommando.killAll();
+				dCommando.droneKillAll();
 	            SwingUtilities.updateComponentTreeUI(frame);
             	frame.invalidate();
             	frame.validate();
