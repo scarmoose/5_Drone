@@ -2,7 +2,7 @@ package CoordinateSystem;
 
 import java.awt.Point;
 
-import dk.gruppe5.positioning.Vector2;
+import dk.gruppe5.model.DPoint;
 
 public class DronePosition {
 
@@ -17,6 +17,7 @@ public class DronePosition {
 	private static int ycorn=700;
 	private static int xlen=350;
 	private static int ylen=350;
+	private static int ymirror = 0;
 	
 	
 	public static int getXPoint(){return x;}
@@ -28,10 +29,13 @@ public class DronePosition {
 	public static boolean getFound(){return found;}
 	public static void setFound(boolean input) {found = input;}
 	
-	public static void setCoordinates(Vector2 v){
+	public static void setCoordinates(DPoint v){
 		x = (int) v.x;
 		y = (int) v.y;
 	}
+	
+	public static int getYMirror(){return ymirror;}
+	public static void setYMirror(int input) {ymirror = input;}
 	
 	public static int getxCorn(){return xcorn;}
 	public static void setxCorn(int input) {xcorn = input;}

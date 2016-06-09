@@ -27,8 +27,8 @@ import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.ImageProcessor;
 import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
+import dk.gruppe5.model.DPoint;
 import dk.gruppe5.positioning.Position;
-import dk.gruppe5.positioning.Vector2;
 
 public class VideoListenerPanel extends JPanel {
 
