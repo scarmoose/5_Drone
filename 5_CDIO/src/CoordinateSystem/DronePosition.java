@@ -15,8 +15,8 @@ public class DronePosition {
 
 	private static int xcorn=350;
 	private static int ycorn=700;
-	private static int xlen=350;
-	private static int ylen=350;
+	private static int xlen=50;
+	private static int ylen=50;
 	private static int ymirror = 0;
 	
 	
