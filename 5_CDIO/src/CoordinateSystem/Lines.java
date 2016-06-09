@@ -226,7 +226,7 @@ public class Lines {
             
             for(int j = 0; j<AirfieldList.getArray().size();j++ ){
             	g2d.setStroke(bs2);
-                g2d.setPaint(Color.blue);
+                g2d.setPaint(Color.MAGENTA);
                 int pointy=0;
                 
                 if (AirfieldList.getArray().get(j).point.y < 530){
