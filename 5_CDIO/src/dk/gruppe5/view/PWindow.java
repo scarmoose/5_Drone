@@ -42,7 +42,7 @@ public class PWindow {
 	public JTextField textField_4;
 	public JTextField textField_5;
 	
-	DroneCommander dCommando = new DroneCommander();
+	//DroneCommander dCommando = new DroneCommander();
 	
 	public PWindow(int w, int h) {
 
@@ -68,26 +68,26 @@ public class PWindow {
 		 * Indkommenternedenst�ende for at bruge webcam
 		 */
 
-//		PPanel panel = new PPanel();
-//		Thread thread = new Thread(panel);
-//		thread.start();
-//		frame.addWindowListener(new WindowAdapter() {
-//		    @Override
-//		    public void windowClosing(WindowEvent e) {
-//		    	//N�dl�sning, nu slukker programmet da :P
-//		        thread.stop();
-//		    }
-//		});
+		PPanel panel = new PPanel();
+		Thread thread = new Thread(panel);
+		thread.start();
+		frame.addWindowListener(new WindowAdapter() {
+		    @Override
+		    public void windowClosing(WindowEvent e) {
+		    	//N�dl�sning, nu slukker programmet da :P
+		        thread.stop();
+		    }
+		});
 		
 		/*
 		 * nedenst�ende bruger dronen.
 		 */
 
 
-		DroneCommander DCom = new DroneCommander();
-		VideoListenerPanel panel = new VideoListenerPanel(DCom.getDrone());
-		frame.setFocusable(true);
-		frame.addKeyListener(new KeyboardCommandManager((DCom.getDrone())));
+//		DroneCommander DCom = new DroneCommander();
+//		VideoListenerPanel panel = new VideoListenerPanel(DCom.getDrone());
+//		frame.setFocusable(true);
+//		frame.addKeyListener(new KeyboardCommandManager((DCom.getDrone())));
 		
 
 //		panel.setSize(new Dimension(700, 400));
@@ -207,7 +207,7 @@ public class PWindow {
 		Button2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("Takeoff er presset");
-				dCommando.testFlight(7000);
+			//	dCommando.testFlight(7000);
 				//dCommando.takeOffAndLand(10000);
 				//dCommando.hover(10000);
 				//dCommandodrone.FlightControl();
@@ -256,7 +256,7 @@ public class PWindow {
 		Button7.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("KILL IT");
-				dCommando.killAll();
+			//	dCommando.killAll();
 	            SwingUtilities.updateComponentTreeUI(frame);
             	frame.invalidate();
             	frame.validate();
