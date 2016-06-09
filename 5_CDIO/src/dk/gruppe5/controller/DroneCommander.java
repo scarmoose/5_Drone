@@ -10,6 +10,8 @@ import de.yadrone.base.command.VideoChannel;
 import dk.gruppe5.app.App;
 
 public class DroneCommander extends Canvas {
+	private final static int speed = 5;
+	private final static int sleep = 500;
 	
 	/**
 	 * 
@@ -26,10 +28,8 @@ public class DroneCommander extends Canvas {
 			
 			System.out.println("Connecting to drone...");
 			
-			//drone = new app.drone();
 			navl = new NavDataListener((ARDrone) App.drone);
 			
-		
 			App.drone.start();
 			cmd = App.drone.getCommandManager();
 			cmd.setMaxAltitude(2000);
@@ -50,47 +50,44 @@ public class DroneCommander extends Canvas {
 		}
 			
 	}
-/*	
+
 	public void droneFlightControl(){
-		cmd.flatTrim();
-		cmd.setLedsAnimation(LEDAnimation.BLINK_GREEN_RED, 3, 2);
-		cmd.takeOff();
-		cmd.hover().up(1).doFor(1);
-		cmd.spinLeft(1).doFor(1);
-		if (qr != 0){
-			cmd.hover();
-			cmd.spinLeft(1).doFor(1);
-			if (airfield != 0){
-			}
-		}
+		droneTakeOff();
+		//Thread.currentThread().sleep(sleep);
+		droneHoverAndSpin(2000);
+		cmd.landing();
 	}
-	*/
-	public void testFlight(long interval){
+	
+	public void droneTakeOff(){
 		System.out.println("We have Liftoff");
 		cmd.flatTrim();
-		cmd.setLedsAnimation(LEDAnimation.BLINK_GREEN_RED, 3, 2);
+		//cmd.setLedsAnimation(LEDAnimation.BLINK_GREEN_RED, 3, 1);
 		cmd.takeOff();
-		cmd.hover().doFor(interval);
-		cmd.spinLeft(40).doFor(interval);
-		cmd.spinRight(50).doFor(interval);
-		cmd.landing();
-		System.out.println("Test Landing complete");
+		System.out.println("takeoff done");
 	}
+	public void droneHoverAndSpin(long interval){
+		cmd.hover().doFor(interval);
+		cmd.spinLeft(speed * 2).doFor(interval);
+	}
+	public void droneFlyingForward(long interval){
+		cmd.forward(speed).doFor(interval);
+		cmd.hover();
+	}
+	public void droneFlyingBackward(long interval){
+		cmd.backward(speed).doFor(interval);
+		cmd.hover();
+	}
+	
 	public void takeOffAndLand(long interval){
 		cmd.flatTrim();
 		cmd.takeOff();
 		cmd.waitFor(interval);
 		cmd.landing();
 	}
-	public void hover(long interval){
-		cmd.flatTrim();
-		cmd.takeOff();
-		cmd.hover().doFor(interval);
-		cmd.landing();
-	}
+	
 	public void killAll(){
-		cmd.setLedsAnimation(LEDAnimation.RED, 4, 3);
-		cmd.emergency();
+		//cmd.emergency();
+		cmd.landing();
 	}
 	public CommandManager getCmd() {
 		return cmd;
