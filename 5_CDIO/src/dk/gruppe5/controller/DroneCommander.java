@@ -90,7 +90,7 @@ public class DroneCommander extends Canvas {
 	}
 	public void killAll(){
 		cmd.setLedsAnimation(LEDAnimation.RED, 4, 3);
-		cmd.emergency();
+		cmd.landing();
 	}
 	public CommandManager getCmd() {
 		return cmd;
