@@ -19,6 +19,39 @@ public class Position {
 	public float getAngleInDegreesFromPixelsOccupied(float pixels) {
 		return TOTAL_ANGLE * (pixels/TOTAL_PIXELS);
 	}
+	
+	/**
+	 * Skal give vinkel fra dronens synsretning og til y-aksen.
+	 * Der bliver vist altid returneret den spidse vinkel.
+	 * @param dronePos dronens position
+	 * @param qrPos et QR mærkes position
+	 * @param pixelsFromMiddleToQr afstanden i pixels fra midten af skærmen til QR punktet.
+	 * @return vinklen fra linjen mellem de to givne punkter, og y-aksen
+	 */
+	public float getDirectionAngleRelativeToYAxis(DPoint dronePos, DPoint qrPos, int pixelsFromMiddleToQr) {
+		// vinkel fra midten af billedet, ud til den QR kode, der er givet med. 
+		float alpha = getAngleInDegreesFromPixelsOccupied(pixelsFromMiddleToQr);
+		return getDirectionAngleRelativeToYAxis(dronePos, qrPos, alpha);
+	}
+	
+	/**
+	 * Skal give vinkel fra dronens synsretning og til y-aksen.
+	 * Der bliver vist altid returneret den spidse vinkel.
+	 * @param dronePos dronens position
+	 * @param qrPos et QR mærkes position
+	 * @param angleToQr vinklen fra midten af dronens synsfelt, ud til QR koden
+	 * @return vinklen fra linjen mellem de to givne punkter, og y-aksen
+	 */
+	public float getDirectionAngleRelativeToYAxis(DPoint dronePos, DPoint qrPos, float angleToQr) {
+		DPoint vector = qrPos.sub(dronePos);
+		DPoint yaxis = new DPoint(0,1);
+		double dot = vector.dot(yaxis);
+		double len_v = vector.length();
+		double len_y = yaxis.length();
+		double w = Math.acos(dot/(len_v*len_y));
+		float u = (float) (w - angleToQr);
+		return u;
+	}
 
 	
 	public float getDistanceToPoints(float angle, float distanceBetweenPoints) {
@@ -26,7 +59,7 @@ public class Position {
 	}
 
 	/**
-	 * 
+	 * OBS. VIRKER KUN MED INTEGERS, SÅ DEN VIRKER EGENTLIG IKKE
 	 * @param c1 Circle 1
 	 * @param c2 Circle 2
 	 * @param startPoints Points that was used to create the circles
@@ -114,7 +147,7 @@ public class Position {
 	 * @return true hvis punktet @param v ligger tæt på et af punkterne i @param points
 	 */
 	public boolean isVectorSignificantlyDifferentFromAllPoints(DPoint v, DPoint[] startPoints, float thresholdPercent) {
-		boolean[] barray = new boolean[3];
+		boolean[] barray = new boolean[startPoints.length];
 		int i = 0;
 		for(DPoint vector : startPoints) {
 			double x = vector.x;

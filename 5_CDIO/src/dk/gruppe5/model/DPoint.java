@@ -79,6 +79,10 @@ public final class DPoint extends org.opencv.core.Point
 	public static DPoint fromPolar(double ang, double mod) {
 		return new DPoint(mod * cos(ang), mod * sin(ang));
 	}
+	
+	public float length() {
+		return (float) Math.sqrt(sq(this.x)+sq(this.y));
+	}
 
 	@Override
 	public int hashCode() {
@@ -126,6 +130,10 @@ public final class DPoint extends org.opencv.core.Point
         double px = pt.x - this.x;
         double py = pt.y - this.y;
         return (float) Math.sqrt(px * px + py * py);
+    }
+    
+    public double sq(double a) {
+    	return a*a;
     }
 
 
