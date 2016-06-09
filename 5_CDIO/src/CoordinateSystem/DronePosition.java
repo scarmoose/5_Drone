@@ -2,7 +2,7 @@ package CoordinateSystem;
 
 import java.awt.Point;
 
-import dk.gruppe5.positioning.Vector2;
+import dk.gruppe5.model.DPoint;
 
 public class DronePosition {
 
@@ -29,7 +29,7 @@ public class DronePosition {
 	public static boolean getFound(){return found;}
 	public static void setFound(boolean input) {found = input;}
 	
-	public static void setCoordinates(Vector2 v){
+	public static void setCoordinates(DPoint v){
 		x = (int) v.x;
 		y = (int) v.y;
 	}
