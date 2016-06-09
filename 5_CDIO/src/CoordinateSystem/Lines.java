@@ -21,7 +21,7 @@ import javax.swing.event.ChangeListener;
 
 import dk.gruppe5.controller.Mathmagic;
 
-public class Lines extends JFrame {
+public class Lines {
 
     public Lines() {
         initUI();
@@ -85,7 +85,6 @@ public class Lines extends JFrame {
 			@Override
             public void run() {
                 Lines ex = new Lines();
-                ex.setVisible(true);
             }
         });
     }
@@ -240,20 +239,20 @@ public class Lines extends JFrame {
     		}
             
             Image img1 = Toolkit.getDefaultToolkit().getImage("rsz_he291.jpg");
-            g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYMirror()/2+50, this);
-            if(DronePosition.getXPoint() < 930 && DronePosition.getYPoint() < 1060 && DronePosition.getFound()==true){
+            g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYMirror()/2+25, this);
+            if(DronePosition.getXPoint() < 930 && DronePosition.getYPoint() < 1060){
             
         	g2d.setStroke(bs2);
             g2d.setPaint(Color.blue);
             int pointy=0;
-            if (DronePosition.getxCorn() < 530){
-            	pointy = 530-(DronePosition.getxCorn() - 530);
+            if (DronePosition.getyCorn() < 530){
+            	pointy = 530-(DronePosition.getyCorn() - 530);
 			}
-            else if (DronePosition.getxCorn() > 530){
-            	pointy = (530-DronePosition.getxCorn())+530;
+            else if (DronePosition.getyCorn() > 530){
+            	pointy = (530-DronePosition.getyCorn())+530;
 			}
             
-            g2d.drawRect(DronePosition.getxCorn()/2+50, pointy/2+20, (DronePosition.getxLen())/2, DronePosition.getyLen()/2);
+            g2d.drawRect((DronePosition.getXPoint()/2)-(DronePosition.getxLen()/4)+(40/2), (DronePosition.getYMirror())/2+(DronePosition.getyLen()/4)+(50/2), (DronePosition.getxLen())/2, DronePosition.getyLen()/2);
 
             }
             g2d.dispose();
