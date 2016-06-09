@@ -144,7 +144,73 @@ public class PPanel extends JPanel implements Runnable {
 				image = imgproc.toBufferedImage(frame);
 				
 				
-			}else if(method == 5){
+			}else if(Values_cam.getMethod() == 10){
+				Mat backUp = new Mat();
+				backUp = frame;
+				// kig på whitebalancing og eventuelt at reducere området
+				// som vi kigger igennem for firkanter.
+				// frame = imgProc.equalizeHistogramBalance(frame);
+
+				// først gør vi det sort hvidt
+				frame = imgproc.toGrayScale(frame);
+
+				//
+				frame = imgproc.equalizeHistogramBalance(frame);
+				// Vi tester først med blur og ser hvor godt det bliver
+				// prøv også uden
+				// blur virker bedre
+				frame = imgproc.blur(frame);
+
+				// Til canny for at nemmere kunne finde contourer
+				frame = imgproc.toCanny(frame);
+
+				// Nu skal vi prøve at finde firkanter af en hvis størrelse
+				List<Shape> shapes = imgproc.findQRsquares(frame);
+
+				// draw shapes:
+				backUp = imgproc.drawShapes(shapes, backUp);
+				// time how long it takes to read x qr codes, from y
+				// squares.
+
+
+				List<BufferedImage> potentialQRcodes = new ArrayList<BufferedImage>();
+				BufferedImage source = imgproc.toBufferedImage(backUp);
+
+				// create a list of images to check for QR code
+				int z = 0;
+				for (Shape rect : shapes) {
+					int h = (int) rect.getHeight();
+					int w = (int) rect.getWidth();
+					//warp billede??
+					
+					
+					BufferedImage dst = source.getSubimage((int) rect.getTlPoint().x, (int) rect.getTlPoint().y, w,h);
+					
+	
+					Mat warpedImage = imgproc.warpImage(imgproc.bufferedImageToMat(dst));
+					potentialQRcodes.add(imgproc.toBufferedImage(warpedImage));
+				}
+				/*
+				 * Vi aflæser de potentielle QR koder og ser om vi har nogen matches, hvis vi har!
+				 *   marker dem med grønt.
+				 */
+
+				List<Result> results = imgproc.readQRCodes(potentialQRcodes);
+				for (int i = 0; i < results.size(); i++) {
+					Shape shape = shapes.get(i);
+					if (results.get(i) != null) {
+						backUp = imgproc.drawShape(shapes.get(i), backUp);
+						backUp = imgproc.putText(results.get(i).getText(), shape.getCenter(), backUp);
+
+					}
+
+				}
+
+	
+
+				image = imgproc.toBufferedImage(backUp);
+			}
+			else if(method == 5){
 				String[] files = {"2+1table.jpg","2Blur.jpg", "2QRDark.jpg","3Corner.jpg","3FarRoom.jpg","4SideFar.jpg"};
 				
 				String folder = "pics/";

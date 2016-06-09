@@ -105,7 +105,6 @@ public class VideoListenerPanel extends JPanel {
 					// time how long it takes to read x qr codes, from y
 					// squares.
 
-					final long startTime = System.currentTimeMillis();
 
 					List<BufferedImage> potentialQRcodes = new ArrayList<BufferedImage>();
 					BufferedImage source = imgProc.toBufferedImage(backUp);
@@ -115,8 +114,14 @@ public class VideoListenerPanel extends JPanel {
 					for (Shape rect : shapes) {
 						int h = (int) rect.getHeight();
 						int w = (int) rect.getWidth();
+						//warp billede??
+						
+						
 						BufferedImage dst = source.getSubimage((int) rect.getTlPoint().x, (int) rect.getTlPoint().y, w,h);
-						potentialQRcodes.add(dst);
+						
+		
+						Mat warpedImage = imgProc.warpImage(imgProc.bufferedImageToMat(dst));
+						potentialQRcodes.add(imgProc.toBufferedImage(warpedImage));
 					}
 					/*
 					 * Vi aflæser de potentielle QR koder og ser om vi har nogen matches, hvis vi har!
@@ -134,9 +139,7 @@ public class VideoListenerPanel extends JPanel {
 
 					}
 
-					final long endTime = System.currentTimeMillis();
-
-					System.out.println("Total execution time: " + (endTime - startTime));
+		
 
 					image = imgProc.toBufferedImage(backUp);
 				} else if (Values_cam.getMethod() == 5) {

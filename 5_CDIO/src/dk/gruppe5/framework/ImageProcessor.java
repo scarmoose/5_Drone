@@ -441,12 +441,13 @@ public class ImageProcessor {
 				// We find the rect that surronds the square and adds it to
 				// rects
 				Rect r = Imgproc.boundingRect(contours_1.get(i));
-				
-				if((r.width*2> r.height) && (r.height/2 < r.width)){
-					
-				rects.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
-			//	Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
-				//Imgproc.rectangle(standIn, r.br(), r.tl(), color);
+
+				if ((r.width * 2 > r.height) && (r.height / 2 < r.width)) {
+
+					rects.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
+					// Scalar color = new Scalar(rn.nextInt(255),
+					// rn.nextInt(255), rn.nextInt(255));
+					// Imgproc.rectangle(standIn, r.br(), r.tl(), color);
 				}
 				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
 
@@ -455,17 +456,19 @@ public class ImageProcessor {
 			// circle
 			if (approxCurve.height() > 10) {
 
-				//Scalar color = new Scalar(0, 0, 255);
+				// Scalar color = new Scalar(0, 0, 255);
 				Rect r = Imgproc.boundingRect(contours_1.get(i));
 				double area = Imgproc.contourArea(contours_1.get(i));
 				int radius = r.width / 2;
 
-				//Imgproc.rectangle(standIn, r.br(), r.tl(), color);
-				//System.out.println(Math.abs(1 - (r.width / r.height)));
-				if (Math.abs(1 - ((double)r.width / (double)r.height)) <= 0.2 && Math.abs(1-(area/(Math.PI * Math.pow((double)radius, 2))))<= 0.1) {
+				// Imgproc.rectangle(standIn, r.br(), r.tl(), color);
+				// System.out.println(Math.abs(1 - (r.width / r.height)));
+				if (Math.abs(1 - ((double) r.width / (double) r.height)) <= 0.2
+						&& Math.abs(1 - (area / (Math.PI * Math.pow((double) radius, 2)))) <= 0.1) {
 					if (r.area() > 80) {
-					//	System.out.println(r.area());
-						 //Imgproc.drawContours(standIn, contours_1, i, color,2);
+						// System.out.println(r.area());
+						// Imgproc.drawContours(standIn, contours_1, i,
+						// color,2);
 						cirRects.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
 
 					}
@@ -475,12 +478,12 @@ public class ImageProcessor {
 			}
 
 		}
-		
+
 		double pixelWidth = 0.0;
 		int nr = 0;
 		// check if circles are contained in a rect
 		for (Shape rect : rects) {
-		
+
 			Point tlPt = rect.getTlPoint();
 			Point brPt = rect.getBrPoint();
 			int containedCircles = 0;
@@ -490,20 +493,20 @@ public class ImageProcessor {
 				Point cbrPt = cirRect.getBrPoint();
 				// area check dosent work, buuut its unlikely anything will
 				// match the requirements for airfield1 or 2
-				if(cirRect.getArea() > rect.getArea()*0.15 && true ){
-					
-				if (ctlPt.inside(rect.getRect())) {
-					containedCircles++;
-					Scalar color = new Scalar(255, 0, 0);
-						 Imgproc.rectangle(standIn, cirRect.getBrPoint(), cirRect.getTlPoint(), color, 3);
-				}
+				if (cirRect.getArea() > rect.getArea() * 0.15 && true) {
+
+					if (ctlPt.inside(rect.getRect())) {
+						containedCircles++;
+						Scalar color = new Scalar(255, 0, 0);
+						Imgproc.rectangle(standIn, cirRect.getBrPoint(), cirRect.getTlPoint(), color, 3);
+					}
 				}
 
 			}
 			// Den t�ller hver cirkel dobbelt wat, noget med canny og de kanter
 			// den giver tror jeg
 			// indre cirkel og ydre cirkel. G�r det nok ogs� med firkant...
-			
+
 			if (containedCircles == 6) {
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
@@ -517,16 +520,16 @@ public class ImageProcessor {
 				Point txtPoint = new Point(tlPt.x + rect.getWidth() / 4, tlPt.y + rect.getHeight() / 2);
 
 				Imgproc.putText(standIn, "Airfield2", txtPoint, 5, 2, color);
-			}else if (containedCircles == 2) {
+			} else if (containedCircles == 2) {
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
 				Point txtPoint = new Point(tlPt.x + rect.getWidth() / 4, tlPt.y + rect.getHeight() / 2);
-				if(rect.getWidth() > rect.getHeight()){
-					//System.out.println(rect.getHeight());
+				if (rect.getWidth() > rect.getHeight()) {
+					// System.out.println(rect.getHeight());
 					pixelWidth += rect.getHeight();
 					nr++;
-				}else{
-					//System.out.println(rect.getWidth());
+				} else {
+					// System.out.println(rect.getWidth());
 					pixelWidth += rect.getWidth();
 					nr++;
 				}
@@ -534,10 +537,8 @@ public class ImageProcessor {
 			}
 
 		}
-		double pixelWidthAverage = pixelWidth/(double)nr;
+		double pixelWidthAverage = pixelWidth / (double) nr;
 		System.out.println(DistanceCalc.distanceFromCamera(pixelWidthAverage));
-		
-		
 
 		return standIn;
 	}
@@ -811,7 +812,6 @@ public class ImageProcessor {
 		List<Point> rightPoints = new ArrayList<Point>();
 		List<Point> QrPointsPoints = new ArrayList<Point>();
 
-		
 		double distance = 0;
 		for (int i = 0; i < results.size(); i++) {
 			if (results.get(i) != null) {
@@ -847,7 +847,8 @@ public class ImageProcessor {
 					if (shape.getTlPoint().x > (qrCodeConfirmedShape.getTlPoint().x)) {
 
 						/*
-						 * Her checker vi hvilken position i listen som vores QR kode, vi har fundet, har.
+						 * Her checker vi hvilken position i listen som vores QR
+						 * kode, vi har fundet, har.
 						 */
 						int nrWallMark = 0;
 						for (Wallmark wallmark : Mathmagic.getArray()) {
@@ -855,14 +856,14 @@ public class ImageProcessor {
 							if (wallmark.getName().equals(qrCodeResultText)) {
 								Point txtPoint = shape.getCenter();
 								rightPoints.add(txtPoint);
-								//System.out.println("name on right set");
-								nameOfQROnTheRight = Mathmagic.getNameFromInt(nrWallMark+1);
+								// System.out.println("name on right set");
+								nameOfQROnTheRight = Mathmagic.getNameFromInt(nrWallMark + 1);
 								break;
 							}
 							nrWallMark++;
 						}
 
-					}else if (shape.getTlPoint().x < (qrCodeConfirmedShape.getTlPoint().x)) {
+					} else if (shape.getTlPoint().x < (qrCodeConfirmedShape.getTlPoint().x)) {
 						// System.out.println("found one left off");
 						int nrWallMark = 0;
 						for (Wallmark wallmark : Mathmagic.getArray()) {
@@ -870,23 +871,22 @@ public class ImageProcessor {
 							if (wallmark.getName().equals(qrCodeResultConfirms.get(z).getText())) {
 								Point txtPoint = shape.getCenter();
 								leftPoints.add(txtPoint);
-								//System.out.println("name on left set");
-								nameOfQROnTheLeft = Mathmagic.getNameFromInt(nrWallMark-1);
+								// System.out.println("name on left set");
+								nameOfQROnTheLeft = Mathmagic.getNameFromInt(nrWallMark - 1);
 								break;
 							}
 							nrWallMark++;
 						}
 
 					}
-					
+
 				}
-				
+
 			}
-			//System.out.println("qr code name set");
+			// System.out.println("qr code name set");
 			nameOfQRCodeFound = qrCodeResultConfirms.get(z).getText();
 			distance += DistanceCalc.distanceFromCamera(qrCodeConfirmedShape.getWidth());
 		}
-		
 
 		// find gennemsnit af punkter og returner 3 punkter, [left,middle,right]
 		Point leftAverage = averagePoint(leftPoints);
@@ -894,19 +894,24 @@ public class ImageProcessor {
 		Point QrAverage = averagePoint(QrPointsPoints);
 
 		Point[] points = { leftAverage, QrAverage, rightAverage };
-		//hent de 3 gemte felters navne
-		String[] qrNames = {nameOfQROnTheLeft,nameOfQRCodeFound,nameOfQROnTheRight};
-		
+		// hent de 3 gemte felters navne
+		String[] qrNames = { nameOfQROnTheLeft, nameOfQRCodeFound, nameOfQROnTheRight };
 
-		if ( Double.isNaN(points[1].x) || qrNames[1] == null) {
-			//System.out.println("points null");
-			//System.out.println("not valid names  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
-			//System.out.println("not valid Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
+		if (Double.isNaN(points[1].x) || qrNames[1] == null) {
+			// System.out.println("points null");
+			// System.out.println("not valid names
+			// "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+
+			// nameOfQROnTheLeft);
+			// System.out.println("not valid Points: -->
+			// "+rightAverage+","+QrAverage+","+leftAverage);
 			return null;
-		} 
-//		System.out.println("Names: -->  "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
-//		System.out.println("Points: -->  "+rightAverage+","+QrAverage+","+leftAverage);
-		DetectedWallmarksAndNames data = new DetectedWallmarksAndNames(qrNames, points, distance/qrCodeShapeConfirms.size());
+		}
+		// System.out.println("Names: -->
+		// "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
+		// System.out.println("Points: -->
+		// "+rightAverage+","+QrAverage+","+leftAverage);
+		DetectedWallmarksAndNames data = new DetectedWallmarksAndNames(qrNames, points,
+				distance / qrCodeShapeConfirms.size());
 
 		return data;
 	}
@@ -968,7 +973,7 @@ public class ImageProcessor {
 			Shape shape = shapes.get(i);
 			Scalar color = new Scalar(255, 0, 0);
 			Imgproc.rectangle(backUp, shape.getTlPoint(), shape.getBrPoint(), color, 3);
-	
+
 		}
 		return backUp;
 	}
@@ -981,15 +986,49 @@ public class ImageProcessor {
 	}
 
 	public Mat drawShape(Shape shape, Mat image) {
-	
+
 		Scalar color = new Scalar(0, 255, 0);
 		Imgproc.rectangle(image, shape.getTlPoint(), shape.getBrPoint(), color, 3);
 		return image;
 	}
 
-	public Mat putText(String string,Point position, Mat image) {
+	public Mat putText(String string, Point position, Mat image) {
 		Scalar color = new Scalar(0, 255, 0);
-		Imgproc.putText(image, string,position, 5, 2, color);
+		Imgproc.putText(image, string, position, 5, 2, color);
 		return image;
+	}
+
+	public Mat warpImage(Mat mat) {
+		Mat qrMat = new Mat();
+		qrMat = Mat.zeros(560, 400, CvType.CV_32S);
+		
+		MatOfPoint2f point1 = new MatOfPoint2f();
+		MatOfPoint2f point2 = new MatOfPoint2f();
+		List<Point> lp = new ArrayList<>();
+		List<Point> lp2 = new ArrayList<>();
+		Point t1 = new Point(0,0);
+		Point t2 = new Point(0,qrMat.height());
+		Point t3 = new Point (qrMat.width(),qrMat.height());
+		Point t4 =  new Point(qrMat.width(),0);
+		
+	
+	
+		//noget med lavest Y værdi
+		Point p1 = new Point(0,0);
+		Point p2 = new Point(0,mat.height());
+		Point p3 = new Point (mat.width(),mat.height());
+		Point p4 =  new Point(mat.width(),0);
+		lp2.add(t1);lp2.add(t2);lp2.add(t3);lp2.add(t4);
+		lp.add(p1);lp.add(p2);lp.add(p3);lp.add(p4);
+	
+		point1.fromList(lp);
+		point2.fromList(lp2);
+		
+		Mat dst = new Mat();
+		Mat warp = Imgproc.getPerspectiveTransform(point1, point2);
+		
+		Imgproc.warpPerspective(mat, dst, warp, qrMat.size());
+		
+		return dst;
 	}
 }
