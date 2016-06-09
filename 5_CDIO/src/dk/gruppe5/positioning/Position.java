@@ -48,7 +48,8 @@ public class Position {
 		double dot = vector.dot(yaxis);
 		double len_v = vector.length();
 		double len_y = yaxis.length();
-		double w = Math.acos(dot/(len_v*len_y));
+		double w_rad = Math.acos(dot/(len_v*len_y));
+		double w = Math.toDegrees(w_rad);
 		float u = (float) (w - angleToQr);
 		return u;
 	}
