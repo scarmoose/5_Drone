@@ -23,6 +23,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.utils.Converters;
 import org.opencv.video.Video;
 
 import com.google.zxing.BinaryBitmap;
@@ -36,6 +37,7 @@ import com.google.zxing.common.HybridBinarizer;
 
 import dk.gruppe5.controller.DistanceCalc;
 import dk.gruppe5.controller.Mathmagic;
+import dk.gruppe5.model.Contour;
 import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.Wallmark;
@@ -669,18 +671,14 @@ public class ImageProcessor {
 
 	}
 
-	public List<Shape> findQRsquares(Mat frame) {
+	public List<Contour> findQRsquares(Mat frame) {
 
 		// Here contours are stored, we will check each one to see if it matches
-		// the stuff we need
 		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
 		Mat hierarchy_1 = new Mat();
 		Imgproc.findContours(frame, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-		// random is used for colours
-		Random rn = new Random();
-		Mat standIn = new Mat();
-		Imgproc.cvtColor(frame, standIn, Imgproc.COLOR_BayerBG2RGB);
-		List<Shape> shapes = new ArrayList();
+
+		List<Contour> contours = new ArrayList<>();
 
 		// Detecting shapes in the contours
 		for (int i = 0; i < contours_1.size(); i++) {
@@ -692,76 +690,17 @@ public class ImageProcessor {
 			// we wanna se if a contour is a square, or has one or more edges so
 			// we save them.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
-
-			// sorting, check if its area is to small, we are talking very small
 			Rect r = Imgproc.boundingRect(contours_1.get(i));
-			// double area = (r.br().x -r.tl().x )* (r.br().y -r.tl().y );
-			// System.out.println("calc area --> " +area);
-			// System.out.println("area --> " +r.area());
-			//
-
-			// sorting the squares found
-			if (r.area() > 50.0) {
-				// int width = r.width;
-				// int height = r.height;
-				// double difference = width / height;
-				double width = r.width;
-				double height = r.height;
-				double difference = width / height;
-				// System.out.println(difference);
-				if (difference > 0.5 && difference < 1.0) {
-					// System.out.println(r.area());
-					if (approxCurve.height() == 4) {
-						shapes.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
-					} else if (approxCurve.height() == 5) {
-						shapes.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
-					} else if (approxCurve.height() > 6 && approxCurve.height() < 10) {
-						shapes.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
-					}
+			if (r.area() > 200) {
+				if (approxCurve.total() == 4) {
+					Contour contour1 = new Contour(contour, approxCurve);
+					contours.add(contour1);
 				}
+
 			}
 		}
-		//
-		// for (Shape rect : shapes) {
-		//
-		// if (rect.getEdges() == 4) {
-		//
-		// // We find the rect that surronds the square and adds it to
-		// // rects
-		// // green for squares with 4 edges
-		// Scalar color = new Scalar(0, 255, 0);
-		// Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(),
-		// color, 3);
-		// // Imgproc.drawContours(standIn, contours_1, i, color, 2);
-		//
-		// }
-		// if (rect.getEdges() == 5) {
-		//
-		// // We find the rect that surronds the square and adds it to
-		// // rects
-		//
-		// // Red for squares with 5 edges
-		// Scalar color = new Scalar(255, 0, 0);
-		// Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(),
-		// color, 3);
-		// // Imgproc.drawContours(standIn, contours_1, i, color, 2);
-		//
-		// }
-		// if (rect.getEdges() > 6) {
-		//
-		// // We find the rect that surronds the square and adds it to
-		// // rects
-		// // blue for squares with 5 edges
-		// Scalar color = new Scalar(0, 0, 255);
-		// Imgproc.rectangle(standIn, rect.getTlPoint(), rect.getBrPoint(),
-		// color, 3);
-		// // Imgproc.drawContours(standIn, contours_1, i, color, 2);
-		//
-		// }
-		//
-		// }
 
-		return shapes;
+		return contours;
 	}
 
 	public List<Result> readQRCodes(List<BufferedImage> potentialQRcodes) {
@@ -1001,34 +940,124 @@ public class ImageProcessor {
 	public Mat warpImage(Mat mat) {
 		Mat qrMat = new Mat();
 		qrMat = Mat.zeros(560, 400, CvType.CV_32S);
-		
+
 		MatOfPoint2f point1 = new MatOfPoint2f();
 		MatOfPoint2f point2 = new MatOfPoint2f();
 		List<Point> lp = new ArrayList<>();
 		List<Point> lp2 = new ArrayList<>();
-		Point t1 = new Point(0,0);
-		Point t2 = new Point(0,qrMat.height());
-		Point t3 = new Point (qrMat.width(),qrMat.height());
-		Point t4 =  new Point(qrMat.width(),0);
-		
-	
-	
-		//noget med lavest Y værdi
-		Point p1 = new Point(0,0);
-		Point p2 = new Point(0,mat.height());
-		Point p3 = new Point (mat.width(),mat.height());
-		Point p4 =  new Point(mat.width(),0);
-		lp2.add(t1);lp2.add(t2);lp2.add(t3);lp2.add(t4);
-		lp.add(p1);lp.add(p2);lp.add(p3);lp.add(p4);
-	
+		Point t1 = new Point(0, 0);
+		Point t2 = new Point(0, qrMat.height());
+		Point t3 = new Point(qrMat.width(), qrMat.height());
+		Point t4 = new Point(qrMat.width(), 0);
+
+		// noget med lavest Y værdi
+		Point p1 = new Point(0, 0);
+		Point p2 = new Point(0, mat.height());
+		Point p3 = new Point(mat.width(), mat.height());
+		Point p4 = new Point(mat.width(), 0);
+		lp2.add(t1);
+		lp2.add(t2);
+		lp2.add(t3);
+		lp2.add(t4);
+		lp.add(p1);
+		lp.add(p2);
+		lp.add(p3);
+		lp.add(p4);
+
 		point1.fromList(lp);
 		point2.fromList(lp2);
-		
+
 		Mat dst = new Mat();
 		Mat warp = Imgproc.getPerspectiveTransform(point1, point2);
-		
+
 		Imgproc.warpPerspective(mat, dst, warp, qrMat.size());
-		
+
 		return dst;
+	}
+
+	public List<BufferedImage> warp(Mat inputMat, List<Contour> contours) {
+
+		List<BufferedImage> outputs = new ArrayList<>();
+
+		for (Contour contour : contours) {
+			List<Point> points = contour.getCorners();
+			Mat startM = Converters.vector_Point2f_to_Mat(points);
+
+			int resultWidth = 500;
+			int resultHeight = 700;
+
+			Mat outputMat = new Mat(resultWidth, resultHeight, CvType.CV_8UC4);
+
+			// determine which of the points has the lowest Y
+			int i = 0;
+			int index = 100;
+			double testdistance = 100000;
+			double y = 100000;
+			for (Point point : points) {
+
+				double dx = point.x;
+				double dy = point.y;
+				double distance = Math.sqrt(dx * dx + dy * dy);
+
+				if (distance < testdistance || point.y < y) {
+					index = i;
+					testdistance = distance;
+					y = point.y;
+					//System.out.println(distance);
+				}
+				i++;
+
+			}
+			System.out.println(index);
+
+			if (index == 0 || index == 1) {
+				Point ocvPOut1 = new Point(0, 0);
+				Point ocvPOut2 = new Point(0, resultHeight);
+				Point ocvPOut3 = new Point(resultWidth, resultHeight);
+				Point ocvPOut4 = new Point(resultWidth, 0);
+				List<Point> dest = new ArrayList<Point>();
+				dest.add(ocvPOut1);
+				dest.add(ocvPOut2);
+				dest.add(ocvPOut3);
+				dest.add(ocvPOut4);
+				Mat endM = Converters.vector_Point2f_to_Mat(dest);
+				Mat perspectiveTransform = Imgproc.getPerspectiveTransform(startM, endM);
+
+				Imgproc.warpPerspective(inputMat, outputMat, perspectiveTransform, new Size(resultWidth, resultHeight),
+						Imgproc.INTER_CUBIC);
+				outputs.add(toBufferedImage(outputMat));
+
+			} else {
+				Point ocvPOut4 = new Point(0, 0);
+				Point ocvPOut3 = new Point(0, resultHeight);
+				Point ocvPOut2 = new Point(resultWidth, resultHeight);
+				Point ocvPOut1 = new Point(resultWidth, 0);
+				List<Point> dest = new ArrayList<Point>();
+				dest.add(ocvPOut1);
+				dest.add(ocvPOut2);
+				dest.add(ocvPOut3);
+				dest.add(ocvPOut4);
+				Mat endM = Converters.vector_Point2f_to_Mat(dest);
+				Mat perspectiveTransform = Imgproc.getPerspectiveTransform(startM, endM);
+
+				Imgproc.warpPerspective(inputMat, outputMat, perspectiveTransform, new Size(resultWidth, resultHeight),
+						Imgproc.INTER_CUBIC);
+				outputs.add(toBufferedImage(outputMat));
+
+			}
+
+		}
+
+		return outputs;
+	}
+
+	public Mat drawLinesBetweenContourPoints(Contour contour, Mat image) {
+		List<Point> points = contour.getCorners();
+		int n = points.size();
+		for (int i = 0; i < n; i++) {
+			drawLine(points.get(i), points.get((i + 1) % n), image);
+		}
+
+		return image;
 	}
 }

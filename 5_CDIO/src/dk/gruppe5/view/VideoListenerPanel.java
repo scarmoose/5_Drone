@@ -121,6 +121,7 @@ public class VideoListenerPanel extends JPanel {
 						
 		
 						Mat warpedImage = imgProc.warpImage(imgProc.bufferedImageToMat(dst));
+					
 						potentialQRcodes.add(imgProc.toBufferedImage(warpedImage));
 					}
 					/*
