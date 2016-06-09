@@ -38,5 +38,6 @@
 	<classpathentry kind="lib" path="libs/zxing/core-2.2.jar"/>
 	<classpathentry kind="lib" path="libs/zxing/javase-2.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/javacv"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/opencv_java310"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
