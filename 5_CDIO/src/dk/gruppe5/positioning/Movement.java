@@ -25,7 +25,7 @@ public class Movement {
 	Runnable rthread = new Runnable(){
 		@Override 
 		public void run() {
-
+			
 		}
 	};
 
@@ -46,6 +46,8 @@ public class Movement {
 		drone.getNavDataManager().addAcceleroListener(new MyAcceleroListener());
 		drone.getNavDataManager().addVelocityListener(new MyVelocityListener());
 	}
+	
+	
 
 
 
@@ -55,7 +57,7 @@ public class Movement {
 	 * @return gennemsnitsvektoren
 	 */
 
-	public DPoint getAverageVector(DPoint[] vectors) {		
+	public DPoint getAverageVector(DPoint[]1 vectors) {		
 		double sumx = 0;
 		double sumy = 0;
 		for(DPoint v : vectors) {
