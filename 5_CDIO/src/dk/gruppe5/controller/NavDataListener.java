@@ -83,51 +83,55 @@ public class NavDataListener {
 		});
 		
 
-//	drone.getNavDataManager().addVelocityListener(new VelocityListener() {
-//			
-//			@Override
-//			public void velocityChanged(float vx, float vy, float vz) {
-//				if(!(vx == 0.0f && vy == 0.0f && vz == 0.0f) ){
-//				System.out.println("velocity changed:"+ "x: "+vx + " y: "+ vy + " z: "+vz);
-//				// TODO Auto-generated method stub
-//			}
-//			}
-//		});
+
+	drone.getNavDataManager().addVelocityListener(new VelocityListener() {
+			
+			@Override
+			public void velocityChanged(float vx, float vy, float vz) {
+				if(!(vx == 0.0f && vy == 0.0f && vz == 0.0f) ){
+				//System.out.println("velocity changed:"+ "x: "+vx + " y: "+ vy + " z: "+vz);
+				// TODO Auto-generated method stub
+			}
+			}
+		});
+
+
+		drone.getNavDataManager().addGyroListener(new GyroListener() {
+			
+			@Override
+			public void receivedRawData(GyroRawData data) {
+				//System.out.println("GyroRayData"+ data);
+				
+			}
+			
+			@Override
+			public void receivedPhysData(GyroPhysData PhysData) {
+			//System.out.println("GyroPhysData"+ PhysData);
+				
+			}
+			
+			@Override
+			public void receivedOffsets(float[] recievedOffsets) {
+				//System.out.println("recievedOffsets"+ recievedOffsets);
+				
+			}
+		});
 		
-//		drone.getNavDataManager().addGyroListener(new GyroListener() {
-//			
-//			@Override
-//			public void receivedRawData(GyroRawData data) {
-//				System.out.println("GyroRayData"+ data);
-//				
-//			}
-//			
-//			@Override
-//			public void receivedPhysData(GyroPhysData PhysData) {
-//			System.out.println("GyroPhysData"+ PhysData);
-//				
-//			}
-//			
-//			@Override
-//			public void receivedOffsets(float[] recievedOffsets) {
-//				System.out.println("recievedOffsets"+ recievedOffsets);
-//				
-//			}
-//		});
+
 		
 		drone.getSpeed();
+
 		System.out.println("Speedlol:"+ drone.getSpeed());
 		
 		
 		drone.addSpeedListener(new ISpeedListener() {
-				
+
 			@Override
 			public void speedUpdated(int speed) {
 				System.out.println("Speed Updated:"+ speed);
 				
 			}
-		});
-		
+		});		
 	}
 
 }

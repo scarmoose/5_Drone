@@ -22,7 +22,7 @@ public class Position {
 	
 	/**
 	 * Skal give vinkel fra dronens synsretning og til y-aksen.
-	 * Der bliver vist altid returneret den spidse vinkel.
+	 * Der bliver vist kun returneret vinkler op til 180 grader
 	 * @param dronePos dronens position
 	 * @param qrPos et QR mærkes position
 	 * @param pixelsFromMiddleToQr afstanden i pixels fra midten af skærmen til QR punktet.
@@ -36,7 +36,7 @@ public class Position {
 	
 	/**
 	 * Skal give vinkel fra dronens synsretning og til y-aksen.
-	 * Der bliver vist altid returneret den spidse vinkel.
+	 * Der bliver vist kun returneret vinkler op til 180 grader
 	 * @param dronePos dronens position
 	 * @param qrPos et QR mærkes position
 	 * @param angleToQr vinklen fra midten af dronens synsfelt, ud til QR koden
@@ -48,15 +48,17 @@ public class Position {
 		double dot = vector.dot(yaxis);
 		double len_v = vector.length();
 		double len_y = yaxis.length();
-		double w = Math.acos(dot/(len_v*len_y));
+		// går kun til 180 grader
+		double w_rad = Math.acos(dot/(len_v*len_y));
+		double w = Math.toDegrees(w_rad);
 		float u = (float) (w - angleToQr);
 		return u;
 	}
 
 	
-	public float getDistanceToPoints(float angle, float distanceBetweenPoints) {
-		return (float) ((distanceBetweenPoints/2) / Math.tan(Math.toRadians(angle)));
-	}
+//	public float getDistanceToPoints(float angle, float distanceBetweenPoints) {
+//		return (float) ((distanceBetweenPoints/2) / Math.tan(Math.toRadians(angle)));
+//	}
 
 	/**
 	 * OBS. VIRKER KUN MED INTEGERS, SÅ DEN VIRKER EGENTLIG IKKE
@@ -115,22 +117,13 @@ public class Position {
 	public DPoint getPositionVector(Circle c1, Circle c2, DPoint[] startPoints) {
 		CircleCircleIntersection cci = new CircleCircleIntersection(c1, c2);
 		DPoint[] vectors = cci.getIntersectionVectors();
-//		for(Vector2 v : vectors)
-//			System.out.println("getPositionVector - Skæringspunkt: "+v);
 		if(vectors != null && vectors.length > 0) {
 			if(vectors.length == 1) {
-//				System.out.println("Der var 1 point");
 				return new DPoint(startPoints[0].x, startPoints[0].y);
 			}
 			if(vectors.length == 2) {
-//				System.out.println("Der var 2 points");
-//				int i = 0;
-//				for(Vector2 v : vectors) {
-//					System.out.println("----> vector "+i++ +" er: "+v);
-//				}
 				for(DPoint v : vectors) { 
-					if(isVectorSignificantlyDifferentFromAllPoints(v, startPoints, 2)) {// 2% afvigelse tilladt
-//						System.out.println("Position er: "+v);
+					if(isPointSignificantlyDifferentFromAllPoints(v, startPoints, 2)) { // mindst 2% afvigelse
 						return v;
 					}
 				}
@@ -141,34 +134,28 @@ public class Position {
 	
 	/**
 	 * 
-	 * @param v punkt der skal tjekkes for
+	 * @param p punkt der skal tjekkes for
 	 * @param startPoints punkter der skal tjekkes op imod
 	 * @param thresholdPercent antal procent det må være fra, før der skal returneres true
 	 * @return true hvis punktet @param v ligger tæt på et af punkterne i @param points
 	 */
-	public boolean isVectorSignificantlyDifferentFromAllPoints(DPoint v, DPoint[] startPoints, float thresholdPercent) {
-		boolean[] barray = new boolean[startPoints.length];
-		int i = 0;
-		for(DPoint vector : startPoints) {
-			double x = vector.x;
-			double y = vector.y;
+	public boolean isPointSignificantlyDifferentFromAllPoints(DPoint p, DPoint[] startPoints, float thresholdPercent) {
+		for(DPoint _p : startPoints) {
+			double x = _p.x;
+			double y = _p.y;
 			// virker ikke med nul..
+			// da x eller y værdier på 0, ikke vil give noget upper-lower interval, ændres 0 til 0.1/-0.1
+			// for sjov sættes meget lave værdier til +- 0.1, da det ikke behøver at være så præcist
+			// 
 			double x_upper = (x <= 0.001 && x >= -0.001) ? 0.1 : (x * (1 + thresholdPercent/100.0));
 			double x_lower = (x <= 0.001 && x >= -0.001) ? -0.1 : (x * (1 - thresholdPercent/100.0));
 			double y_upper = (y <= 0.001 && y >= -0.001) ? 0.1 : (y * (1 + thresholdPercent/100.0));
 			double y_lower = (y <= 0.001 && y >= -0.001) ? -0.1 : (y * (1 - thresholdPercent/100.0));
 			
-			if(!(v.x <= x_upper && v.x >= x_lower
-					&& v.y <= y_upper && v.y >= y_lower)) {
-				barray[i] = true;
-			} else {
-				barray[i] = false;
-			}
-			i++;
-		}
-		for(boolean b : barray) {
-			if(!b)
+			if((p.x <= x_upper && p.x >= x_lower
+					&& p.y <= y_upper && p.y >= y_lower)) {
 				return false;
+			} 
 		}
 		return true;
 	}

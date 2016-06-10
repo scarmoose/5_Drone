@@ -84,10 +84,12 @@ public class PWindow {
 		 */
 
 
-		DroneCommander DCom = new DroneCommander();
-		VideoListenerPanel panel = new VideoListenerPanel(DCom.getDrone());
+	
+
+		VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
+		new Thread(panel).start();;
 		frame.setFocusable(true);
-		frame.addKeyListener(new KeyboardCommandManager((DCom.getDrone())));
+		frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
 		
 
 //		panel.setSize(new Dimension(700, 400));
@@ -207,10 +209,9 @@ public class PWindow {
 		Button2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("Takeoff er presset");
-				dCommando.testFlight(7000);
-				//dCommando.takeOffAndLand(10000);
-				//dCommando.hover(10000);
-				//dCommandodrone.FlightControl();
+
+				dCommando.droneFlightControl();
+
 	            SwingUtilities.updateComponentTreeUI(frame);
             	frame.invalidate();
             	frame.validate();
@@ -256,7 +257,8 @@ public class PWindow {
 		Button7.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("KILL IT");
-				dCommando.killAll();
+				dCommando.droneKillAll();
+
 	            SwingUtilities.updateComponentTreeUI(frame);
             	frame.invalidate();
             	frame.validate();

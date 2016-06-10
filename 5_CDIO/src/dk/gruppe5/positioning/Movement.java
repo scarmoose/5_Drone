@@ -25,7 +25,7 @@ public class Movement {
 	Runnable rthread = new Runnable(){
 		@Override 
 		public void run() {
-
+			
 		}
 	};
 
@@ -46,6 +46,8 @@ public class Movement {
 		drone.getNavDataManager().addAcceleroListener(new MyAcceleroListener());
 		drone.getNavDataManager().addVelocityListener(new MyVelocityListener());
 	}
+	
+	
 
 
 
