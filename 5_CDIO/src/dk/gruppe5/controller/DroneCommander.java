@@ -7,6 +7,7 @@ import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.LEDAnimation;
 import de.yadrone.base.command.VideoChannel;
+import de.yadrone.base.command.VideoCodec;
 import dk.gruppe5.app.App;
 
 public class DroneCommander extends Canvas {
@@ -18,7 +19,7 @@ public class DroneCommander extends Canvas {
 	
 	CommandManager cmd;
 	private NavDataListener navl;
-
+	
 
 	public DroneCommander() {
 		
@@ -32,6 +33,7 @@ public class DroneCommander extends Canvas {
 		
 			App.drone.start();
 			cmd = App.drone.getCommandManager();
+			cmd.setVideoCodec(VideoCodec.H264_720P);
 			cmd.setMaxAltitude(2000);
 			cmd.setVideoChannel(VideoChannel.HORI);
 			System.out.println("Drone connected.");

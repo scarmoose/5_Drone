@@ -81,6 +81,9 @@ public class VideoListenerPanel extends JPanel {
 				} else if (Values_cam.getMethod() == 10) {
 					Mat backUp = new Mat();
 					backUp = frame;
+					int ratio = 2;
+					frame = imgProc.downScale(backUp, ratio);
+					
 					// kig på whitebalancing og eventuelt at reducere området
 					// som vi kigger igennem for firkanter.
 					// frame = imgProc.equalizeHistogramBalance(frame);
@@ -98,17 +101,18 @@ public class VideoListenerPanel extends JPanel {
 					// Til canny for at nemmere kunne finde contourer
 					frame = imgProc.toCanny(frame);
 
-					// Nu skal vi prøve at finde firkanter
+//					 Nu skal vi prøve at finde firkanter
 					List<Contour> contours = imgProc.findQRsquares(frame);
-					List<BufferedImage> cutouts = imgProc.warp(backUp, contours);
-					List<Result> results = imgProc.readQRCodes(cutouts);
-					int i = 0;
-					for(Result result : results){
-						if(result != null){
-							backUp = imgProc.drawLinesBetweenContourPoints(contours.get(i), backUp);
-						}
-						i++;
-					}
+					List<BufferedImage> cutouts = imgProc.warp(backUp, contours,ratio);
+//					List<Result> results = imgProc.readQRCodes(cutouts);
+//					int i = 0;
+//					for(Result result : results){
+//						if(result != null){
+//							backUp = imgProc.drawLinesBetweenContourPoints(contours.get(i), backUp, ratio);
+//						}
+//						i++;
+//					}
+					
 
 		
 

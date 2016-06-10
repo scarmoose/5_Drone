@@ -27,17 +27,17 @@ public class Contour {
 		return approxCurve;
 	}
 
-	public List<Point> getCorners() {
+	public List<Point> getCorners(int ratio) {
 
 		double[] temp_double;
 		temp_double = approxCurve.get(0, 0);
-		Point p1 = new Point(temp_double[0], temp_double[1]);
+		Point p1 = new Point(temp_double[0]*ratio, temp_double[1]*ratio);
 		temp_double = approxCurve.get(1, 0);
-		Point p2 = new Point(temp_double[0], temp_double[1]);
+		Point p2 = new Point(temp_double[0]*ratio, temp_double[1]*ratio);
 		temp_double = approxCurve.get(2, 0);
-		Point p3 = new Point(temp_double[0], temp_double[1]);
+		Point p3 = new Point(temp_double[0]*ratio, temp_double[1]*ratio);
 		temp_double = approxCurve.get(3, 0);
-		Point p4 = new Point(temp_double[0], temp_double[1]);
+		Point p4 = new Point(temp_double[0]*ratio, temp_double[1]*ratio);
 		List<Point> source = new ArrayList<Point>();
 		source.add(p1);
 		source.add(p2);

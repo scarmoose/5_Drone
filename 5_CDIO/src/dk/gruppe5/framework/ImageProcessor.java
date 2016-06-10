@@ -90,6 +90,14 @@ public class ImageProcessor {
 		return outputImage;
 	}
 
+	public Mat downScale(Mat backUp, int i) {
+		int width = backUp.width()/i;
+		int height = backUp.height()/i;
+		Mat dst = new Mat();
+		Imgproc.resize(backUp, dst, new Size(width,height));
+		return dst;
+	}
+	
 	public Mat open(Mat input, int elementSize, int elementShape) {
 		Mat outputImage = new Mat();
 		Mat element = getKernelFromShape(elementSize, elementShape);
@@ -975,16 +983,16 @@ public class ImageProcessor {
 		return dst;
 	}
 
-	public List<BufferedImage> warp(Mat inputMat, List<Contour> contours) {
+	public List<BufferedImage> warp(Mat inputMat, List<Contour> contours,int ratio) {
 
 		List<BufferedImage> outputs = new ArrayList<>();
 
 		for (Contour contour : contours) {
-			List<Point> points = contour.getCorners();
+			List<Point> points = contour.getCorners(ratio);
 			Mat startM = Converters.vector_Point2f_to_Mat(points);
 
-			int resultWidth = 500;
-			int resultHeight = 700;
+			int resultWidth = startM.width()+100;
+			int resultHeight = startM.height()+100;
 
 			Mat outputMat = new Mat(resultWidth, resultHeight, CvType.CV_8UC4);
 
@@ -1008,7 +1016,7 @@ public class ImageProcessor {
 				i++;
 
 			}
-			System.out.println(index);
+			//System.out.println(index);
 
 			if (index == 0 || index == 1) {
 				Point ocvPOut1 = new Point(0, 0);
@@ -1051,8 +1059,8 @@ public class ImageProcessor {
 		return outputs;
 	}
 
-	public Mat drawLinesBetweenContourPoints(Contour contour, Mat image) {
-		List<Point> points = contour.getCorners();
+	public Mat drawLinesBetweenContourPoints(Contour contour, Mat image, int ratio) {
+		List<Point> points = contour.getCorners(ratio);
 		int n = points.size();
 		for (int i = 0; i < n; i++) {
 			drawLine(points.get(i), points.get((i + 1) % n), image);
@@ -1060,4 +1068,7 @@ public class ImageProcessor {
 
 		return image;
 	}
+
+	
+	
 }
