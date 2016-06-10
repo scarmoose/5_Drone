@@ -9,7 +9,7 @@ import de.yadrone.base.command.VideoChannel;
 import dk.gruppe5.app.App;
 
 public class DroneCommander extends Canvas {
-	private final static int speed = 5;
+	private final static int speed = 10;
 	private final static int sleep = 500;
 	
 	/**
@@ -52,9 +52,29 @@ public class DroneCommander extends Canvas {
 
 	public void droneFlightControl(){
 		droneTakeOff();
-		//Thread.currentThread().sleep(sleep);
+		cmd.hover().doFor(2000);
+		//cmd.up(20).doFor(2600);
+		cmd.hover().doFor(2000);
+		cmd.forward(15).doFor(500);
+		cmd.backward(15).doFor(500);
+		cmd.hover().doFor(5000);
+		cmd.spinLeft(20).doFor(4000);
+		cmd.hover().doFor(3000);
+		cmd.forward(15).doFor(500);
+		cmd.hover().doFor(3000);
 		
-		droneSpinLeft(3000);
+		//cmd.spinLeft(40).doFor(10000);
+		//cmd.hover().doFor(3000);
+		//cmd.spinRight(40).doFor(10000);
+		//Thread.currentThread().sleep(sleep);
+		/*try {
+			droneCirkelFlying(3000);
+			System.out.println("rod");
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
 		cmd.landing();
 	}
 	

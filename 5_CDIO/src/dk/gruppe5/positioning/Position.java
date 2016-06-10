@@ -22,7 +22,7 @@ public class Position {
 	
 	/**
 	 * Skal give vinkel fra dronens synsretning og til y-aksen.
-	 * Der bliver vist altid returneret den spidse vinkel.
+	 * Der bliver vist kun returneret vinkler op til 180 grader
 	 * @param dronePos dronens position
 	 * @param qrPos et QR mærkes position
 	 * @param pixelsFromMiddleToQr afstanden i pixels fra midten af skærmen til QR punktet.
@@ -36,7 +36,7 @@ public class Position {
 	
 	/**
 	 * Skal give vinkel fra dronens synsretning og til y-aksen.
-	 * Der bliver vist altid returneret den spidse vinkel.
+	 * Der bliver vist kun returneret vinkler op til 180 grader
 	 * @param dronePos dronens position
 	 * @param qrPos et QR mærkes position
 	 * @param angleToQr vinklen fra midten af dronens synsfelt, ud til QR koden
@@ -48,15 +48,17 @@ public class Position {
 		double dot = vector.dot(yaxis);
 		double len_v = vector.length();
 		double len_y = yaxis.length();
-		double w = Math.acos(dot/(len_v*len_y));
+		// går kun til 180 grader
+		double w_rad = Math.acos(dot/(len_v*len_y));
+		double w = Math.toDegrees(w_rad);
 		float u = (float) (w - angleToQr);
 		return u;
 	}
 
 	
-	public float getDistanceToPoints(float angle, float distanceBetweenPoints) {
-		return (float) ((distanceBetweenPoints/2) / Math.tan(Math.toRadians(angle)));
-	}
+//	public float getDistanceToPoints(float angle, float distanceBetweenPoints) {
+//		return (float) ((distanceBetweenPoints/2) / Math.tan(Math.toRadians(angle)));
+//	}
 
 	/**
 	 * OBS. VIRKER KUN MED INTEGERS, SÅ DEN VIRKER EGENTLIG IKKE
