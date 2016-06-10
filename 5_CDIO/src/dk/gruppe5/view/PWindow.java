@@ -84,11 +84,12 @@ public class PWindow {
 		 */
 
 
-		DroneCommander DCom = new DroneCommander();
+	
 
-		VideoListenerPanel panel = new VideoListenerPanel(DCom.getDrone());
+		VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
+		new Thread(panel).start();;
 		frame.setFocusable(true);
-		frame.addKeyListener(new KeyboardCommandManager((DCom.getDrone())));
+		frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
 		
 
 //		panel.setSize(new Dimension(700, 400));

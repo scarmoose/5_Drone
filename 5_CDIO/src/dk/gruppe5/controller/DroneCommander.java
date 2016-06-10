@@ -28,13 +28,20 @@ public class DroneCommander extends Canvas {
 			
 			System.out.println("Connecting to drone...");
 			
-			navl = new NavDataListener((ARDrone) App.drone);
 			
 			App.drone.start();
+			Thread.sleep(2000);
 			cmd = App.drone.getCommandManager();
+			Thread.sleep(500);
 			cmd.setVideoCodec(VideoCodec.H264_720P);
+			Thread.sleep(500);
 			cmd.setMaxAltitude(2000);
+			Thread.sleep(500);
 			cmd.setVideoChannel(VideoChannel.HORI);
+			Thread.sleep(500);
+
+			
+			//navl = new NavDataListener((ARDrone) App.drone);
 			System.out.println("Drone connected.");
 		
 		} catch (Exception e) {
