@@ -31,8 +31,8 @@ public class Lines {
         initUI();
         
         //Sætter airfields
-        /*
-        AirfieldList.addAirfield(new Airfield("Airfield1",new Point(350,700)));
+        
+        /*AirfieldList.addAirfield(new Airfield("Airfield1",new Point(350,700)));
         AirfieldList.addAirfield(new Airfield("Airfield2",new Point(530,200)));*/
                 
     }
@@ -238,8 +238,8 @@ public class Lines {
                 else if (AirfieldList.getArray().get(j).point.y > 530){
                 	pointy = 530-((AirfieldList.getArray().get(j).point.y)-530);
     			}
-                g2d.drawRect((AirfieldList.getArray().get(j).point.x/2)-(DronePosition.getxLen()/4)+(40/2), (pointy)/4+(DronePosition.getyLen()/4)+(50/2), (DronePosition.getxLen())/2, DronePosition.getyLen()/2);
-                g2d.drawString(AirfieldList.getArray().get(j).name, (AirfieldList.getArray().get(j).point.x/2)-(DronePosition.getxLen()/4)+(40/2)-7, (pointy)/4+(DronePosition.getyLen()/4)+(50/2)-2);
+                g2d.drawRect((AirfieldList.getArray().get(j).point.x/2)-(DronePosition.getxLen()/4)+(40/2), (pointy)/2+(DronePosition.getyLen()/4)+(50/2), (DronePosition.getxLen())/2, DronePosition.getyLen()/2);
+                g2d.drawString(AirfieldList.getArray().get(j).name, (AirfieldList.getArray().get(j).point.x/2)-(DronePosition.getxLen()/4)+(40/2)-7, (pointy)/2+(DronePosition.getyLen()/4)+(50/2)-2);
             }
                 
             
