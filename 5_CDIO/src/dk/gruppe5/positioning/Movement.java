@@ -57,7 +57,7 @@ public class Movement {
 	 * @return gennemsnitsvektoren
 	 */
 
-	public DPoint getAverageVector(DPoint[]1 vectors) {		
+	public DPoint getAverageVector(DPoint[] vectors) {		
 		double sumx = 0;
 		double sumy = 0;
 		for(DPoint v : vectors) {

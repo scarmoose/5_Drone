@@ -6,8 +6,6 @@ import de.yadrone.base.IARDrone;
 import de.yadrone.base.video.ImageListener;
 
 public class FrameGrabber extends Thread {
-	
-	
 	volatile BufferedImage current;
 	private final IARDrone drone;
 	
@@ -18,7 +16,6 @@ public class FrameGrabber extends Thread {
 			@Override
 			public void imageUpdated(BufferedImage arg0) {
 				current = arg0;
-				
 			}
 			
 		});
