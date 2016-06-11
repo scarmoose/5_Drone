@@ -177,6 +177,12 @@ public final class CircleCircleIntersection {
 		}
 	}
 	
+	/**
+	 * Bør ikke bruges, da den giver integer points. 
+	 * Brug i stedet <code>getIntersectionVectors()</code>
+	 * @return <code>java.awt.Point[]</code> med skæringspunkterne
+	 */
+	@Deprecated
 	public Point[] getIntersectionPoints() {
 		DPoint[] vectors = getIntersectionVectors();
 		Point[] points = new Point[vectors.length];
