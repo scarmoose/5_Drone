@@ -3,7 +3,9 @@ package dk.gruppe5.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
@@ -117,6 +119,62 @@ public class Contour {
 		
 		
 		return p.width;
+	}
+
+	public Point getBrPoint(int ratio) {
+		
+		List<Point> points = getCorners(ratio);
+		Point tl = new Point(0, 0);
+		int i = 0;
+		int index = 100;
+		double testDistance = 0;
+
+		for (Point point : points) {
+			double dx = point.x;
+			double dy = point.y;
+			double distance = Math.sqrt(dx * dx + dy * dy);
+			if (distance > testDistance) {
+				index = i;
+
+			}
+			i++;
+
+		}
+		tl = points.get(index);
+
+		return tl;
+	}
+
+	public Rect getBoundingRect(int ratio) {
+		
+		//RotatedRect r = Imgproc.fitEllipse(contour);
+		
+		//Rect p = r.boundingRect();
+		MatOfPoint matOfPoint = new MatOfPoint();
+		contour.convertTo(matOfPoint, CvType.CV_32S);
+		
+		Rect p = Imgproc.boundingRect(matOfPoint);
+		Rect realRect = new Rect(p.x*ratio,p.y*ratio,p.width*ratio,p.height*ratio);
+		return realRect;
+	}
+/**
+ * Returns 4 points from the bounding rect, tl and then clockwise around the square
+ * @param ratio
+ * @return
+ */
+	public List<Point> getBoundingRectPoints(int ratio) {
+		Rect r = getBoundingRect(ratio);
+		List<Point> points = new ArrayList<>();
+		//top left
+		points.add(new Point(r.tl().x,r.tl().y));
+		//top right
+		points.add(new Point(r.br().x,r.tl().y));
+		//bottom right
+		points.add(new Point(r.br().x,r.br().y));
+		//bottom left
+		points.add(new Point(r.tl().x,r.br().y));
+		
+		return points;
 	}
 
 }
