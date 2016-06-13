@@ -25,15 +25,24 @@ import dk.gruppe5.model.AirfieldList;
 
 public class Lines {
 
-	AirfieldList airfields = new AirfieldList();
-	
-    public Lines() {
+	public Lines() {
         initUI();
         
         //Sætter airfields
         
-        /*AirfieldList.addAirfield(new Airfield("Airfield1",new Point(350,700)));
-        AirfieldList.addAirfield(new Airfield("Airfield2",new Point(530,200)));*/
+        AirfieldList.addAirfield(new Airfield("Airfield1",new Point(350,700)));
+        AirfieldList.addAirfield(new Airfield("Airfield2",new Point(530,200)));
+        
+        String airname = "Airfield3";
+        int nameFound = 0;
+        for (int h = 0;h<AirfieldList.getArray().size();h++){
+        	if(AirfieldList.getArray().get(h).name == airname){
+        		nameFound++;
+        	}
+        }
+        if(nameFound==0){
+        	AirfieldList.addAirfield(new Airfield(airname,new Point(800,800)));
+        }
                 
     }
 
@@ -42,7 +51,7 @@ public class Lines {
         MutableModel model = new DefaultModel();
         Controller controller = new Controller(model);
 
-        JFrame frame = new JFrame("Drone");
+        JFrame frame = new JFrame("Lokale 040");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(new View(model));
         frame.pack();
@@ -103,9 +112,6 @@ public class Lines {
 
         private final Dimension size = new Dimension(900/2+80, 1100/2+80);
         private final Rectangle bounds = new Rectangle(900/2+80, 1100/2+80, 10, 10);
-
-        //private int xDelta = ((int) (Math.random() * 5)) + 1;
-        //private int yDelta = ((int) (Math.random() * 5)) + 1;
 
         private List<ChangeListener> changeListeners;
 
@@ -188,6 +194,7 @@ public class Lines {
             g2d.setColor(getBackground());
             g2d.fillRect(0, 0, getWidth(), getHeight());
             g2d.setColor(Color.BLUE);
+            
             //The four walls
             g2d.drawLine(20, 50, 930/2+20, 50);
             g2d.drawLine(20, 50, 20, 1060/2+50);
@@ -200,7 +207,6 @@ public class Lines {
             g2d.drawLine(900/2+20, 1060/2+50, 900/2+20, 1060/2+50+(10/2));
             g2d.drawLine(900/2+20, 1060/2+50, 930/2+20, 1060/2+50);
             g2d.drawLine(930/2+20, 1060/2+50, 930/2+20, 50);
-            
             ArrayList<Integer> Xelements = new ArrayList<>();
     		ArrayList<Integer> Yelements = new ArrayList<>();
     		for (int i = 0 ; i < Mathmagic.getArray().length ; i++){
@@ -225,6 +231,7 @@ public class Lines {
     		}
             
             Image img1 = Toolkit.getDefaultToolkit().getImage("rsz_he291.jpg");
+            
             g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYMirror()/2+25, this);
             
             for(int j = 0; j<AirfieldList.getArray().size();j++ ){

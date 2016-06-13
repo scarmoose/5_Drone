@@ -39,6 +39,7 @@ public class DroneCommander extends Canvas {
 			Thread.sleep(500);
 			cmd.setVideoChannel(VideoChannel.HORI);
 			Thread.sleep(500);
+			cmd.setVideoBitrate(3500);
 
 			
 			//navl = new NavDataListener((ARDrone) App.drone);
