@@ -1163,6 +1163,7 @@ public class ImageProcessor {
 		return image;
 	}
 
+
 	public Mat drawLinesBetweenBoundingRectPoints(Contour contour, Mat image, int ratio, Scalar color) {
 		List<Point> points = contour.getBoundingRectPoints(ratio);
 		int n = points.size();
@@ -1171,6 +1172,46 @@ public class ImageProcessor {
 		}
 
 		return image;
+	}
+
+
+	public static boolean isContourSquare(MatOfPoint thisContour) {
+
+	    Rect ret = null;
+
+	    MatOfPoint2f thisContour2f = new MatOfPoint2f();
+	    MatOfPoint approxContour = new MatOfPoint();
+	    MatOfPoint2f approxContour2f = new MatOfPoint2f();
+
+	    thisContour.convertTo(thisContour2f, CvType.CV_32FC2);
+
+	    Imgproc.approxPolyDP(thisContour2f, approxContour2f, 2, true);
+
+	    approxContour2f.convertTo(approxContour, CvType.CV_32S);
+
+	    if (approxContour.size().height == 4) {
+	        ret = Imgproc.boundingRect(approxContour);
+	    }
+
+	    return (ret != null);
+	}
+	
+	public static List<MatOfPoint> getSquareContours(List<MatOfPoint> contours) {
+
+	    List<MatOfPoint> squares = null;
+
+	    for (MatOfPoint c : contours) {
+
+	        if (isContourSquare(c)) {
+	      
+	            if (squares == null)
+	                squares = new ArrayList<MatOfPoint>();
+	            squares.add(c);
+	            
+	        } 
+	    }
+
+	    return squares;
 	}
 
 }

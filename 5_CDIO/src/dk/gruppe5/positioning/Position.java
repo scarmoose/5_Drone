@@ -96,7 +96,7 @@ public class Position {
 	 * @return skæringspunkterne. <code>null</code> hvis der ikke er nogen
 	 */
 	
-	public DPoint[] getIntersectionVectors(Circle c1, Circle c2) {
+	public DPoint[] getIntersectionPoints(Circle c1, Circle c2) {
 		CircleCircleIntersection cci = new CircleCircleIntersection(c1, c2);
 		DPoint[] points = cci.getIntersectionVectors();
 		if(points != null && points.length > 0) {
@@ -114,7 +114,7 @@ public class Position {
 	 * @return returnerer <code>null</code>, 1 punkt, eller 2 punkter. Ved henholdsvis 0, 1 og 2 skæringspunkter.
 	 */
 	
-	public DPoint getPositionVector(Circle c1, Circle c2, DPoint[] startPoints) {
+	public DPoint getPositionPoint(Circle c1, Circle c2, DPoint[] startPoints) {
 		CircleCircleIntersection cci = new CircleCircleIntersection(c1, c2);
 		DPoint[] vectors = cci.getIntersectionVectors();
 		if(vectors != null && vectors.length > 0) {
@@ -221,7 +221,7 @@ public class Position {
 		DPoint[] points = new DPoint[]{v1, v2, v3}; // startpoints som cirkler er lavet ud fra
 		Circle c1 = getCircleFromPoints(v1, v2, pixelsFromP1toP2);
 		Circle c2 = getCircleFromPoints(v2, v3, pixelsFromP2toP3);
-		return getPositionVector(c1, c2, points);
+		return getPositionPoint(c1, c2, points);
 		 
 	}
 	
@@ -258,7 +258,7 @@ public class Position {
 		float pixelsFromP2toP3 = distance(p2, p3);
 		Circle c1 = getCircleFromPoints(vectors[0], vectors[1], pixelsFromP1toP2);
 		Circle c2 = getCircleFromPoints(vectors[1], vectors[2], pixelsFromP2toP3);
-		DPoint position = getPositionVector(c1, c2, vectors);
+		DPoint position = getPositionPoint(c1, c2, vectors);
 		
 		return new org.opencv.core.Point(position.x, position.y);
 	}

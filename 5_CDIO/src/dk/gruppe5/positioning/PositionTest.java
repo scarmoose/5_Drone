@@ -60,12 +60,12 @@ public class PositionTest {
 		c2 = pos.getCircleFromPointsWithAngle(p2, p3, (float) Math.toDegrees(0.2));
 		System.out.println(c2);
 		
-		DPoint[] vectors = pos.getIntersectionVectors(c1, c2);
+		DPoint[] vectors = pos.getIntersectionPoints(c1, c2);
 		for(DPoint v : vectors)  {
 			//System.out.println(v);
 		}
 		
-		DPoint vector = pos.getPositionVector(c1, c2, points);
+		DPoint vector = pos.getPositionPoint(c1, c2, points);
 		System.out.println("Position: "+vector);
 		
 	}

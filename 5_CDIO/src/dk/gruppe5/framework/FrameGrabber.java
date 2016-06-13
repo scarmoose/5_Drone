@@ -7,10 +7,11 @@ import de.yadrone.base.video.ImageListener;
 
 public class FrameGrabber extends Thread {
 
+
 	private volatile BufferedImage oldOne;
 	private volatile BufferedImage current;
 	private final IARDrone drone;
-	
+
 	public FrameGrabber(final IARDrone drone) {
 		this.drone = drone;
 		this.drone.getVideoManager().addImageListener(new ImageListener() {
@@ -22,15 +23,12 @@ public class FrameGrabber extends Thread {
 						oldOne = current;
 						current = newImage;
 					}
-					
 				}
-				
 			}
 			
 		});
 	}
-	
-	
+
 	public BufferedImage getOldOne() {
 		return oldOne;
 	}
@@ -39,11 +37,11 @@ public class FrameGrabber extends Thread {
 		return current;
 	}
 
-	
-	
+
+
 	@Override 
 	public void run() {
-		
+
 	}
 
 }

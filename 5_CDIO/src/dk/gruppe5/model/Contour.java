@@ -1,3 +1,4 @@
+
 package dk.gruppe5.model;
 
 import java.util.ArrayList;
@@ -176,5 +177,4 @@ public class Contour {
 		
 		return points;
 	}
-
 }
