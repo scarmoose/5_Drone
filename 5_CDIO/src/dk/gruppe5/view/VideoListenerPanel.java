@@ -371,8 +371,11 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 										 */
 										Point mapPosition = test.getPositionFromPoints(data.getQrNames(),
 												data.getPoints()[0], data.getPoints()[1], data.getPoints()[2]);
-										DronePosition.setPosition(mapPosition);
-										System.out.println(mapPosition);
+										if(mapPosition != null){
+											DronePosition.setPosition(mapPosition);
+											System.out.println(mapPosition);
+											
+										}
 										// test.getPositionFromPoints(data.getPoints()[0],
 										// data.getPoints()[1],
 										// data.getPoints()[3]);
