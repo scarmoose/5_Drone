@@ -64,30 +64,7 @@ public class DroneCommander extends Canvas {
 
 	public void droneFlightControl(){
 		droneTakeOff();
-		cmd.hover().doFor(2000);
-		//cmd.up(20).doFor(2600);
-		cmd.hover().doFor(2000);
-		cmd.forward(15).doFor(500);
-		cmd.backward(15).doFor(500);
-		cmd.hover().doFor(5000);
-		cmd.spinLeft(20).doFor(4000);
-		cmd.hover().doFor(3000);
-		cmd.forward(15).doFor(500);
-		cmd.hover().doFor(3000);
-		
-		//cmd.spinLeft(40).doFor(10000);
-		//cmd.hover().doFor(3000);
-		//cmd.spinRight(40).doFor(10000);
-		//Thread.currentThread().sleep(sleep);
-		/*try {
-			droneCirkelFlying(3000);
-			System.out.println("rod");
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
-		cmd.landing();
+		droneLanding();
 	}
 	
 	public void droneTakeOff(){
@@ -142,21 +119,22 @@ public class DroneCommander extends Canvas {
             Thread.currentThread().sleep(sleep);
 		}
 	}
+	public void droneLanding(){
+		cmd.hover().doFor(500);
+		cmd.landing();
+	}
 	
 	public void takeOffAndLand(long interval){
 		cmd.flatTrim();
 		cmd.takeOff();
 		cmd.waitFor(interval);
-		cmd.landing();
 	}
 	public void hover(long interval){
 		cmd.flatTrim();
 		cmd.takeOff();
 		cmd.hover().doFor(interval);
-		cmd.landing();
 	}
 	public void killAll(){
-
 		cmd.landing();
 	}
 
