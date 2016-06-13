@@ -32,14 +32,16 @@ public class DroneCommander extends Canvas {
 			App.drone.start();
 			Thread.sleep(2000);
 			cmd = App.drone.getCommandManager();
-			Thread.sleep(500);
+			Thread.sleep(2000);
 			cmd.setVideoCodec(VideoCodec.H264_720P);
-			Thread.sleep(500);
+	
+			Thread.sleep(2000);
 			cmd.setMaxAltitude(2000);
-			Thread.sleep(500);
+			Thread.sleep(2000);
 			cmd.setVideoChannel(VideoChannel.HORI);
-			Thread.sleep(500);
+			Thread.sleep(2000);
 			cmd.setVideoBitrate(3500);
+			Thread.sleep(2000);
 
 			
 			//navl = new NavDataListener((ARDrone) App.drone);
