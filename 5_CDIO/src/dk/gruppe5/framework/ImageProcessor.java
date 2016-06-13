@@ -91,13 +91,13 @@ public class ImageProcessor {
 	}
 
 	public Mat downScale(Mat backUp, int i) {
-		int width = backUp.width()/i;
-		int height = backUp.height()/i;
+		int width = backUp.width() / i;
+		int height = backUp.height() / i;
 		Mat dst = new Mat();
-		Imgproc.resize(backUp, dst, new Size(width,height));
+		Imgproc.resize(backUp, dst, new Size(width, height));
 		return dst;
 	}
-	
+
 	public Mat open(Mat input, int elementSize, int elementShape) {
 		Mat outputImage = new Mat();
 		Mat element = getKernelFromShape(elementSize, elementShape);
@@ -534,20 +534,16 @@ public class ImageProcessor {
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
 				Point txtPoint = new Point(tlPt.x + rect.getWidth() / 4, tlPt.y + rect.getHeight() / 2);
-				if (rect.getWidth() > rect.getHeight()) {
-					// System.out.println(rect.getHeight());
-					pixelWidth += rect.getHeight();
-					nr++;
-				} else {
-					// System.out.println(rect.getWidth());
-					pixelWidth += rect.getWidth();
-					nr++;
-				}
+
+				pixelWidth += rect.getHeight();
+				nr++;
+
 				Imgproc.putText(standIn, "testAirfield", txtPoint, 5, 2, color);
 			}
 
 		}
 		double pixelWidthAverage = pixelWidth / (double) nr;
+		// System.out.println(pixelWidthAverage);
 		System.out.println(DistanceCalc.distanceFromCamera(pixelWidthAverage));
 
 		return standIn;
@@ -693,14 +689,14 @@ public class ImageProcessor {
 			MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
 
 			MatOfPoint2f approxCurve = new MatOfPoint2f();
-			double epsilon = Imgproc.arcLength(contour, true) * 0.01;
+			double epsilon = Imgproc.arcLength(contour, true) * 0.05;
 
 			// we wanna se if a contour is a square, or has one or more edges so
 			// we save them.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
 			Rect r = Imgproc.boundingRect(contours_1.get(i));
-			if (r.area() > 200) {
-				if (approxCurve.total() == 4) {
+			if (r.area() > 80) {
+				if (approxCurve.total() > 3 && approxCurve.total() < 10) {
 					Contour contour1 = new Contour(contour, approxCurve);
 					contours.add(contour1);
 				}
@@ -780,7 +776,7 @@ public class ImageProcessor {
 			// den her afstand skal lidt styres af afstanden vi er til qr koden
 
 			// finder lige midten af qr koden.
-			QrPointsPoints.add(qrCodeConfirmedShape.getCenter(z));
+			QrPointsPoints.add(qrCodeConfirmedShape.getCenter(ratio));
 
 			for (int i = 0; i < contours.size(); i++) {
 				// check om det er en firkant som ikke ligger lige ved siden af
@@ -801,8 +797,11 @@ public class ImageProcessor {
 						for (Wallmark wallmark : Mathmagic.getArray()) {
 
 							if (wallmark.getName().equals(qrCodeResultText)) {
+
 								Point txtPoint = shape.getCenter(ratio);
+								txtPoint = new Point(txtPoint.x * 2, txtPoint.y * 2);
 								rightPoints.add(txtPoint);
+
 								// System.out.println("name on right set");
 								nameOfQROnTheRight = Mathmagic.getNameFromInt(nrWallMark + 1);
 								break;
@@ -817,6 +816,7 @@ public class ImageProcessor {
 
 							if (wallmark.getName().equals(qrCodeResultConfirms.get(z).getText())) {
 								Point txtPoint = shape.getCenter(ratio);
+								txtPoint = new Point(txtPoint.x * 2, txtPoint.y * 2);
 								leftPoints.add(txtPoint);
 								// System.out.println("name on left set");
 								nameOfQROnTheLeft = Mathmagic.getNameFromInt(nrWallMark - 1);
@@ -863,6 +863,96 @@ public class ImageProcessor {
 		return data;
 	}
 
+	public DetectedWallmarksAndNames markQrCodesV2(Contour qrCodeConfirmedShape, List<Contour> contours, Mat backUp,
+			String qrSquareName, int ratio) {
+		// find each qr code from the list, mark it on the image,
+		// then find any squares that match the height of this QR code and
+		// roughly size(width and height)
+		// if any are found the determine which they probaly are and mark them
+		// with name
+
+		List<Point> leftPoints = new ArrayList<Point>();
+		List<Point> rightPoints = new ArrayList<Point>();
+		List<Point> QrPointsPoints = new ArrayList<Point>();
+
+		double distance = 0;
+
+		String nameOfQROnTheRight = null;
+		String nameOfQROnTheLeft = null;
+
+		QrPointsPoints.add(qrCodeConfirmedShape.getCenter(ratio));
+
+		for (int i = 0; i < contours.size(); i++) {
+			// check om det er en firkant som ikke ligger lige ved siden af
+			// sig QR koden, der skal være en vis afstand
+			Contour shape = contours.get(i);
+			if (isShapeValidQRAndPosition(qrCodeConfirmedShape, shape, ratio)) {
+				/*
+				 * Check om qrkoden er til venstre eller om den er til højre.
+				 */
+				if (shape.getTlPoint(ratio).x > (qrCodeConfirmedShape.getTlPoint(ratio).x)) {
+
+					/*
+					 * Her checker vi hvilken position i listen som vores QR
+					 * kode, vi har fundet, har.
+					 */
+					int nrWallMark = 0;
+					for (Wallmark wallmark : Mathmagic.getArray()) {
+
+						if (wallmark.getName().equals(qrSquareName)) {
+
+							Point txtPoint = shape.getCenter(ratio);
+							txtPoint = new Point(txtPoint.x, txtPoint.y);
+							rightPoints.add(txtPoint);
+
+							// System.out.println("name on right set");
+							nameOfQROnTheRight = Mathmagic.getNameFromInt(nrWallMark + 1);
+							break;
+						}
+						nrWallMark++;
+					}
+
+				} else if (shape.getTlPoint(ratio).x < (qrCodeConfirmedShape.getTlPoint(ratio).x)) {
+					// System.out.println("found one left off");
+					int nrWallMark = 0;
+					for (Wallmark wallmark : Mathmagic.getArray()) {
+
+						if (wallmark.getName().equals(qrSquareName)) {
+							Point txtPoint = shape.getCenter(ratio);
+							txtPoint = new Point(txtPoint.x, txtPoint.y);
+							leftPoints.add(txtPoint);
+							// System.out.println("name on left set");
+							nameOfQROnTheLeft = Mathmagic.getNameFromInt(nrWallMark - 1);
+							break;
+						}
+						nrWallMark++;
+					}
+
+				}
+
+			}
+			// System.out.println("qr code name set");
+			distance += DistanceCalc.distanceFromCamera(qrCodeConfirmedShape.getWidth());
+		}
+
+		// find gennemsnit af punkter og returner 3 punkter, [left,middle,right]
+		Point leftAverage = averagePoint(leftPoints);
+		Point rightAverage = averagePoint(rightPoints);
+		Point QrAverage = averagePoint(QrPointsPoints);
+
+		Point[] points = { leftAverage, QrAverage, rightAverage };
+		// hent de 3 gemte felters navne
+		String[] qrNames = { nameOfQROnTheLeft, qrSquareName, nameOfQROnTheRight };
+
+		if (Double.isNaN(points[1].x) || qrNames[1] == null) {
+
+			return null;
+		}
+		DetectedWallmarksAndNames data = new DetectedWallmarksAndNames(qrNames, points, distance);
+
+		return data;
+	}
+
 	private boolean isShapeValidQRAndPosition(Contour QRCodeShape, Contour currentContour, int ratio) {
 		int minDistance = 100;
 		if (currentContour.getTlPoint(ratio).x > (QRCodeShape.getTlPoint(ratio).x + minDistance)
@@ -875,18 +965,19 @@ public class ImageProcessor {
 			// check if 10% under and 10% above
 			if (currentContour.getTlPoint(ratio).y > (QRCodeShape.getTlPoint(ratio).y * 0.5)
 					&& currentContour.getTlPoint(ratio).y < (QRCodeShape.getTlPoint(ratio).y * 1.5)) {
-
+				// System.out.println("Y Position is good!");
 				// check om størrelse passer ca indenfor ~ 20% mindre og
 				// større?
 				// den kunne være en del mindre, da der er den der
 				// alcove
-				if (currentContour.getArea(ratio) > (QRCodeShape.getArea(ratio) * 0.8)
-						&& currentContour.getArea(ratio) < (QRCodeShape.getArea(ratio) * 1.2)) {
-
+				Rect r = currentContour.getBoundingRect(ratio);
+				if (r.area() > (QRCodeShape.getBoundingRect(ratio).area() * 0.8)
+						&& r.area() < (QRCodeShape.getBoundingRect(ratio).area() * 1.2)) {
+					// System.out.println("Area is good!");
 					// check om formen ca passer med et A4 højde er
 					// længere end bredde
-
-					if (currentContour.getHeight() > currentContour.getWidth()) {
+					if (r.height > r.width) {
+						// System.out.println("Shape is good!");
 						return true;
 					}
 				}
@@ -925,17 +1016,18 @@ public class ImageProcessor {
 		return backUp;
 	}
 
-	public Mat drawLine(Point point, Point point2, Mat backUp) {
-		Scalar color = new Scalar(0, 255, 0);
+	public Mat drawLine(Point point, Point point2, Mat backUp, Scalar color) {
+
 		Imgproc.line(backUp, point, point2, color);
 
 		return backUp;
 	}
 
-	public Mat drawShape(Shape shape, Mat image) {
+	public Mat drawShape(Contour contour, Mat image, int ratio) {
+		Rect r = contour.getBoundingRect(ratio);
 
 		Scalar color = new Scalar(0, 255, 0);
-		Imgproc.rectangle(image, shape.getTlPoint(), shape.getBrPoint(), color, 3);
+		Imgproc.rectangle(image, r.tl(), r.br(), color, 3);
 		return image;
 	}
 
@@ -983,16 +1075,18 @@ public class ImageProcessor {
 		return dst;
 	}
 
-	public List<BufferedImage> warp(Mat inputMat, List<Contour> contours,int ratio) {
+	public List<BufferedImage> warp(Mat inputMat, List<Contour> contours, int ratio) {
 
 		List<BufferedImage> outputs = new ArrayList<>();
 
 		for (Contour contour : contours) {
 			List<Point> points = contour.getCorners(ratio);
+			// List<Point> points = contour.getBoundingRectPoints(ratio);
+
 			Mat startM = Converters.vector_Point2f_to_Mat(points);
 
-			int resultWidth = startM.width()+100;
-			int resultHeight = startM.height()+100;
+			int resultWidth = startM.width() + 100;
+			int resultHeight = startM.height() + 100;
 
 			Mat outputMat = new Mat(resultWidth, resultHeight, CvType.CV_8UC4);
 
@@ -1011,12 +1105,12 @@ public class ImageProcessor {
 					index = i;
 					testdistance = distance;
 					y = point.y;
-					//System.out.println(distance);
+					// System.out.println(distance);
 				}
 				i++;
 
 			}
-			//System.out.println(index);
+			// System.out.println(index);
 
 			if (index == 0 || index == 1) {
 				Point ocvPOut1 = new Point(0, 0);
@@ -1059,16 +1153,65 @@ public class ImageProcessor {
 		return outputs;
 	}
 
-	public Mat drawLinesBetweenContourPoints(Contour contour, Mat image, int ratio) {
+	public Mat drawLinesBetweenContourPoints(Contour contour, Mat image, int ratio, Scalar color) {
 		List<Point> points = contour.getCorners(ratio);
 		int n = points.size();
 		for (int i = 0; i < n; i++) {
-			drawLine(points.get(i), points.get((i + 1) % n), image);
+			drawLine(points.get(i), points.get((i + 1) % n), image, color);
 		}
 
 		return image;
 	}
 
+
+	public Mat drawLinesBetweenBoundingRectPoints(Contour contour, Mat image, int ratio, Scalar color) {
+		List<Point> points = contour.getBoundingRectPoints(ratio);
+		int n = points.size();
+		for (int i = 0; i < n; i++) {
+			drawLine(points.get(i), points.get((i + 1) % n), image, color);
+		}
+
+		return image;
+	}
+
+
+	public static boolean isContourSquare(MatOfPoint thisContour) {
+
+	    Rect ret = null;
+
+	    MatOfPoint2f thisContour2f = new MatOfPoint2f();
+	    MatOfPoint approxContour = new MatOfPoint();
+	    MatOfPoint2f approxContour2f = new MatOfPoint2f();
+
+	    thisContour.convertTo(thisContour2f, CvType.CV_32FC2);
+
+	    Imgproc.approxPolyDP(thisContour2f, approxContour2f, 2, true);
+
+	    approxContour2f.convertTo(approxContour, CvType.CV_32S);
+
+	    if (approxContour.size().height == 4) {
+	        ret = Imgproc.boundingRect(approxContour);
+	    }
+
+	    return (ret != null);
+	}
 	
-	
+	public static List<MatOfPoint> getSquareContours(List<MatOfPoint> contours) {
+
+	    List<MatOfPoint> squares = null;
+
+	    for (MatOfPoint c : contours) {
+
+	        if (isContourSquare(c)) {
+	      
+	            if (squares == null)
+	                squares = new ArrayList<MatOfPoint>();
+	            squares.add(c);
+	            
+	        } 
+	    }
+
+	    return squares;
+	}
+
 }

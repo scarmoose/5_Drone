@@ -21,12 +21,15 @@ import org.opencv.videoio.VideoCapture;
 
 import com.google.zxing.Result;
 
+import CoordinateSystem.DronePosition;
+import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.ImageProcessor;
 import dk.gruppe5.legacy.KeyInput;
 import dk.gruppe5.model.Contour;
 import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.opticalFlowData;
+import dk.gruppe5.positioning.Position;
 
 public class PPanel extends JPanel implements Runnable {
 
@@ -148,8 +151,14 @@ public class PPanel extends JPanel implements Runnable {
 				
 				
 			}else if(Values_cam.getMethod() == 10){
+				/*
+				 * Skal fixes imorgen!
+				 */
 				Mat backUp = new Mat();
 				backUp = frame;
+				int ratio = 2;
+				frame = imgproc.downScale(backUp, ratio);
+
 				// kig på whitebalancing og eventuelt at reducere området
 				// som vi kigger igennem for firkanter.
 				// frame = imgProc.equalizeHistogramBalance(frame);
@@ -167,60 +176,73 @@ public class PPanel extends JPanel implements Runnable {
 				// Til canny for at nemmere kunne finde contourer
 				frame = imgproc.toCanny(frame);
 
-				// Nu skal vi prøve at finde firkanter
+				// Nu skal vi prøve at finde firkanter af en hvis størrelse
 				List<Contour> contours = imgproc.findQRsquares(frame);
-				List<BufferedImage> cutouts = imgproc.warp(backUp, contours);
+				// vi finder de potentielle QR kode områder
+				List<BufferedImage> cutouts = imgproc.warp(backUp, contours, ratio);
 				List<Result> results = imgproc.readQRCodes(cutouts);
+				
 				int i = 0;
-				for(Result result : results){
-					if(result != null){
-						backUp = imgproc.drawLinesBetweenContourPoints(contours.get(i), backUp);
+				for (Result result : results) {
+					if (result != null) {
+						backUp = imgproc.drawLinesBetweenContourPoints(contours.get(i), backUp, ratio);
 					}
 					i++;
 				}
+				// Vi aflæser de potentielle QR koder og ser om vi har nogen
+				// matches, hvis vi har!
+				// så marker dette og firkanter der har ca samme højde og
+				// størrelse!
+				// skriv i disse hvilken en firkant de nok er ud fra dataene
+				// vi har.
+				// tegn streg mellem dem og skriv pixel afstand
+				// udregn afstand til QR kode via python afstands
+				// bestemmelse på papir
 
+				// backUp = imgProc.markQrCodes(results, shapes, backUp);
+				for(Contour contour : contours){
+					backUp = imgproc.drawShape(contour, backUp,ratio);
+					
+				}
 				
-				// draw shapes:
-				//backUp = imgproc.drawShapes(shapes, backUp);
-				// time how long it takes to read x qr codes, from y
-				// squares.
+				
+				DetectedWallmarksAndNames data = imgproc.markQrCodes(results, contours, backUp, ratio);
 
+				if (data != null) {
+					if (!Double.isNaN(data.getPoints()[0].x) && !Double.isNaN(data.getPoints()[1].x)
+							&& !Double.isNaN(data.getPoints()[2].x)) {
+						if (data.getQrNames()[0] != null && data.getQrNames()[1] != null
+								&& data.getQrNames()[2] != null) {
+							backUp = imgproc.drawLine(data.getPoints()[0], data.getPoints()[1], backUp);
+							backUp = imgproc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp);
+							 System.out.println("point1:" +data.getQrNames()[0]+" point 2:" +data.getQrNames()[1]+ " point 3:"+data.getQrNames()[2]);
+							 System.out.println("point1:" +data.getPoints()[0]+" point 2:" +data.getPoints()[1]+ " point 3:"+data.getPoints()[2]);
+							Position test = new Position();
+							/*
+							 * Vi skal hente punkterne for de navne vi
+							 * finder, de skal sendes, også skal der sendes
+							 * de pixel positions værdier vi har fundet
+							 */
+							Point mapPosition = test.getPositionFromPoints(data.getQrNames(), data.getPoints()[0],
+									data.getPoints()[1], data.getPoints()[2]);
+							DronePosition.setPosition(mapPosition);
+							System.out.println(mapPosition);
+							// test.getPositionFromPoints(data.getPoints()[0],
+							// data.getPoints()[1], data.getPoints()[3]);
+						}
 
-//				List<BufferedImage> potentialQRcodes = new ArrayList<BufferedImage>();
-//				BufferedImage source = imgproc.toBufferedImage(backUp);
-//
-//				// create a list of images to check for QR code
-//				int z = 0;
-//				for (Shape rect : shapes) {
-//					
-//					int h = (int) rect.getHeight();
-//					int w = (int) rect.getWidth();
-//					//warp billede??
-//					
-//					
-//					BufferedImage dst = source.getSubimage((int) rect.getTlPoint().x, (int) rect.getTlPoint().y, w,h);
-//					
-//	
-//					Mat warpedImage = imgproc.warpImage(imgproc.bufferedImageToMat(dst));
-//					imageTest = imgproc.toBufferedImage(warpedImage);
-//					potentialQRcodes.add(imgproc.toBufferedImage(warpedImage));
-//				}
-//				/*
-//				 * Vi aflæser de potentielle QR koder og ser om vi har nogen matches, hvis vi har!
-//				 *   marker dem med grønt.
-//				 */
-//
-//				List<Result> results = imgproc.readQRCodes(potentialQRcodes);
-//				for (int i = 0; i < results.size(); i++) {
-//					Shape shape = shapes.get(i);
-//					if (results.get(i) != null) {
-//						backUp = imgproc.drawShape(shapes.get(i), backUp);
-//						backUp = imgproc.putText(results.get(i).getText(), shape.getCenter(), backUp);
-//
-//					}
-//
-//				}
+					} else if (!Double.isNaN(data.getPoints()[1].x)) {
+						Scalar color = new Scalar(255, 0, 0);
+						Imgproc.putText(backUp, data.getQrNames()[1], data.getPoints()[1], 5, 2, color);
+						Imgproc.putText(backUp, data.getDistance() + "", new Point(30, 30), 5, 2, color);
 
+					}
+
+				} else {
+					image = imgproc.toBufferedImage(backUp);
+				}
+			
+				image = imgproc.toBufferedImage(backUp);
 	
 
 				image = imgproc.toBufferedImage(backUp);
