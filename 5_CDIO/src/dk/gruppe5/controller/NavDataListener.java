@@ -2,6 +2,7 @@ package dk.gruppe5.controller;
 
 import de.yadrone.apps.controlcenter.plugins.speed.SpeedPanel;
 import de.yadrone.base.ARDrone;
+import de.yadrone.base.ARDrone.ISpeedListener;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
@@ -16,6 +17,7 @@ import de.yadrone.base.navdata.GyroListener;
 import de.yadrone.base.navdata.GyroPhysData;
 import de.yadrone.base.navdata.GyroRawData;
 import de.yadrone.base.navdata.VelocityListener;
+import de.yadrone.base.utils.ARDroneUtils;
 
 public class NavDataListener {
 	
@@ -81,6 +83,7 @@ public class NavDataListener {
 		});
 		
 
+
 	drone.getNavDataManager().addVelocityListener(new VelocityListener() {
 			
 			@Override
@@ -91,7 +94,8 @@ public class NavDataListener {
 			}
 			}
 		});
-		
+
+
 		drone.getNavDataManager().addGyroListener(new GyroListener() {
 			
 			@Override
@@ -113,26 +117,21 @@ public class NavDataListener {
 			}
 		});
 		
+
 		
 		drone.getSpeed();
-		//System.out.println("Speedlol:"+drone.getSpeed());
 
-		drone.getNavDataManager().addAcceleroListener(new AcceleroListener() {
-			
-			@Override
-			public void receivedRawData(AcceleroRawData arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void receivedPhysData(AcceleroPhysData arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-
+		System.out.println("Speedlol:"+ drone.getSpeed());
 		
+		
+		drone.addSpeedListener(new ISpeedListener() {
+
+			@Override
+			public void speedUpdated(int speed) {
+				System.out.println("Speed Updated:"+ speed);
+				
+			}
+		});		
 	}
 
 }
