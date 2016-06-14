@@ -20,6 +20,7 @@ public class DroneCommander extends Canvas {
 	private static final long serialVersionUID = -869265015784363288L;
 	
 	CommandManager cmd;
+
 	//private NavDataListener navl;
 	private Movement navl;
 
@@ -43,9 +44,12 @@ public class DroneCommander extends Canvas {
 			Thread.sleep(500);
 			cmd.setVideoBitrate(3500);
 			Thread.sleep(500);
+
 		//	navl = new NavDataListener(App.drone); 
 			//navl = new Movement();
-			//navl = new NavDataListener((ARDrone) App.drone);
+
+		//	navl = new NavDataListener(App.drone);
+
 			System.out.println("Drone connected.");
 		
 		} catch (Exception e) {
@@ -94,7 +98,6 @@ public class DroneCommander extends Canvas {
 	public void droneTakeOff(){
 		System.out.println("We have Liftoff");
 		cmd.flatTrim();
-		//cmd.setLedsAnimation(LEDAnimation.BLINK_GREEN_RED, 3, 1);
 		cmd.takeOff();
 		System.out.println("takeoff done");
 	}
@@ -145,8 +148,6 @@ public class DroneCommander extends Canvas {
 	}
 	
 	public void takeOffAndLand(long interval){
-		cmd.flatTrim();
-		cmd.takeOff();
 		cmd.waitFor(interval);
 		cmd.landing();
 	}

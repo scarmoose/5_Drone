@@ -66,7 +66,12 @@ public class PWindow {
 		frame.setFocusable(true);
 		frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
 
+
 		frame.setLayout(new GridLayout(2, 2));
+
+
+		frame.setLayout(new GridLayout(2,2));
+
 
 		JPanel leftPanel = new JPanel();
 		JPanel innerLeftPanel = new JPanel();
@@ -114,6 +119,7 @@ public class PWindow {
 
 		btnEmergency.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
 				System.out.println("KILL IT");
 				// dCommando.droneKillAll();
 				SwingUtilities.updateComponentTreeUI(frame);
