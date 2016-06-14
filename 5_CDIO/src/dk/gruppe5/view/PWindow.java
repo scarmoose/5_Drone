@@ -25,7 +25,7 @@ public class PWindow {
 	private JTextArea textArea;
 	Values_cam vall = Values_cam.getInstance();
 
-	DroneCommander dCommando = new DroneCommander();
+//	DroneCommander dCommando = new DroneCommander();
 
 	public PWindow(int w, int h) {
 
@@ -38,33 +38,32 @@ public class PWindow {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Super programmet");
 
+		Filterstates filters = new Filterstates();
+		Thread filtersThread = new Thread(filters);
+		filtersThread.start();
 		/*
 		 * Indkommente rnedenst�ende for at bruge webcam
 		 */
 
-		// PPanel videoFeed = new PPanel();
-		// Thread camThread = new Thread(videoFeed);
-		// camThread.start();
-
-		Filterstates filters = new Filterstates();
-		Thread filtersThread = new Thread(filters);
-		filtersThread.start();
-		// frame.addWindowListener(new WindowAdapter() {
-		// @Override
-		// public void windowClosing(WindowEvent e) {
-		// //N�dl�sning, nu slukker programmet da :P
-		// camThread.stop();
-		// }
-		// });
+		 PPanel videoFeed = new PPanel();
+		 Thread camThread = new Thread(videoFeed);
+		 camThread.start();
+		 frame.addWindowListener(new WindowAdapter() {
+		 @Override
+		 public void windowClosing(WindowEvent e) {
+		 //N�dl�sning, nu slukker programmet da :P
+		 camThread.stop();
+		 }
+		 });
 
 		/*
 		 * nedenst�ende bruger dronen.
 		 */
 
-		VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
-		new Thread(panel).start();
-		frame.setFocusable(true);
-		frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
+//		VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
+//		new Thread(panel).start();
+//		frame.setFocusable(true);
+//		frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
 
 
 		frame.setLayout(new GridLayout(2, 2));
@@ -97,8 +96,8 @@ public class PWindow {
 		btnEmergency.setForeground(Color.RED);
 
 		rightPanel.add(filters);
-		// frame.add(videoFeed);
-		frame.add(panel);
+		frame.add(videoFeed);
+//		frame.add(panel);
 		frame.add(rightPanel);
 		frame.add(leftPanel);
 		frame.setVisible(true);
