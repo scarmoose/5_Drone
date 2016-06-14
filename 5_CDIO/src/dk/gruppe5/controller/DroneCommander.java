@@ -8,6 +8,7 @@ import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.command.VideoCodec;
 import dk.gruppe5.app.App;
+import dk.gruppe5.positioning.Movement;
 
 public class DroneCommander extends Canvas {
 	private final static int speed = 10;
@@ -20,7 +21,7 @@ public class DroneCommander extends Canvas {
 	
 	CommandManager cmd;
 	private NavDataListener navl;
-	
+	private Movement move;
 
 	public DroneCommander() {
 		

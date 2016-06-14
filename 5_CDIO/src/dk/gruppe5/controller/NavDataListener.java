@@ -91,9 +91,12 @@ public class NavDataListener {
 			@Override
 			public void receivedAltitude(int altitude) {
 				setAltitudeList(altitude);
+				if (altitude > 0){
+					//System.out.println("Altitude: " + altitude);
+					}
 				
 			}
-
+			
 			@Override
 			public void receivedExtendedAltitude(Altitude exAltitude) {
 				//System.out.println("receivedExtendedAltitude - Altitude: "+exAltitude);
