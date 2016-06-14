@@ -209,9 +209,7 @@ public class PWindow {
 		Button2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("Takeoff er presset");
-
 				dCommando.droneFlightControl();
-
 	            SwingUtilities.updateComponentTreeUI(frame);
             	frame.invalidate();
             	frame.validate();

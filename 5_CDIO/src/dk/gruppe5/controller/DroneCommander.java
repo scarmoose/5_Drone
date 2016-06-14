@@ -8,6 +8,7 @@ import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.command.VideoCodec;
 import dk.gruppe5.app.App;
+import dk.gruppe5.positioning.Movement;
 
 public class DroneCommander extends Canvas {
 	private final static int speed = 10;
@@ -19,8 +20,8 @@ public class DroneCommander extends Canvas {
 	private static final long serialVersionUID = -869265015784363288L;
 	
 	CommandManager cmd;
-	private NavDataListener navl;
-	
+	//private NavDataListener navl;
+	private Movement navl;
 
 	public DroneCommander() {
 		
@@ -32,16 +33,18 @@ public class DroneCommander extends Canvas {
 			App.drone.start();
 			Thread.sleep(2000);
 			cmd = App.drone.getCommandManager();
-			Thread.sleep(500);
+			Thread.sleep(2000);
 			cmd.setVideoCodec(VideoCodec.H264_720P);
+	
 			Thread.sleep(500);
 			cmd.setMaxAltitude(2000);
 			Thread.sleep(500);
 			cmd.setVideoChannel(VideoChannel.HORI);
 			Thread.sleep(500);
 			cmd.setVideoBitrate(3500);
-
-			
+			Thread.sleep(500);
+		//	navl = new NavDataListener(App.drone); 
+			navl = new Movement();
 			//navl = new NavDataListener((ARDrone) App.drone);
 			System.out.println("Drone connected.");
 		
@@ -148,10 +151,7 @@ public class DroneCommander extends Canvas {
 		cmd.landing();
 	}
 	public void hover(long interval){
-		cmd.flatTrim();
-		cmd.takeOff();
 		cmd.hover().doFor(interval);
-		cmd.landing();
 	}
 	public void killAll(){
 
@@ -167,9 +167,9 @@ public class DroneCommander extends Canvas {
 	}
 
 
-	public NavDataListener getNavl() {
-		return navl;
-	}
+//	public NavDataListener getNavl() {
+//		return navl;
+//	}
 
 	
 }

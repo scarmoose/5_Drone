@@ -291,8 +291,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					//
 					frame = imgProc.equalizeHistogramBalance(frame);
-					// Vi tester først med blur og ser hvor godt det bliver
-					// prøv også uden
+			
 					// blur virker bedre
 					frame = imgProc.blur(frame);
 
@@ -301,16 +300,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					// Nu skal vi prøve at finde firkanter af en hvis størrelse
 					List<Contour> contours = imgProc.findQRsquares(frame);
-					// System.out.println(contours.size());
-					// int z = 0;
-					// for(Contour contour : contours){
-					//
-					// Scalar color = new Scalar(0, 255, 0);
-					// backUp =
-					// imgProc.drawLinesBetweenBoundingRectPoints(contours.get(z),
-					// backUp, ratio, color);
-					// z++;
-					// }
+			
 					// vi finder de potentielle QR kode områder
 					List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
 					List<Result> results = imgProc.readQRCodes(cutouts);
@@ -332,7 +322,6 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					// størrelse!
 					// skriv i disse hvilken en firkant de nok er ud fra dataene
 					// vi har.
-					// tegn streg mellem dem og skriv pixel afstand
 					// udregn afstand til QR kode via python afstands
 					// bestemmelse på papir
 
@@ -343,9 +332,9 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 							DetectedWallmarksAndNames data = imgProc.markQrCodesV2(contours.get(contourNr), contours,
 									backUp, result.getText(), ratio);
 							if (data != null) {
-								
-								System.out.println(data.getQrNames()[0]+","+data.getQrNames()[1]+","+data.getQrNames()[2]);
-								System.out.println(data.getPoints()[0]+","+data.getPoints()[1]+","+data.getPoints()[2]);
+
+								System.out.println(	data.getQrNames()[0] + "," + data.getQrNames()[1] + "," + data.getQrNames()[2]);
+								System.out.println(data.getPoints()[0] + "," + data.getPoints()[1] + "," + data.getPoints()[2]);
 
 								if (!Double.isNaN(data.getPoints()[0].x) && !Double.isNaN(data.getPoints()[1].x)
 										&& !Double.isNaN(data.getPoints()[2].x)) {
@@ -354,14 +343,13 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 										Scalar color1 = new Scalar(0, 0, 255);
 										backUp = imgProc.drawLine(data.getPoints()[0], data.getPoints()[1], backUp,
 												color1);
-										
+
 										backUp = imgProc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp,
 												color1);
-										System.out.println("point1:" + data.getQrNames()[0] + " point 2:"
-												+ data.getQrNames()[1] + " point 3:" + data.getQrNames()[2]);
-										Point ofset = new Point(data.getPoints()[1].x, data.getPoints()[1].y + 30);
-										System.out.println("point1:" + data.getPoints()[0] + " point 2:" + ofset + " point 3:" + data.getPoints()[2]);
-										
+//										Point ofset = new Point(data.getPoints()[1].x, data.getPoints()[1].y + 30);
+//										System.out.println("point1:" + data.getQrNames()[0] + " point 2:"+ data.getQrNames()[1] + " point 3:" + data.getQrNames()[2]);
+//										System.out.println("point1:" + data.getPoints()[0] + " point 2:" + ofset+ " point 3:" + data.getPoints()[2]);
+
 										Position test = new Position();
 										/*
 										 * Vi skal hente punkterne for de navne
@@ -371,8 +359,10 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 										 */
 										Point mapPosition = test.getPositionFromPoints(data.getQrNames(),
 												data.getPoints()[0], data.getPoints()[1], data.getPoints()[2]);
-										DronePosition.setPosition(mapPosition);
-										System.out.println(mapPosition);
+										if (mapPosition != null) {
+											DronePosition.setPosition(mapPosition);
+											// System.out.println(mapPosition);
+										}
 										// test.getPositionFromPoints(data.getPoints()[0],
 										// data.getPoints()[1],
 										// data.getPoints()[3]);
@@ -386,12 +376,12 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 									Imgproc.putText(backUp, data.getDistance() + "", ofset, 5, 2, color1);
 
 									if (!Double.isNaN(data.getPoints()[0].x)) {
-										Point ofset1 = new Point(data.getPoints()[0].x,data.getPoints()[0].y);
+										Point ofset1 = new Point(data.getPoints()[0].x, data.getPoints()[0].y);
 										Imgproc.putText(backUp, "firkant", ofset1, 5, 2, color1);
 
 									}
 									if (!Double.isNaN(data.getPoints()[2].x)) {
-										Point ofset2 = new Point(data.getPoints()[2].x,data.getPoints()[2].y);
+										Point ofset2 = new Point(data.getPoints()[2].x, data.getPoints()[2].y);
 										Imgproc.putText(backUp, "firkant", ofset2, 5, 2, color1);
 
 									}
@@ -410,14 +400,18 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 				}
 
-//				addMouseListener(new MouseAdapter() {
-//					public void mouseClicked(MouseEvent e) {
-//						
-//						imgProc.saveImage(imgProc.bufferedImageToMat(image), "IMAGE" + picsNr + ".jpg");
-//
-//						picsNr++;
-//					}
-//				});
+				//System.out.println(image.getWidth() +","+ image.getHeight());
+
+
+				// addMouseListener(new MouseAdapter() {
+				// public void mouseClicked(MouseEvent e) {
+				//
+				// imgProc.saveImage(imgProc.bufferedImageToMat(image), "IMAGE"
+				// + picsNr + ".jpg");
+				//
+				// picsNr++;
+				// }
+				// });
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						repaint();
