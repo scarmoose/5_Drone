@@ -132,7 +132,7 @@ class MyVelocityListener implements VelocityListener {
 
 	@Override
 	public void velocityChanged(float vx, float vy, float vz) {
-		System.out.println("Velocity - vx: "+vx+", vy: "+vy+", vz: "+vz);
+		//System.out.println("Velocity - vx: "+vx+", vy: "+vy+", vz: "+vz);
 	}
 	
 }
@@ -181,7 +181,7 @@ class MyAttitudeListener implements AttitudeListener {
 
 	@Override
 	public void attitudeUpdated(float pitch, float roll, float yaw) {
-		System.out.println("Pitch: " + pitch + " Roll: " + roll + " Yaw: " + yaw);
+		//System.out.println("Pitch: " + pitch + " Roll: " + roll + " Yaw: " + yaw);
 	}
 
 	@Override
@@ -200,7 +200,7 @@ class MyBatteryListener implements BatteryListener {
 
 	@Override
 	public void batteryLevelChanged(int percentage) {
-		System.out.println("Battery: " + percentage + " %");			
+		//System.out.println("Battery: " + percentage + " %");			
 	}
 
 }

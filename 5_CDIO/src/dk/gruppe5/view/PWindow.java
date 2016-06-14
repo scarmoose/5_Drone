@@ -19,7 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManager;
-
+import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManagerAlternative;
 import de.yadrone.apps.tutorial.TutorialVideoListener;
 
 import dk.gruppe5.controller.DroneCommander;
@@ -89,7 +89,8 @@ public class PWindow {
 		VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
 		new Thread(panel).start();;
 		frame.setFocusable(true);
-		frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
+		//frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
+		frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
 		
 
 //		panel.setSize(new Dimension(700, 400));
