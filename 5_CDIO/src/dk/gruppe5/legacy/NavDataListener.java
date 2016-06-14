@@ -1,4 +1,4 @@
-package dk.gruppe5.controller;
+package dk.gruppe5.legacy;
 
 import de.yadrone.apps.controlcenter.plugins.speed.SpeedPanel;
 import de.yadrone.base.ARDrone;
