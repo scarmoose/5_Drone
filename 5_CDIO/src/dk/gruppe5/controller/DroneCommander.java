@@ -69,16 +69,23 @@ public class DroneCommander extends Canvas {
 
 	public void droneFlightControl(){
 		droneTakeOff();
-		cmd.hover().doFor(2000);
-		//cmd.up(20).doFor(2600);
-		cmd.hover().doFor(2000);
-		cmd.forward(15).doFor(500);
-		cmd.backward(15).doFor(500);
+		cmd.hover().doFor(7000);
+		cmd.forward(5).doFor(1000);
 		cmd.hover().doFor(5000);
-		cmd.spinLeft(20).doFor(4000);
-		cmd.hover().doFor(3000);
-		cmd.forward(15).doFor(500);
-		cmd.hover().doFor(3000);
+		cmd.backward(5).doFor(1000);
+		cmd.hover().doFor(2000);
+		
+//		cmd.hover().doFor(2000);
+//		//cmd.up(20).doFor(2600);
+//		cmd.hover().doFor(2000);
+//		cmd.forward(15).doFor(500);
+//		cmd.backward(15).doFor(500);
+//		cmd.hover().doFor(5000);
+//		cmd.spinLeft(20).doFor(4000);
+//		cmd.hover().doFor(3000);
+//		cmd.forward(15).doFor(500);
+//		cmd.hover().doFor(3000);
+//		cmd.move(1.1f, 1.1f, 1.1f, 1.1f);
 		
 		//cmd.spinLeft(40).doFor(10000);
 		//cmd.hover().doFor(3000);
