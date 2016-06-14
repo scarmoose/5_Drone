@@ -1252,8 +1252,8 @@ public class ImageProcessor {
 			// we save them.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
 			Rect r = Imgproc.boundingRect(contours_1.get(i));
-			if(r.area() > 80){
-				if (approxCurve.total() > 3) {
+			if(r.area() > 20){
+				if (approxCurve.total() > 6) {
 					Contour contour1 = new Contour(contour, approxCurve);
 					contours.add(contour1);
 				}

@@ -48,7 +48,7 @@ public class Filterstates extends JPanel implements Runnable {
 		int y = this.getHeight();
 			
 		if(image1 != null){
-			g.drawImage(image1, 0, 0,	x/2, y/2, null);			
+			g.drawImage(image1, 0, 0,	x, y, null);			
 		}
 		
 		if(image2 != null){
