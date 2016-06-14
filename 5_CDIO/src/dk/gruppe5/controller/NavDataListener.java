@@ -23,12 +23,36 @@ public class NavDataListener {
 	
 	private final IARDrone drone;
 	
+	private int currentVoltage;
+	private int currentVoltagePercentage;
+	private int currentAltitudeList;
+	
+	public int getCurrentVoltagePercentage() {
+		return currentVoltagePercentage;
+	}
+	public void setCurrentVoltagePercentage(int currentVoltagePercentage) {
+		this.currentVoltagePercentage = currentVoltagePercentage;
+	}
+	public int getCurrentVoltage() {
+		return currentVoltage;
+	}
+	public void setCurrentVoltage(int currentVoltage) {
+		this.currentVoltage = currentVoltage;
+	}
+	public int getAltitudeList() {
+		return currentAltitudeList;
+	}
+	public void setAltitudeList(int altitudeList) {
+		this.currentAltitudeList = altitudeList;
+	}
+
 	public NavDataListener(final ARDrone drone) {
 		this.drone = drone;
 		init();
 	}
 	
 	private void init() {
+		
 		drone.getNavDataManager().addAttitudeListener(new AttitudeListener() {
 			
 			@Override
@@ -51,11 +75,13 @@ public class NavDataListener {
 			
 			@Override
 			public void voltageChanged(int vbat_raw) {
+				setCurrentVoltage(vbat_raw);
 				//System.out.println("voltageChanged - vbat_raw: "+vbat_raw);
 			}
 			
 			@Override
 			public void batteryLevelChanged(int percentage) {
+				setCurrentVoltagePercentage(percentage);
 				//System.out.println("Battery: " + percentage + " %");			
 			}
 			
@@ -64,9 +90,8 @@ public class NavDataListener {
 
 			@Override
 			public void receivedAltitude(int altitude) {
-				if (altitude > 0){
-				//System.out.println("Altitude: " + altitude);
-				}
+				setAltitudeList(altitude);
+				
 			}
 
 			@Override
@@ -84,7 +109,7 @@ public class NavDataListener {
 		
 
 
-	drone.getNavDataManager().addVelocityListener(new VelocityListener() {
+		drone.getNavDataManager().addVelocityListener(new VelocityListener() {
 			
 			@Override
 			public void velocityChanged(float vx, float vy, float vz) {
