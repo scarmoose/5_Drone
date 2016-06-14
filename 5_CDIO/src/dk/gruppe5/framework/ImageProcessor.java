@@ -542,10 +542,7 @@ public class ImageProcessor {
 			}
 
 		}
-		double pixelWidthAverage = pixelWidth / (double) nr;
-		// System.out.println(pixelWidthAverage);
-		System.out.println(DistanceCalc.distanceFromCamera(pixelWidthAverage));
-
+		
 		return standIn;
 	}
 
@@ -690,7 +687,6 @@ public class ImageProcessor {
 
 			MatOfPoint2f approxCurve = new MatOfPoint2f();
 			double epsilon = Imgproc.arcLength(contour, true) * 0.05;
-
 			// we wanna se if a contour is a square, or has one or more edges so
 			// we save them.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
@@ -1266,4 +1262,11 @@ public class ImageProcessor {
 		return contours;
 	}
 
+	public Mat convertMatToColor(Mat mat){
+		Mat mat1 = new Mat();
+		Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+		
+		return mat1;
+	}
+	
 }
