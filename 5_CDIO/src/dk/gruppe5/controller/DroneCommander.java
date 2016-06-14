@@ -68,7 +68,6 @@ public class DroneCommander extends Canvas {
 	public void droneTakeOff(){
 		System.out.println("We have Liftoff");
 		cmd.flatTrim();
-		//cmd.setLedsAnimation(LEDAnimation.BLINK_GREEN_RED, 3, 1);
 		cmd.takeOff();
 		System.out.println("takeoff done");
 	}
@@ -123,13 +122,9 @@ public class DroneCommander extends Canvas {
 	}
 	
 	public void takeOffAndLand(long interval){
-		cmd.flatTrim();
-		cmd.takeOff();
 		cmd.waitFor(interval);
 	}
 	public void hover(long interval){
-		cmd.flatTrim();
-		cmd.takeOff();
 		cmd.hover().doFor(interval);
 	}
 	public void killAll(){
