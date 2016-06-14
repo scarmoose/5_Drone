@@ -1263,7 +1263,7 @@ public class ImageProcessor {
 
 	public Mat convertMatToColor(Mat mat){
 		Mat mat1 = new Mat();
-		Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+		Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_BayerBG2RGB);
 		
 		return mat1;
 	}
