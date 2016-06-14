@@ -37,7 +37,7 @@ public class Lines {
 	public Lines() {
         initUI();
         
-        //Sætter airfields
+        //Sï¿½tter airfields
         
         /*AirfieldList.addAirfield(new Airfield("Airfield1",new Point(350,700)));
         AirfieldList.addAirfield(new Airfield("Airfield2",new Point(530,200)));

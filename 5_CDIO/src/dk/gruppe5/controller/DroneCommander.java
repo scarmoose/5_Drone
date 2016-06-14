@@ -20,6 +20,7 @@ public class DroneCommander extends Canvas {
 	private static final long serialVersionUID = -869265015784363288L;
 	
 	CommandManager cmd;
+
 	//private NavDataListener navl;
 	private Movement navl;
 
@@ -43,9 +44,12 @@ public class DroneCommander extends Canvas {
 			Thread.sleep(500);
 			cmd.setVideoBitrate(3500);
 			Thread.sleep(500);
+
 		//	navl = new NavDataListener(App.drone); 
-			navl = new Movement();
-			//navl = new NavDataListener((ARDrone) App.drone);
+			//navl = new Movement();
+
+		//	navl = new NavDataListener(App.drone);
+
 			System.out.println("Drone connected.");
 		
 		} catch (Exception e) {
@@ -65,16 +69,23 @@ public class DroneCommander extends Canvas {
 
 	public void droneFlightControl(){
 		droneTakeOff();
-		cmd.hover().doFor(2000);
-		//cmd.up(20).doFor(2600);
-		cmd.hover().doFor(2000);
-		cmd.forward(15).doFor(500);
-		cmd.backward(15).doFor(500);
+		cmd.hover().doFor(7000);
+		cmd.forward(5).doFor(1000);
 		cmd.hover().doFor(5000);
-		cmd.spinLeft(20).doFor(4000);
-		cmd.hover().doFor(3000);
-		cmd.forward(15).doFor(500);
-		cmd.hover().doFor(3000);
+		cmd.backward(5).doFor(1000);
+		cmd.hover().doFor(2000);
+		
+//		cmd.hover().doFor(2000);
+//		//cmd.up(20).doFor(2600);
+//		cmd.hover().doFor(2000);
+//		cmd.forward(15).doFor(500);
+//		cmd.backward(15).doFor(500);
+//		cmd.hover().doFor(5000);
+//		cmd.spinLeft(20).doFor(4000);
+//		cmd.hover().doFor(3000);
+//		cmd.forward(15).doFor(500);
+//		cmd.hover().doFor(3000);
+//		cmd.move(1.1f, 1.1f, 1.1f, 1.1f);
 		
 		//cmd.spinLeft(40).doFor(10000);
 		//cmd.hover().doFor(3000);
@@ -94,7 +105,6 @@ public class DroneCommander extends Canvas {
 	public void droneTakeOff(){
 		System.out.println("We have Liftoff");
 		cmd.flatTrim();
-		//cmd.setLedsAnimation(LEDAnimation.BLINK_GREEN_RED, 3, 1);
 		cmd.takeOff();
 		System.out.println("takeoff done");
 	}
@@ -145,8 +155,6 @@ public class DroneCommander extends Canvas {
 	}
 	
 	public void takeOffAndLand(long interval){
-		cmd.flatTrim();
-		cmd.takeOff();
 		cmd.waitFor(interval);
 		cmd.landing();
 	}
