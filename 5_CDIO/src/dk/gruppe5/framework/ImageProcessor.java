@@ -1233,9 +1233,40 @@ public class ImageProcessor {
 		distCoeffs.put(0, 1, 0.4046);
 		distCoeffs.put(0, 2, 0);
 		distCoeffs.put(0, 3, 0);
+		
 		Imgproc.undistort(frame, dst, cameraMatrix, distCoeffs);
 		
 		return dst;
+	}
+
+	
+	
+	public List<Contour> findCircles(Mat frame) {
+
+		// Here contours are stored, we will check each one to see if it matches
+		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
+		Mat hierarchy_1 = new Mat();
+		Imgproc.findContours(frame, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+
+		List<Contour> contours = new ArrayList<>();
+
+		// Detecting shapes in the contours
+		for (int i = 0; i < contours_1.size(); i++) {
+			MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
+
+			MatOfPoint2f approxCurve = new MatOfPoint2f();
+			double epsilon = Imgproc.arcLength(contour, true) * 0.05;
+
+			// we wanna se if a contour is a square, or has one or more edges so
+			// we save them.
+			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
+				if (approxCurve.total() > 3) {
+					Contour contour1 = new Contour(contour, approxCurve);
+					contours.add(contour1);
+				}
+		}
+
+		return contours;
 	}
 
 }
