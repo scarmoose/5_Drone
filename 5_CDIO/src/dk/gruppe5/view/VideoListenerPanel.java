@@ -227,7 +227,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					// backUp = imgProc.markQrCodes(results, shapes, backUp);
 
 					DetectedWallmarksAndNames data = imgProc.markQrCodes(results, contours, backUp, ratio);
-
+					
 					if (data != null) {
 						if (!Double.isNaN(data.getPoints()[0].x) && !Double.isNaN(data.getPoints()[1].x)
 								&& !Double.isNaN(data.getPoints()[2].x)) {
@@ -280,6 +280,9 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					Mat backUp = new Mat();
 					backUp = frame;
 					int ratio = 2;
+					
+					frame = imgProc.calibrateCamera(frame);
+					
 					frame = imgProc.downScale(backUp, ratio);
 
 					// kig på whitebalancing og eventuelt at reducere området
@@ -332,10 +335,6 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 							DetectedWallmarksAndNames data = imgProc.markQrCodesV2(contours.get(contourNr), contours,
 									backUp, result.getText(), ratio);
 							if (data != null) {
-
-								System.out.println(	data.getQrNames()[0] + "," + data.getQrNames()[1] + "," + data.getQrNames()[2]);
-								System.out.println(data.getPoints()[0] + "," + data.getPoints()[1] + "," + data.getPoints()[2]);
-
 								if (!Double.isNaN(data.getPoints()[0].x) && !Double.isNaN(data.getPoints()[1].x)
 										&& !Double.isNaN(data.getPoints()[2].x)) {
 									if (data.getQrNames()[0] != null && data.getQrNames()[1] != null
@@ -346,26 +345,20 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 										backUp = imgProc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp,
 												color1);
-//										Point ofset = new Point(data.getPoints()[1].x, data.getPoints()[1].y + 30);
-//										System.out.println("point1:" + data.getQrNames()[0] + " point 2:"+ data.getQrNames()[1] + " point 3:" + data.getQrNames()[2]);
-//										System.out.println("point1:" + data.getPoints()[0] + " point 2:" + ofset+ " point 3:" + data.getPoints()[2]);
-
 										Position test = new Position();
-										/*
-										 * Vi skal hente punkterne for de navne
-										 * vi finder, de skal sendes, også skal
-										 * der sendes de pixel positions værdier
-										 * vi har fundet
-										 */
 										Point mapPosition = test.getPositionFromPoints(data.getQrNames(),
 												data.getPoints()[0], data.getPoints()[1], data.getPoints()[2]);
 										if (mapPosition != null) {
 											DronePosition.setPosition(mapPosition);
 											// System.out.println(mapPosition);
+											int screenWidth = image.getWidth();
+											int middleOfScreen = screenWidth/2;
+											int pixelsFromMiddleToQr =  Math.abs(((int)data.getPoints()[1].x-middleOfScreen)); 
+											DPoint mapPos = new DPoint(mapPosition);
+											System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
+											
 										}
-										// test.getPositionFromPoints(data.getPoints()[0],
-										// data.getPoints()[1],
-										// data.getPoints()[3]);
+							
 									}
 
 								} else if (!Double.isNaN(data.getPoints()[1].x)) {

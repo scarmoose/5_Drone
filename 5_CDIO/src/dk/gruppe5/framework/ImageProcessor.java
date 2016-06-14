@@ -1214,4 +1214,24 @@ public class ImageProcessor {
 	    return squares;
 	}
 
+	
+	public Mat calibrateCamera(Mat frame) {
+		Mat cameraMatrix = new Mat(3, 3, 5);
+		cameraMatrix.put(0, 0, 1.1220e03);
+		cameraMatrix.put(0, 1, 0.0);
+		cameraMatrix.put(0, 2, 644.4117);
+		cameraMatrix.put(1, 0, 0.0);
+		cameraMatrix.put(1, 1, 1.1198e03);
+		cameraMatrix.put(1, 2, 343.6528);
+		cameraMatrix.put(2, 0, 0.0);
+		cameraMatrix.put(2, 1, 0.0);
+		cameraMatrix.put(2, 2, 1);
+		
+		Mat dst = new Mat();
+		
+		//Imgproc.undistort(frame, dst, cameraMatrix, distCoeffs);
+		
+		return dst;
+	}
+
 }
