@@ -23,12 +23,11 @@ import dk.gruppe5.controller.Mathmagic;
 import dk.gruppe5.model.Airfield;
 import dk.gruppe5.model.AirfieldList;
 
-public class Lines {
-
+public class Lines {	
 	public Lines() {
         initUI();
         
-        //Sætter airfields
+        //Sï¿½tter airfields
         
         /*AirfieldList.addAirfield(new Airfield("Airfield1",new Point(350,700)));
         AirfieldList.addAirfield(new Airfield("Airfield2",new Point(530,200)));
