@@ -10,10 +10,16 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.event.ChangeEvent;
@@ -25,6 +31,9 @@ import dk.gruppe5.model.AirfieldList;
 
 public class Lines {
 
+	int diffX = 0;
+	int diffY = 0;
+	
 	public Lines() {
         initUI();
         
@@ -152,6 +161,8 @@ public class Lines {
 
         @Override
         public void update() {
+        	DronePosition.setDegree(DronePosition.getDegree()+1);
+        	
             DronePosition.setXPoint(DronePosition.getXPoint());
             DronePosition.setYPoint(DronePosition.getYPoint());
             
@@ -230,9 +241,27 @@ public class Lines {
     			g2d.drawString(Mathmagic.getArray()[k].getName(), xvalue/2+20, yplace/2+70);
     		}
             
-            Image img1 = Toolkit.getDefaultToolkit().getImage("rsz_he291.jpg");
+    		File img = new File("rsz_1he291_av3.jpg");
+
+            BufferedImage buffImg = 
+            	    new BufferedImage(240, 240, BufferedImage.TYPE_INT_ARGB);
+
+            	try { 
+            	    buffImg = ImageIO.read(img ); 
+            	} 
+            	catch (IOException e) { }
+
+            double rotationRequired = Math.toRadians (DronePosition.getDegree());
+            double locationX = (buffImg.getHeight()) / 2;
+            double locationY = (buffImg.getHeight()) / 2;
+            AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+            AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+
+            // Drawing the rotated image at the required drawing locations
+            g2d.drawImage(op.filter(buffImg, null), DronePosition.getXPoint()/2+20, DronePosition.getYMirror()/2+25, null);
             
-            g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYMirror()/2+25, this);
+            //g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYMirror()/2+25, this);
+           
             
             for(int j = 0; j<AirfieldList.getArray().size();j++ ){
             	g2d.setStroke(bs2);
