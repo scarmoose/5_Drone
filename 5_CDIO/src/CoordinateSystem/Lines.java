@@ -29,9 +29,9 @@ public class Lines {
         
         //S�tter airfields
         
-        AirfieldList.addAirfield(new Airfield("Airfield1",new Point(350,700)));
+        /*AirfieldList.addAirfield(new Airfield("Airfield1",new Point(350,700)));
         AirfieldList.addAirfield(new Airfield("Airfield2",new Point(530,200)));
-        
+        */
         String airname = "Airfield3";
         int nameFound = 0;
         for (int h = 0;h<AirfieldList.getArray().size();h++){
@@ -40,7 +40,7 @@ public class Lines {
         	}
         }
         if(nameFound==0){
-        	AirfieldList.addAirfield(new Airfield(airname,new Point(800,800)));
+        	//AirfieldList.addAirfield(new Airfield(airname,new Point(800,800)));
         }
                 
     }
@@ -197,10 +197,10 @@ public class Lines {
             //The four walls
             g2d.drawLine(20, 50, 930/2+20, 50);
             g2d.drawLine(20, 50, 20, 1060/2+50);
-            g2d.drawLine(20, 1060/2+50, 450/2+20, 1060/2+50);
-            g2d.drawLine(450/2+20, 1060/2+50+(77/2), 450/2+20, 1060/2+50);
-            g2d.drawLine(450/2+20, 1060/2+50+(77/2), 750/2+20, 1060/2+50+(77/2));
-            g2d.drawLine(450/2+20, 1060/2+50+(77/2), 450/2+20, 1060/2+50);
+            g2d.drawLine(20, 1060/2+50, 550/2+20, 1060/2+50);
+            g2d.drawLine(550/2+20, 1060/2+50+(77/2), 550/2+20, 1060/2+50);
+            g2d.drawLine(550/2+20, 1060/2+50+(77/2), 750/2+20, 1060/2+50+(77/2));
+            g2d.drawLine(550/2+20, 1060/2+50+(77/2), 550/2+20, 1060/2+50);
             g2d.drawLine(900/2+20, 1060/2+50+(10/2), 750/2+20, 1060/2+50+(10/2));
             g2d.drawLine(750/2+20, 1060/2+50+(77/2), 750/2+20, 1060/2+50+(10/2));
             g2d.drawLine(900/2+20, 1060/2+50, 900/2+20, 1060/2+50+(10/2));

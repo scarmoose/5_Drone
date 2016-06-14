@@ -1,4 +1,4 @@
-package dk.gruppe5.controller;
+package dk.gruppe5.legacy;
 
 import de.yadrone.apps.controlcenter.plugins.speed.SpeedPanel;
 import de.yadrone.base.ARDrone;
@@ -13,9 +13,12 @@ import de.yadrone.base.navdata.Altitude;
 import de.yadrone.base.navdata.AltitudeListener;
 import de.yadrone.base.navdata.AttitudeListener;
 import de.yadrone.base.navdata.BatteryListener;
+import de.yadrone.base.navdata.ControlState;
+import de.yadrone.base.navdata.DroneState;
 import de.yadrone.base.navdata.GyroListener;
 import de.yadrone.base.navdata.GyroPhysData;
 import de.yadrone.base.navdata.GyroRawData;
+import de.yadrone.base.navdata.StateListener;
 import de.yadrone.base.navdata.VelocityListener;
 import de.yadrone.base.utils.ARDroneUtils;
 
@@ -23,12 +26,13 @@ public class NavDataListener {
 	
 	private final IARDrone drone;
 	
-	public NavDataListener(final ARDrone drone) {
-		this.drone = drone;
+	public NavDataListener(final IARDrone drone2) {
+		this.drone = drone2;
 		init();
 	}
 	
 	private void init() {
+	
 		drone.getNavDataManager().addAttitudeListener(new AttitudeListener() {
 			
 			@Override
@@ -115,6 +119,20 @@ public class NavDataListener {
 				//System.out.println("recievedOffsets"+ recievedOffsets);
 				
 			}
+		});
+		drone.getNavDataManager().addStateListener(new StateListener(){
+
+			@Override
+			public void controlStateChanged(ControlState arg0) {
+				System.out.println("ControlState Changed: -->" + arg0);
+				
+			}
+
+			@Override
+			public void stateChanged(DroneState arg0) {
+				System.out.println("state Changed: -->" + arg0);
+			}
+			
 		});
 		
 
