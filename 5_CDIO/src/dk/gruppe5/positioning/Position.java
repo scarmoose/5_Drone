@@ -23,6 +23,19 @@ public class Position {
 	}
 	
 	/**
+	 * same shit different method
+	 * @param dronePos
+	 * @param qrName
+	 * @param pixelsFromMiddleToQr
+	 * @return
+	 */
+	
+	public float getDirectionAngleRelativeToYAxis(DPoint dronePos, String qrName, int pixelsFromMiddleToQr) {
+		DPoint qrPos = Mathmagic.getPointFromName(qrName);
+		return getDirectionAngleRelativeToYAxis(dronePos, qrPos, pixelsFromMiddleToQr);
+	}
+	
+	/**
 	 * Skal give vinkel fra dronens synsretning og til y-aksen.
 	 * Der bliver vist kun returneret vinkler op til 180 grader
 	 * @param dronePos dronens position

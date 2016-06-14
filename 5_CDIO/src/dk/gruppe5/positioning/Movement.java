@@ -21,6 +21,7 @@ import dk.gruppe5.model.DPoint;
 public class Movement {
 
 	private final IARDrone drone;
+	private Position pos;
 	
 
 	Runnable rthread = new Runnable(){
@@ -49,7 +50,7 @@ public class Movement {
 	}
 	
 	public void moveToPoint(DPoint p) {
-		DPoint pos = Position.currentPos;
+		DPoint position = Position.currentPos;
 		
 	}
 
