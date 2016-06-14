@@ -88,9 +88,8 @@ public class NavDataListener {
 			
 			@Override
 			public void velocityChanged(float vx, float vy, float vz) {
-				if(!(vx == 0.0f && vy == 0.0f && vz == 0.0f) ){
-				//System.out.println("velocity changed:"+ "x: "+vx + " y: "+ vy + " z: "+vz);
-				// TODO Auto-generated method stub
+				if((vx != 0.0f && vy != 0.0f)) {
+				System.out.println("velocity changed:"+ "x: "+vx + " y: "+ vy);
 			}
 			}
 		});
@@ -131,7 +130,30 @@ public class NavDataListener {
 				System.out.println("Speed Updated:"+ speed);
 				
 			}
-		});		
+		});	
+		
+		
+		drone.getNavDataManager().addAcceleroListener(new AcceleroListener() {
+			
+			@Override
+			public void receivedRawData(AcceleroRawData d) {
+				System.out.println("AcceleroRawData:" + d);
+				
+			}
+			
+			@Override
+			public void receivedPhysData(AcceleroPhysData d) {
+				System.out.println("ReceivedPhysData" + d);
+				
+			}
+		});
+		
+	}
+		
+	
+	public void elaspedTime(){
+		long startTime = System.nanoTime();        
+		long estimatedTime = System.nanoTime() - startTime;
 	}
 
 }

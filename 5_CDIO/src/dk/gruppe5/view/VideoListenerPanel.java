@@ -412,7 +412,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					image = imgProc.toBufferedImage(backUp);
 
 				}
-				System.out.println(image.getWidth() +","+ image.getHeight());
+				//System.out.println(image.getWidth() +","+ image.getHeight());
 
 //				addMouseListener(new MouseAdapter() {
 //					public void mouseClicked(MouseEvent e) {
