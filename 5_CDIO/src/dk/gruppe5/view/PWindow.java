@@ -18,6 +18,8 @@ import javax.swing.SwingUtilities;
 
 import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManager;
 import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManagerAlternative;
+import de.yadrone.apps.tutorial.TutorialVideoListener;
+
 import dk.gruppe5.controller.DroneCommander;
 import dk.gruppe5.model.Values_cam;
 
@@ -62,12 +64,13 @@ public class PWindow {
 		 * nedenst�ende bruger dronen.
 		 */
 
-				VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
-				new Thread(panel).start();;
-				frame.setFocusable(true);
-				frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
-				//frame.addKeyListener(new KeyboardCommandManagerAlternative((dCommando.getDrone())));
 
+		VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
+		new Thread(panel).start();
+		frame.setFocusable(true);
+		//frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
+		frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
+		
 		frame.setLayout(new GridLayout(2,2));
 
 
