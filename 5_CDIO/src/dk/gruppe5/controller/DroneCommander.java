@@ -20,8 +20,9 @@ public class DroneCommander extends Canvas {
 	private static final long serialVersionUID = -869265015784363288L;
 	
 	CommandManager cmd;
-	private NavDataListener navl;
-	private Movement move;
+
+	//private NavDataListener navl;
+	private Movement navl;
 
 	public DroneCommander() {
 		
@@ -36,16 +37,14 @@ public class DroneCommander extends Canvas {
 			Thread.sleep(2000);
 			cmd.setVideoCodec(VideoCodec.H264_720P);
 	
-			Thread.sleep(2000);
+			Thread.sleep(500);
 			cmd.setMaxAltitude(2000);
-			Thread.sleep(2000);
+			Thread.sleep(500);
 			cmd.setVideoChannel(VideoChannel.HORI);
-			Thread.sleep(2000);
+			Thread.sleep(500);
 			cmd.setVideoBitrate(3500);
-			Thread.sleep(2000);
-
-			
-			//navl = new NavDataListener((ARDrone) App.drone);
+			Thread.sleep(500);
+		//	navl = new NavDataListener(App.drone);
 			System.out.println("Drone connected.");
 		
 		} catch (Exception e) {
@@ -65,7 +64,30 @@ public class DroneCommander extends Canvas {
 
 	public void droneFlightControl(){
 		droneTakeOff();
-		droneLanding();
+		cmd.hover().doFor(2000);
+		//cmd.up(20).doFor(2600);
+		cmd.hover().doFor(2000);
+		cmd.forward(15).doFor(500);
+		cmd.backward(15).doFor(500);
+		cmd.hover().doFor(5000);
+		cmd.spinLeft(20).doFor(4000);
+		cmd.hover().doFor(3000);
+		cmd.forward(15).doFor(500);
+		cmd.hover().doFor(3000);
+		
+		//cmd.spinLeft(40).doFor(10000);
+		//cmd.hover().doFor(3000);
+		//cmd.spinRight(40).doFor(10000);
+		//Thread.currentThread().sleep(sleep);
+		/*try {
+			droneCirkelFlying(3000);
+			System.out.println("rod");
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+		cmd.landing();
 	}
 	
 	public void droneTakeOff(){
@@ -119,18 +141,16 @@ public class DroneCommander extends Canvas {
             Thread.currentThread().sleep(sleep);
 		}
 	}
-	public void droneLanding(){
-		cmd.hover().doFor(500);
-		cmd.landing();
-	}
 	
 	public void takeOffAndLand(long interval){
 		cmd.waitFor(interval);
+		cmd.landing();
 	}
 	public void hover(long interval){
 		cmd.hover().doFor(interval);
 	}
 	public void killAll(){
+
 		cmd.landing();
 	}
 
@@ -143,9 +163,9 @@ public class DroneCommander extends Canvas {
 	}
 
 
-	public NavDataListener getNavl() {
-		return navl;
-	}
+//	public NavDataListener getNavl() {
+//		return navl;
+//	}
 
 	
 }
