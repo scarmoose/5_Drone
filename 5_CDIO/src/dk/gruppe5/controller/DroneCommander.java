@@ -44,7 +44,12 @@ public class DroneCommander extends Canvas {
 			Thread.sleep(500);
 			cmd.setVideoBitrate(3500);
 			Thread.sleep(500);
+
+		//	navl = new NavDataListener(App.drone); 
+			//navl = new Movement();
+
 		//	navl = new NavDataListener(App.drone);
+
 			System.out.println("Drone connected.");
 		
 		} catch (Exception e) {
