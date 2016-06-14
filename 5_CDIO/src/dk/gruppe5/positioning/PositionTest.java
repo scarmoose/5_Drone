@@ -24,7 +24,7 @@ public class PositionTest {
 	 */
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		new PositionTest().test5();
+		new PositionTest().test4();
 	}
 	
 	public void test5() {
@@ -32,7 +32,7 @@ public class PositionTest {
 		DPoint 	v1 = new DPoint(0, 1),
 				v2 = new DPoint(0.5, 12);
 		
-		float angle_rad = pos.getAngleBetweenVectors(v1, v2);
+		float angle_rad = pos.getSignedAngleBetweenVectors(v1, v2);
 		float angle_deg = (float) Math.toDegrees(angle_rad);
 		System.out.println("angle: "+angle_deg);
 		
@@ -52,6 +52,12 @@ public class PositionTest {
 		k.put(2, 1, 0.0);
 		k.put(2, 2, 1);
 		printMat(k);
+		Mat v = new Mat(1,4,5);
+		v.put(0, 0, -0.5675);
+		v.put(0, 1, 0.4046);
+		v.put(0, 2, 0);
+		v.put(0, 3, 0);
+		printMat(v);
 	}
 	
 	public void printMat(Mat m) {
