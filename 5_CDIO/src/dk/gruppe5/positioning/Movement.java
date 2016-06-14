@@ -21,6 +21,7 @@ import dk.gruppe5.model.DPoint;
 public class Movement {
 
 	private final IARDrone drone;
+	
 
 	Runnable rthread = new Runnable(){
 		@Override 
@@ -47,9 +48,10 @@ public class Movement {
 		drone.getNavDataManager().addVelocityListener(new MyVelocityListener());
 	}
 	
-	
-
-
+	public void moveToPoint(DPoint p) {
+		DPoint pos = Position.currentPos;
+		
+	}
 
 	/**
 	 * Udregner gennemsnitsvektoren for et array vektorer

@@ -24,13 +24,33 @@ public class PositionTest {
 	 */
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		new PositionTest().test4();
+		new PositionTest().test5();
+	}
+	
+	public void test5() {
+		pos = new Position();
+		DPoint 	v1 = new DPoint(0, 1),
+				v2 = new DPoint(0.5, 12);
+		
+		float angle_rad = pos.getAngleBetweenVectors(v1, v2);
+		float angle_deg = (float) Math.toDegrees(angle_rad);
+		System.out.println("angle: "+angle_deg);
+		
+		
 	}
 	
 	public void test4() {
-		Mat k = new Mat(3, 3, 0);
+		Mat k = new Mat(3, 3, 5);
 		printMat(k);
-		k.get(0, 0)[0] = 2;
+		k.put(0, 0, 1.1220e03);
+		k.put(0, 1, 0.0);
+		k.put(0, 2, 644.4117);
+		k.put(1, 0, 0.0);
+		k.put(1, 1, 1.1198e03);
+		k.put(1, 2, 343.6528);
+		k.put(2, 0, 0.0);
+		k.put(2, 1, 0.0);
+		k.put(2, 2, 1);
 		printMat(k);
 	}
 	
