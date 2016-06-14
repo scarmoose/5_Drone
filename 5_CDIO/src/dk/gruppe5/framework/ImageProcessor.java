@@ -1228,8 +1228,12 @@ public class ImageProcessor {
 		cameraMatrix.put(2, 2, 1);
 		
 		Mat dst = new Mat();
-		
-		//Imgproc.undistort(frame, dst, cameraMatrix, distCoeffs);
+		Mat distCoeffs = new Mat(1,4,5);
+		distCoeffs.put(0, 0, -0.5675);
+		distCoeffs.put(0, 1, 0.4046);
+		distCoeffs.put(0, 2, 0);
+		distCoeffs.put(0, 3, 0);
+		Imgproc.undistort(frame, dst, cameraMatrix, distCoeffs);
 		
 		return dst;
 	}
