@@ -1175,44 +1175,43 @@ public class ImageProcessor {
 
 	public static boolean isContourSquare(MatOfPoint thisContour) {
 
-	    Rect ret = null;
+		Rect ret = null;
 
-	    MatOfPoint2f thisContour2f = new MatOfPoint2f();
-	    MatOfPoint approxContour = new MatOfPoint();
-	    MatOfPoint2f approxContour2f = new MatOfPoint2f();
+		MatOfPoint2f thisContour2f = new MatOfPoint2f();
+		MatOfPoint approxContour = new MatOfPoint();
+		MatOfPoint2f approxContour2f = new MatOfPoint2f();
 
-	    thisContour.convertTo(thisContour2f, CvType.CV_32FC2);
+		thisContour.convertTo(thisContour2f, CvType.CV_32FC2);
 
-	    Imgproc.approxPolyDP(thisContour2f, approxContour2f, 2, true);
+		Imgproc.approxPolyDP(thisContour2f, approxContour2f, 2, true);
 
-	    approxContour2f.convertTo(approxContour, CvType.CV_32S);
+		approxContour2f.convertTo(approxContour, CvType.CV_32S);
 
-	    if (approxContour.size().height == 4) {
-	        ret = Imgproc.boundingRect(approxContour);
-	    }
+		if (approxContour.size().height == 4) {
+			ret = Imgproc.boundingRect(approxContour);
+		}
 
-	    return (ret != null);
+		return (ret != null);
 	}
-	
+
 	public static List<MatOfPoint> getSquareContours(List<MatOfPoint> contours) {
 
-	    List<MatOfPoint> squares = null;
+		List<MatOfPoint> squares = null;
 
-	    for (MatOfPoint c : contours) {
+		for (MatOfPoint c : contours) {
 
-	        if (isContourSquare(c)) {
-	      
-	            if (squares == null)
-	                squares = new ArrayList<MatOfPoint>();
-	            squares.add(c);
-	            
-	        } 
-	    }
+			if (isContourSquare(c)) {
 
-	    return squares;
+				if (squares == null)
+					squares = new ArrayList<MatOfPoint>();
+				squares.add(c);
+
+			} 
+		}
+
+		return squares;
 	}
 
-	
 	public Mat calibrateCamera(Mat frame) {
 		Mat cameraMatrix = new Mat(3, 3, 5);
 		cameraMatrix.put(0, 0, 1.1220e03);
@@ -1224,21 +1223,19 @@ public class ImageProcessor {
 		cameraMatrix.put(2, 0, 0.0);
 		cameraMatrix.put(2, 1, 0.0);
 		cameraMatrix.put(2, 2, 1);
-		
+
 		Mat dst = new Mat();
 		Mat distCoeffs = new Mat(1,4,5);
 		distCoeffs.put(0, 0, -0.5675);
 		distCoeffs.put(0, 1, 0.4046);
 		distCoeffs.put(0, 2, 0);
 		distCoeffs.put(0, 3, 0);
-		
+
 		Imgproc.undistort(frame, dst, cameraMatrix, distCoeffs);
-		
+
 		return dst;
 	}
 
-	
-	
 	public List<Contour> findCircles(Mat frame) {
 
 		// Here contours are stored, we will check each one to see if it matches
@@ -1258,12 +1255,14 @@ public class ImageProcessor {
 			// we wanna se if a contour is a square, or has one or more edges so
 			// we save them.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
+			Rect r = Imgproc.boundingRect(contours_1.get(i));
+			if(r.area() > 80){
 				if (approxCurve.total() > 3) {
 					Contour contour1 = new Contour(contour, approxCurve);
 					contours.add(contour1);
 				}
+			}
 		}
-
 		return contours;
 	}
 
