@@ -118,10 +118,21 @@ public class PPanel extends JPanel implements Runnable {
 
 			repaint();
 			
-//			if (Values_cam.getMethod() == 1) {
-//				opticalFlowCall(frame);
-//			} else if(Values_cam.getMethod() == 0) {
-//				image = imgproc.toBufferedImage(frame);
+			if (Values_cam.getMethod() == 1) {
+				opticalFlowCall(frame);
+			} else if(Values_cam.getMethod() == 0) {
+
+				image = imgproc.toBufferedImage(frame);
+				
+				frame = imgproc.toGrayScale(frame);
+				Filterstates.setImage1(imgproc.toBufferedImage(frame));
+				frame = imgproc.blur(frame);
+				Filterstates.setImage2(imgproc.toBufferedImage(frame));
+				frame = imgproc.toCanny(frame);
+				Filterstates.setImage3(imgproc.toBufferedImage(frame));
+				Filterstates.setImage4(image);
+				
+			}
 //			} else if(Values_cam.getMethod() == 2) {
 //				//We want to determine if we are looking at a picture.
 //				//first grayscale, convert it to black and white, blur the image slightly to reduce noise.

@@ -22,11 +22,9 @@ import dk.gruppe5.model.Values_cam;
 public class PWindow {
 
 	private JTextArea textArea;
-	private PrintStream standardOut;
-
 	Values_cam vall = Values_cam.getInstance();
 
-	DroneCommander dCommando = new DroneCommander();
+//	DroneCommander dCommando = new DroneCommander();
 
 	public PWindow(int w, int h) {
 
@@ -41,12 +39,17 @@ public class PWindow {
 
 
 		/*
-		 * Indkommenternedenst�ende for at bruge webcam
+		 * Indkommente rnedenst�ende for at bruge webcam
 		 */
 
+		Filterstates filters = new Filterstates();
 		PPanel videoFeed = new PPanel();
+		
 		Thread camThread = new Thread(videoFeed);
 		camThread.start();
+		
+		Thread filtersThread = new Thread(filters);
+		filtersThread.start();
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -54,8 +57,6 @@ public class PWindow {
 				camThread.stop();
 			}
 		});
-
-
 
 		/*
 		 * nedenst�ende bruger dronen.
@@ -66,13 +67,12 @@ public class PWindow {
 		//		frame.setFocusable(true);
 		//		frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
 
-
 		frame.setLayout(new GridLayout(2,2));
 
 		JPanel leftPanel = new JPanel();
 		JPanel innerLeftPanel = new JPanel();
 		JPanel rightPanel = new JPanel(); 
-		rightPanel.setLayout(new GridBagLayout());
+		rightPanel.setLayout(new GridLayout(0,1));
 		leftPanel.setLayout(new GridLayout(4,1));
 		innerLeftPanel.setLayout(new GridLayout(1,2));
 
@@ -90,7 +90,8 @@ public class PWindow {
 		leftPanel.add(btnTakeoff);
 		leftPanel.add(btnLand);
 		leftPanel.add(btnEmergency); btnEmergency.setForeground(Color.RED);
-
+		
+		rightPanel.add(filters);
 		frame.add(videoFeed);
 		frame.add(rightPanel);
 		frame.add(leftPanel);
