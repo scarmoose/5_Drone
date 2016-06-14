@@ -1159,7 +1159,6 @@ public class ImageProcessor {
 		return image;
 	}
 
-
 	public Mat drawLinesBetweenBoundingRectPoints(Contour contour, Mat image, int ratio, Scalar color) {
 		List<Point> points = contour.getBoundingRectPoints(ratio);
 		int n = points.size();
@@ -1169,7 +1168,6 @@ public class ImageProcessor {
 
 		return image;
 	}
-
 
 	public static boolean isContourSquare(MatOfPoint thisContour) {
 

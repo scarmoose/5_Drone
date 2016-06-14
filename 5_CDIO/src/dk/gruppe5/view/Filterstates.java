@@ -40,6 +40,7 @@ public class Filterstates extends JPanel implements Runnable {
 	public static void setImage4(BufferedImage image){
 		image4 = image;
 	}
+	
 	public void paint(Graphics g) {
 		super.paintComponent(g);
 		
@@ -61,8 +62,8 @@ public class Filterstates extends JPanel implements Runnable {
 		if(image4 != null){
 			g.drawImage(image4, x/2, y/2, x/2, y/2, null);
 		}
-			
 	}
+	
 	public void run(){
 		while(true){
 			repaint();
