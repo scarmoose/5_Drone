@@ -10,10 +10,13 @@ public class DronePosition {
 	/**
 	 * 
 	 */
-	private static int x=0;
-	private static int y=0;
+	private static int x=630;
+	private static int y=-70;
+	private static double degrees = 45.0;
+	
 	private static boolean found=false;
 
+	
 	private static int xcorn=350;
 	private static int ycorn=700;
 	private static int xlen=50;
@@ -47,6 +50,9 @@ public class DronePosition {
 	public static void setxLen(int input) {xlen = input;}
 	public static int getyLen(){return ylen;}
 	public static void setyLen(int input) {ylen = input;}
+	
+	public static double getDegree(){return degrees;}
+	public static void setDegree(double input) {degrees = input;}
 	
 	public static void setPosition(Point p) {
 		x = p.x;
