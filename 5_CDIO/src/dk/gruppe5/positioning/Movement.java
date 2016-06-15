@@ -1,6 +1,7 @@
 package dk.gruppe5.positioning;
 
 import de.yadrone.base.IARDrone;
+import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.navdata.AcceleroListener;
@@ -15,6 +16,7 @@ import de.yadrone.base.navdata.GyroPhysData;
 import de.yadrone.base.navdata.GyroRawData;
 import de.yadrone.base.navdata.VelocityListener;
 import dk.gruppe5.app.App;
+import dk.gruppe5.exceptions.Fejl40;
 import dk.gruppe5.model.Circle;
 import dk.gruppe5.model.DPoint;
 
@@ -135,6 +137,7 @@ public class Movement {
 
 	
 	private final IARDrone drone;
+	private final CommandManager cmd;
 	private Position pos;
 	
 
@@ -147,6 +150,7 @@ public class Movement {
 
 	public Movement(IARDrone drone) {
 		this.drone = drone;
+		this.cmd = drone.getCommandManager();
 		init();
 	}
 	
@@ -163,10 +167,38 @@ public class Movement {
 		drone.getNavDataManager().addVelocityListener(new MyVelocityListener());
 	}
 	
-	public void moveToPoint(DPoint p) {
+	
+	public void moveToPoint(DPoint p) throws Fejl40 {
 		DPoint position = Position.currentPos;
-		
+		throw new Fejl40();
 	}
+	
+	/**
+	 * Skal gerne centrere et point i billedet
+	 * @param p
+	 * @param frameSize
+	 */
+	public void centerPointInFrame(DPoint p, DPoint frameSize) {
+		DPoint point = p.clone();
+		double cx = frameSize.x/2;
+		double cy = frameSize.y/2;
+		DPoint center = new DPoint(cx, cy);
+		DPoint centerToPoint = point.sub(center);
+		double length = centerToPoint.length();
+		System.out.println("Length of vector: "+length);
+		if(centerToPoint.y+10 < 0) {
+			cmd.backward(10).doFor(1000);
+		} if(centerToPoint.y-10 > 0) {
+			cmd.forward(10).doFor(1000);
+		} if(centerToPoint.x+10 < 0) {
+			cmd.goLeft(10).doFor(1000);
+		} if(centerToPoint.x-10 > 0) {
+			cmd.goRight(10).doFor(1000);
+		}
+	}
+	
+	
+	
 
 	/**
 	 * Udregner gennemsnitsvektoren for et array vektorer

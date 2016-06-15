@@ -40,24 +40,24 @@ public class PositionTest {
 	}
 	
 	public void test4() {
-		Mat k = new Mat(3, 3, 5);
-		printMat(k);
-		k.put(0, 0, 1.1220e03);
-		k.put(0, 1, 0.0);
-		k.put(0, 2, 644.4117);
-		k.put(1, 0, 0.0);
-		k.put(1, 1, 1.1198e03);
-		k.put(1, 2, 343.6528);
-		k.put(2, 0, 0.0);
-		k.put(2, 1, 0.0);
-		k.put(2, 2, 1);
-		printMat(k);
-		Mat v = new Mat(1,4,5);
-		v.put(0, 0, -0.5675);
-		v.put(0, 1, 0.4046);
-		v.put(0, 2, 0);
-		v.put(0, 3, 0);
-		printMat(v);
+		Mat cameraMatrix = new Mat(3, 3, 5);
+		printMat(cameraMatrix);
+		cameraMatrix.put(0, 0, 1.1220e03);
+		cameraMatrix.put(0, 1, 0.0);
+		cameraMatrix.put(0, 2, 644.4117);
+		cameraMatrix.put(1, 0, 0.0);
+		cameraMatrix.put(1, 1, 1.1198e03);
+		cameraMatrix.put(1, 2, 343.6528);
+		cameraMatrix.put(2, 0, 0.0);
+		cameraMatrix.put(2, 1, 0.0);
+		cameraMatrix.put(2, 2, 1);
+		printMat(cameraMatrix);
+		Mat distCoeffs = new Mat(1,4,5);
+		distCoeffs.put(0, 0, -0.5675);
+		distCoeffs.put(0, 1, 0.4046);
+		distCoeffs.put(0, 2, 0);
+		distCoeffs.put(0, 3, 0);
+		printMat(distCoeffs);
 	}
 	
 	public void printMat(Mat m) {
