@@ -105,7 +105,7 @@ public class PPanel extends JPanel implements Runnable {
 			Mat frame = new Mat();
 			capture.read(frame);
 
-			image = imgproc.toBufferedImage(frame);
+			//image = imgproc.toBufferedImage(frame);
 
 			if (old_frame == null) {
 				old_frame = frame;
@@ -152,14 +152,16 @@ public class PPanel extends JPanel implements Runnable {
 
 				List<Contour> petertest = imgproc.findCircles(frame);
 //				System.out.println(petertest.size());
+				frame = imgproc.toColor(frame);
 				for (Contour contour : petertest) {
 
 					Scalar color = new Scalar(255, 255, 0);
 					frame = imgproc.drawLinesBetweenContourPoints(contour, frame, ratio, color);
 					
+					
 				}
 				Filterstates.setImage1(imgproc.toBufferedImage(frame));
-				image = imgproc.toBufferedImage(backUp);
+				image = imgproc.toBufferedImage(frame);
 			}
 
 			// } else if(Values_cam.getMethod() == 2) {
