@@ -189,11 +189,12 @@ public class Contour {
 	public List<Point> getAllContourPoints(int ratio) {
 		List<Point> source = new ArrayList<Point>();
 		int i = 0;
-		while (approxCurve.get(i, 0) != null) {
+		while (contour.get(i, 0) != null) {
 			double[] temp_double;
-			temp_double = approxCurve.get(i, 0);
+			temp_double = contour.get(i, 0);
 			Point p1 = new Point(temp_double[0] * ratio, temp_double[1] * ratio);
 			source.add(p1);
+			i++;
 		}
 
 		return source;
