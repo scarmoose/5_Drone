@@ -28,7 +28,7 @@ public class PWindow {
 	private JTextArea textArea;
 	Values_cam vall = Values_cam.getInstance();
 
-	DroneCommander dCommando = new DroneCommander();
+		DroneCommander dCommando = new DroneCommander();
 
 	public PWindow(int w, int h) {
 
@@ -44,11 +44,13 @@ public class PWindow {
 		Filterstates filters = new Filterstates();
 		Thread filtersThread = new Thread(filters);
 		filtersThread.start();
+
 		/*
 		 * Indkommente rnedenst�ende for at bruge webcam
 		 */
 
 
+
 //		 PPanel videoFeed = new PPanel();
 //		 Thread camThread = new Thread(videoFeed);
 //		 camThread.start();
@@ -71,24 +73,20 @@ public class PWindow {
 //		 camThread.stop();
 //		 }
 //		 });
+
 
 		/*
 		 * nedenst�ende bruger dronen.
 		 */
 
+				VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
+				new Thread(panel).start();
+				frame.setFocusable(true);
+				frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
+
+
 
 		frame.setLayout(new GridLayout(2, 2));
-
-
-		VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
-		new Thread(panel).start();
-		frame.setFocusable(true);
-		//frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
-		frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
-		
-
-		frame.setLayout(new GridLayout(2,2));
-
 
 		JPanel leftPanel = new JPanel();
 		JPanel innerLeftPanel = new JPanel();
@@ -136,7 +134,7 @@ public class PWindow {
 
 		btnEmergency.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				System.out.println("KILL IT");
 				// dCommando.droneKillAll();
 				SwingUtilities.updateComponentTreeUI(frame);
@@ -160,7 +158,7 @@ public class PWindow {
 		btnLand.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("TAKEOFF");
-//				 dCommando.droneLanding();
+				//				 dCommando.droneLanding();
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();
