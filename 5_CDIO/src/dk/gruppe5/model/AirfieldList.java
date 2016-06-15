@@ -11,7 +11,15 @@ public class AirfieldList {
 	static List<Airfield> airfieldList = new ArrayList<Airfield>();
 	
 	public static void addAirfield(Airfield input){
-		airfieldList.add(input);
+        int nameFound = 0;
+        for (int h = 0;h<airfieldList.size();h++){
+        	if(airfieldList.get(h).name == input.name){
+        		nameFound++;
+        	}
+        }
+        if(nameFound==0){
+        	airfieldList.add(input);
+        }
 	}
 	
 	public static List<Airfield> getArray(){

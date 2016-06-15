@@ -97,7 +97,7 @@ public class Contour {
 
 		double area = 0; // Accumulates area in the loop
 		int j = points.size() - 1; // The last vertex is the 'previous' one to
-									// the first
+		// the first
 
 		for (int i = 0; i < points.size(); i++) {
 			area = area + (points.get(j).x + points.get(i).x) * (points.get(j).y - points.get(i).x);
@@ -110,20 +110,19 @@ public class Contour {
 	public int getHeight() {
 		RotatedRect r = Imgproc.fitEllipse(contour);
 		Rect p = r.boundingRect();
-		
-		
+
 		return p.height;
 	}
+
 	public int getWidth() {
 		RotatedRect r = Imgproc.fitEllipse(contour);
 		Rect p = r.boundingRect();
-		
-		
+
 		return p.width;
 	}
 
 	public Point getBrPoint(int ratio) {
-		
+
 		List<Point> points = getCorners(ratio);
 		Point tl = new Point(0, 0);
 		int i = 0;
@@ -147,34 +146,57 @@ public class Contour {
 	}
 
 	public Rect getBoundingRect(int ratio) {
-		
-		//RotatedRect r = Imgproc.fitEllipse(contour);
-		
-		//Rect p = r.boundingRect();
+
+		// RotatedRect r = Imgproc.fitEllipse(contour);
+
+		// Rect p = r.boundingRect();
 		MatOfPoint matOfPoint = new MatOfPoint();
 		contour.convertTo(matOfPoint, CvType.CV_32S);
-		
+
 		Rect p = Imgproc.boundingRect(matOfPoint);
-		Rect realRect = new Rect(p.x*ratio,p.y*ratio,p.width*ratio,p.height*ratio);
+		Rect realRect = new Rect(p.x * ratio, p.y * ratio, p.width * ratio, p.height * ratio);
 		return realRect;
 	}
-/**
- * Returns 4 points from the bounding rect, tl and then clockwise around the square
- * @param ratio
- * @return
- */
+
+	/**
+	 * Returns 4 points from the bounding rect, tl and then clockwise around the
+	 * square
+	 * 
+	 * @param ratio
+	 * @return
+	 */
 	public List<Point> getBoundingRectPoints(int ratio) {
 		Rect r = getBoundingRect(ratio);
 		List<Point> points = new ArrayList<>();
-		//top left
-		points.add(new Point(r.tl().x,r.tl().y));
-		//top right
-		points.add(new Point(r.br().x,r.tl().y));
-		//bottom right
-		points.add(new Point(r.br().x,r.br().y));
-		//bottom left
-		points.add(new Point(r.tl().x,r.br().y));
-		
+		// top left
+		points.add(new Point(r.tl().x, r.tl().y));
+		// top right
+		points.add(new Point(r.br().x, r.tl().y));
+		// bottom right
+		points.add(new Point(r.br().x, r.br().y));
+		// bottom left
+		points.add(new Point(r.tl().x, r.br().y));
+
 		return points;
+	}
+
+	/**
+	 * Returns every single point on the contour, multiplied by the ratio
+	 * 
+	 * @param ratio
+	 * @return
+	 */
+	public List<Point> getAllContourPoints(int ratio) {
+		List<Point> source = new ArrayList<Point>();
+		int i = 0;
+		while (contour.get(i, 0) != null) {
+			double[] temp_double;
+			temp_double = contour.get(i, 0);
+			Point p1 = new Point(temp_double[0] * ratio, temp_double[1] * ratio);
+			source.add(p1);
+			i++;
+		}
+
+		return source;
 	}
 }

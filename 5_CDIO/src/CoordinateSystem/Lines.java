@@ -10,10 +10,16 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.event.ChangeEvent;
@@ -22,27 +28,18 @@ import javax.swing.event.ChangeListener;
 import dk.gruppe5.controller.Mathmagic;
 import dk.gruppe5.model.Airfield;
 import dk.gruppe5.model.AirfieldList;
+import dk.gruppe5.model.DPoint;
 
 public class Lines {
 
 	public Lines() {
         initUI();
         
-        //Sætter airfields
+        //Sï¿½tter airfields
         
-        /*AirfieldList.addAirfield(new Airfield("Airfield1",new Point(350,700)));
-        AirfieldList.addAirfield(new Airfield("Airfield2",new Point(530,200)));
-        */
-        String airname = "Airfield3";
-        int nameFound = 0;
-        for (int h = 0;h<AirfieldList.getArray().size();h++){
-        	if(AirfieldList.getArray().get(h).name == airname){
-        		nameFound++;
-        	}
-        }
-        if(nameFound==0){
-        	//AirfieldList.addAirfield(new Airfield(airname,new Point(800,800)));
-        }
+        AirfieldList.addAirfield(new Airfield("Airfield1",new Point(DronePosition.getXPoint(),DronePosition.getYMirror())));
+        /*AirfieldList.addAirfield(new Airfield("Airfield2",new Point(530,200)));
+        AirfieldList.addAirfield(new Airfield("Airfield3",new Point(800,800)));*/
                 
     }
 
@@ -152,15 +149,9 @@ public class Lines {
 
         @Override
         public void update() {
+        	
             DronePosition.setXPoint(DronePosition.getXPoint());
             DronePosition.setYPoint(DronePosition.getYPoint());
-            
-            if (DronePosition.getYPoint() < 530){
-				DronePosition.setYMirror(530+(530-DronePosition.getYPoint()));
-			}
-			if (DronePosition.getYPoint() > 530){
-				DronePosition.setYMirror(530-(DronePosition.getYPoint()-530));
-			}
             
             fireStateChanged();
         }
@@ -230,23 +221,35 @@ public class Lines {
     			g2d.drawString(Mathmagic.getArray()[k].getName(), xvalue/2+20, yplace/2+70);
     		}
             
-            Image img1 = Toolkit.getDefaultToolkit().getImage("rsz_he291.jpg");
+    		File img = new File("rsz_1he291_av3.jpg");
+
+            BufferedImage buffImg = 
+            	    new BufferedImage(240, 240, BufferedImage.TYPE_INT_ARGB);
+
+            	try { 
+            	    buffImg = ImageIO.read(img ); 
+            	} 
+            	catch (IOException e) { }
+
+            double rotationRequired = Math.toRadians (DronePosition.getDegree());
+            double locationX = (buffImg.getHeight()) / 2;
+            double locationY = (buffImg.getHeight()) / 2;
+            AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+            AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+
+            // Drawing the rotated image at the required drawing locations
+            g2d.drawImage(op.filter(buffImg, null), DronePosition.getXPoint()/2+20, DronePosition.getYMirror()/2+25, null);
             
-            g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYMirror()/2+25, this);
+            //g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYMirror()/2+25, this);
+           
             
             for(int j = 0; j<AirfieldList.getArray().size();j++ ){
             	g2d.setStroke(bs2);
                 g2d.setPaint(Color.MAGENTA);
                 int pointy=0;
-                
-                if (AirfieldList.getArray().get(j).point.y < 530){
-                	pointy = 530+(530-AirfieldList.getArray().get(j).point.y);
-    			}
-                else if (AirfieldList.getArray().get(j).point.y > 530){
-                	pointy = 530-((AirfieldList.getArray().get(j).point.y)-530);
-    			}
-                g2d.drawRect((AirfieldList.getArray().get(j).point.x/2)-(DronePosition.getxLen()/4)+(40/2), (pointy)/2+(DronePosition.getyLen()/4)+(50/2), (DronePosition.getxLen())/2, DronePosition.getyLen()/2);
-                g2d.drawString(AirfieldList.getArray().get(j).name, (AirfieldList.getArray().get(j).point.x/2)-(DronePosition.getxLen()/4)+(40/2)-7, (pointy)/2+(DronePosition.getyLen()/4)+(50/2)-2);
+               
+                g2d.drawRect((AirfieldList.getArray().get(j).point.x/2)-(50/4)+(60/2), (AirfieldList.getArray().get(j).point.y)/2+(50/4)+(20/2), (50)/2, 50/2);
+                g2d.drawString(AirfieldList.getArray().get(j).name, (AirfieldList.getArray().get(j).point.x/2)-(50/4)+(60/2)-7, (AirfieldList.getArray().get(j).point.y)/2+(50/4)+(50/2)-17);
             }
                 
             

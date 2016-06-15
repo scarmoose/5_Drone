@@ -1,6 +1,7 @@
 package dk.gruppe5.controller;
 
 import java.awt.Canvas;
+import java.util.Random;
 
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
@@ -20,6 +21,7 @@ public class DroneCommander extends Canvas {
 	private static final long serialVersionUID = -869265015784363288L;
 	
 	CommandManager cmd;
+
 	//private NavDataListener navl;
 	private Movement navl;
 
@@ -43,9 +45,12 @@ public class DroneCommander extends Canvas {
 			Thread.sleep(500);
 			cmd.setVideoBitrate(3500);
 			Thread.sleep(500);
+
 		//	navl = new NavDataListener(App.drone); 
-			navl = new Movement();
-			//navl = new NavDataListener((ARDrone) App.drone);
+			//navl = new Movement();
+
+		//	navl = new NavDataListener(App.drone);
+
 			System.out.println("Drone connected.");
 		
 		} catch (Exception e) {
@@ -62,19 +67,63 @@ public class DroneCommander extends Canvas {
 		}
 			
 	}
+	
+//	public void strayAround() throws InterruptedException
+//	{
+//		droneTakeOff();
+//		cmd.hover().doFor(5000);
+//		int direction = new Random().nextInt() % 4;
+//		switch(direction)
+//		{
+//			case 0 : cmd.forward(speed).doFor(500); System.out.println("PaperChaseAutoController: Stray Around: FORWARD"); break;
+//			case 1 : cmd.backward(speed).doFor(500); System.out.println("PaperChaseAutoController: Stray Around: BACKWARD");break;
+//			case 2 : cmd.goLeft(speed).doFor(500); System.out.println("PaperChaseAutoController: Stray Around: LEFT"); break;
+//			case 3 : cmd.goRight(speed).doFor(500); System.out.println("PaperChaseAutoController: Stray Around: RIGHT");break;
+//		}
+//		
+//		Thread.currentThread().sleep(sleep);
+//		cmd.landing();
+//	}
 
 	public void droneFlightControl(){
-		droneTakeOff();
-		cmd.hover().doFor(2000);
-		//cmd.up(20).doFor(2600);
-		cmd.hover().doFor(2000);
-		cmd.forward(15).doFor(500);
-		cmd.backward(15).doFor(500);
-		cmd.hover().doFor(5000);
-		cmd.spinLeft(20).doFor(4000);
-		cmd.hover().doFor(3000);
-		cmd.forward(15).doFor(500);
-		cmd.hover().doFor(3000);
+		while (true) {
+			
+			try{	
+				droneTakeOff();
+				System.out.println("Drone Tråden: Dronen letter nu.");
+				Thread.sleep(1000);
+				cmd.hover().doFor(7000);
+				Thread.sleep(1000);
+				cmd.forward(10).doFor(500);
+				System.out.println("DroneTråden: Dronen flyver foran");
+				Thread.sleep(1000);
+				cmd.backward(10).doFor(100);
+				Thread.sleep(1000);
+				
+			} catch (InterruptedException e){
+				Thread.currentThread().interrupt();
+				e.printStackTrace();
+			}
+			break;
+		}
+		
+		//cmd.move(1, 5, 0, 0).doFor(2000);
+		//cmd.forward(5).doFor(1000);
+//		cmd.hover().doFor(5000);
+//		cmd.backward(5).doFor(1000);
+//		cmd.hover().doFor(2000);
+		
+//		cmd.hover().doFor(2000);
+//		//cmd.up(20).doFor(2600);
+//		cmd.hover().doFor(2000);
+//		cmd.forward(15).doFor(500);
+//		cmd.backward(15).doFor(500);
+//		cmd.hover().doFor(5000);
+//		cmd.spinLeft(20).doFor(4000);
+//		cmd.hover().doFor(3000);
+//		cmd.forward(15).doFor(500);
+//		cmd.hover().doFor(3000);
+//		cmd.move(1.1f, 1.1f, 1.1f, 1.1f);
 		
 		//cmd.spinLeft(40).doFor(10000);
 		//cmd.hover().doFor(3000);
@@ -94,7 +143,6 @@ public class DroneCommander extends Canvas {
 	public void droneTakeOff(){
 		System.out.println("We have Liftoff");
 		cmd.flatTrim();
-		//cmd.setLedsAnimation(LEDAnimation.BLINK_GREEN_RED, 3, 1);
 		cmd.takeOff();
 		System.out.println("takeoff done");
 	}
@@ -145,8 +193,6 @@ public class DroneCommander extends Canvas {
 	}
 	
 	public void takeOffAndLand(long interval){
-		cmd.flatTrim();
-		cmd.takeOff();
 		cmd.waitFor(interval);
 		cmd.landing();
 	}

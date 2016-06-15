@@ -2,6 +2,7 @@ package dk.gruppe5.positioning;
 
 import java.awt.Point;
 
+import CoordinateSystem.DronePosition;
 import dk.gruppe5.controller.Mathmagic;
 import dk.gruppe5.model.Circle;
 import dk.gruppe5.model.CircleCircleIntersection;
@@ -285,7 +286,7 @@ public class Position {
 		
 		DPoint pos = new DPoint(position.x, position.y);
 		currentPos = pos;
-		
+		DronePosition.setPosition(pos);
 		return pos;
 	}
 	
