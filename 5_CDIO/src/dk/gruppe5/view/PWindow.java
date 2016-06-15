@@ -51,6 +51,7 @@ public class PWindow {
 
 
 
+
 		PPanel videoFeed = new PPanel();
 		Thread camThread = new Thread(videoFeed);
 		camThread.start();
@@ -62,18 +63,20 @@ public class PWindow {
 			}
 		});
 
-
 		/*
 		 * nedenst�ende bruger dronen.
 		 */
+
 
 		//		VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
 		//		new Thread(panel).start();
 		//		frame.setFocusable(true);
 		//		frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
+		//frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
+		//frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
+		
 
-
-
+		
 		frame.setLayout(new GridLayout(2, 2));
 
 		JPanel leftPanel = new JPanel();
@@ -124,7 +127,7 @@ public class PWindow {
 			public void actionPerformed(ActionEvent arg0) {
 
 				System.out.println("KILL IT");
-				// dCommando.droneKillAll();
+//				 dCommando.droneKillAll();
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();
@@ -135,7 +138,7 @@ public class PWindow {
 		btnTakeoff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("TAKEOFF");
-				//				 dCommando.droneFlightControl();
+//				dCommando.droneFlightControl();
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();

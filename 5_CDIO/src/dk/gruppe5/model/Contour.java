@@ -189,7 +189,6 @@ public class Contour {
 	public List<Point> getAllContourPoints(int ratio) {
 		List<Point> source = new ArrayList<Point>();
 		int i = 0;
-		//		System.out.println(contour.height());
 		while (contour.get(i, 0) != null) {
 			double[] temp_double;
 			temp_double = contour.get(i, 0);

@@ -140,7 +140,6 @@ public class PPanel extends JPanel implements Runnable {
 				frame = imgproc.toCanny(frame);
 				
 				List<Contour> listofCircles = imgproc.findCircles(frame);
-
 				frame = imgproc.convertMatToColor(frame);
 
 				for (Contour contour : listofCircles) {
