@@ -140,7 +140,7 @@ public class PPanel extends JPanel implements Runnable {
 				frame = imgproc.toCanny(frame);
 				List<Contour> petertest = imgproc.findCircles(frame);
 
-				frame = imgproc.toColor(frame);
+			
 				frame = imgproc.convertMatToColor(frame);
 
 				for (Contour contour : petertest) {
@@ -150,7 +150,7 @@ public class PPanel extends JPanel implements Runnable {
 
 				}
 				Filterstates.setImage1(imgproc.toBufferedImage(frame));
-				image = imgproc.toBufferedImage(frame);
+				image = imgproc.toBufferedImage(backUp);
 			}
 			repaint();
 		}
