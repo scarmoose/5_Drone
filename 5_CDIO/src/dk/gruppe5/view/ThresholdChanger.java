@@ -70,7 +70,6 @@ public class ThresholdChanger {
 				
 				if(Integer.parseInt(txtCannyAperture.getText()) % 2 == 1 && Integer.parseInt(txtCannyAperture.getText()) != 1){
 					Values_cam.setCanAp(Integer.parseInt(txtCannyAperture.getText()));
-					System.out.println("aperture changed");
 				}
 				
 				if(Integer.parseInt(txtCannyAperture.getText()) % 2 == 0 || Integer.parseInt(txtCannyAperture.getText()) == 0  || Integer.parseInt(txtCannyAperture.getText()) == 1){
