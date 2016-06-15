@@ -151,6 +151,20 @@ public class PPanel extends JPanel implements Runnable {
 				}
 				Filterstates.setImage1(imgproc.toBufferedImage(frame));
 				image = imgproc.toBufferedImage(backUp);
+			}else if(Values_cam.getMethod() == 10){
+				Mat backUp = new Mat();
+				backUp = frame;
+				int ratio = 1;
+
+				frame = imgproc.toGrayScale(frame);
+				frame = imgproc.equalizeHistogramBalance(frame);
+				frame = imgproc.blur(frame);
+				frame = imgproc.toCanny(frame);
+				frame = imgproc.findAirfield(frame,ratio);
+				
+				
+				Filterstates.setImage1(imgproc.toBufferedImage(frame));
+				image = imgproc.toBufferedImage(backUp);
 			}
 			repaint();
 		}

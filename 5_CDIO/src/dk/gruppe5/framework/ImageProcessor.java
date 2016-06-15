@@ -20,6 +20,7 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -428,15 +429,15 @@ public class ImageProcessor {
 		return new opticalFlowData(standIn, startPoints, endPoints);
 	}
 
-	public Mat findAirfield(Mat input) {
+	public Mat findAirfield(Mat input,int ratio) {
 		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
 		Mat hierarchy_1 = new Mat();
 		Imgproc.findContours(input, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 		Random rn = new Random();
 		Mat standIn = new Mat();
 		Imgproc.cvtColor(input, standIn, Imgproc.COLOR_BayerBG2RGB);
-		List<Shape> rects = new ArrayList();
-		List<Shape> cirRects = new ArrayList();
+		List<Contour> rects = new ArrayList();
+		List<Contour> cirRects = new ArrayList();
 
 		// Detecting shapes in the contours
 		for (int i = 0; i < contours_1.size(); i++) {
@@ -446,40 +447,35 @@ public class ImageProcessor {
 			double epsilon = Imgproc.arcLength(contour, true) * 0.01;
 			// we wanna se if a contour is a square.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
-			if (approxCurve.height() == 4) {
+			if (approxCurve.height() <  10 && approxCurve.height() > 3) {
 
 				// We find the rect that surronds the square and adds it to
 				// rects
-				Rect r = Imgproc.boundingRect(contours_1.get(i));
-
-				if ((r.width * 2 > r.height) && (r.height / 2 < r.width)) { // SKAL KIGGES PÅ I MORGEN
-
-					rects.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
-					// Scalar color = new Scalar(rn.nextInt(255),
+//				Rect r = Imgproc.boundingRect(contours_1.get(i));
+				RotatedRect p = Imgproc.minAreaRect(contour);
+				Rect r = p.boundingRect();
+//
+				if ((r.width * 2 > r.height) && (r.height / 2 < r.width)) { 
+					rects.add(new Contour(contour, approxCurve));
+				}
+//					rects.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
+					
 					// rn.nextInt(255), rn.nextInt(255));
 					// Imgproc.rectangle(standIn, r.br(), r.tl(), color);
-				}
+//				}
 				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
 
 			}
 			// we just say any contour/shap with more than 6 edges we call it a
 			// circle
 			if (approxCurve.height() > 10) {
-
-				// Scalar color = new Scalar(0, 0, 255);
 				Rect r = Imgproc.boundingRect(contours_1.get(i));
 				double area = Imgproc.contourArea(contours_1.get(i));
 				int radius = r.width / 2;
-
-				// Imgproc.rectangle(standIn, r.br(), r.tl(), color);
-				// System.out.println(Math.abs(1 - (r.width / r.height)));
 				if (Math.abs(1 - ((double) r.width / (double) r.height)) <= 0.2
 						&& Math.abs(1 - (area / (Math.PI * Math.pow((double) radius, 2)))) <= 0.1) {
 					if (r.area() > 80) {
-						// System.out.println(r.area());
-						// Imgproc.drawContours(standIn, contours_1, i,
-						// color,2);
-						cirRects.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
+						cirRects.add(new Contour(contour,approxCurve));
 
 					}
 
@@ -492,23 +488,21 @@ public class ImageProcessor {
 		double pixelWidth = 0.0;
 		int nr = 0;
 		// check if circles are contained in a rect
-		for (Shape rect : rects) {
-
-			Point tlPt = rect.getTlPoint();
-			Point brPt = rect.getBrPoint();
+		for (Contour rect : rects) {
+			double rectArea = rect.getArea(ratio);
 			int containedCircles = 0;
-			for (Shape cirRect : cirRects) {
-				double carea = cirRect.getArea();
-				Point ctlPt = cirRect.getTlPoint();
-				Point cbrPt = cirRect.getBrPoint();
-				// area check dosent work, buuut its unlikely anything will
-				// match the requirements for airfield1 or 2
-				if (cirRect.getArea() > rect.getArea() * 0.15 && true) {
+			for (Contour cirRect : cirRects) {
+				double carea = cirRect.getArea(ratio);
+				Point ctlPt = cirRect.getBoundingRect(ratio).tl();
+				Point cbrPt = cirRect.getBoundingRect(ratio).br();
+			
+				
+				if (carea > rectArea * 0.15 && true) {
 
-					if (ctlPt.inside(rect.getRect())) {
+					if (ctlPt.inside(rect.getBoundingRect(ratio))) {
 						containedCircles++;
 						Scalar color = new Scalar(255, 0, 0);
-						Imgproc.rectangle(standIn, cirRect.getBrPoint(), cirRect.getTlPoint(), color, 3);
+						Imgproc.rectangle(standIn, cirRect.getBrPoint(ratio), cirRect.getTlPoint(ratio), color, 3);
 					}
 				}
 
@@ -519,8 +513,8 @@ public class ImageProcessor {
 
 			 if (containedCircles == 2) {
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
-				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
-				Point txtPoint = new Point(tlPt.x + rect.getWidth() / 4, tlPt.y + rect.getHeight() / 2);
+				drawLinesBetweenBoundingRectPoints(rect, standIn, ratio, color);
+				Point txtPoint = rect.getCenter(ratio);
 
 				Imgproc.putText(standIn, "testAirfield", txtPoint, 5, 2, color);
 			}
@@ -528,6 +522,7 @@ public class ImageProcessor {
 		}
 		return standIn;
 	}
+
 
 	public Mat findDirection(Mat frameOne, Mat frameTwo) {
 		// Først finder vi de gode features at tracker
@@ -1260,6 +1255,15 @@ public class ImageProcessor {
 		Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_BayerBG2RGB);
 		
 		return mat1;
+	}
+	
+	private Mat drawLinesBetweenPoints(Mat input, Point[] points, Scalar color) {
+		int n = points.length;
+		for (int i = 0; i < n; i++) {
+			drawLine(points[i], points[(i + 1) % n], input, color);
+		}
+
+		return input;
 	}
 	
 }
