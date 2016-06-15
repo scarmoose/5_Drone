@@ -97,7 +97,7 @@ public class Contour {
 
 		double area = 0; // Accumulates area in the loop
 		int j = points.size() - 1; // The last vertex is the 'previous' one to
-									// the first
+		// the first
 
 		for (int i = 0; i < points.size(); i++) {
 			area = area + (points.get(j).x + points.get(i).x) * (points.get(j).y - points.get(i).x);
