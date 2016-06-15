@@ -101,6 +101,18 @@ public class DroneCommander extends Canvas {
 		*/
 		cmd.landing();
 	}
+	public void droneHeight(){
+		
+		if (navl.getAltitude() < 1450){
+			cmd.up(speed).doFor(500);
+
+		}else if(navl.getAltitude() > 1550){
+				cmd.down(speed).doFor(500);
+
+		}else if (navl.getAltitude() > 1450 && navl.getAltitude() <1550 ){
+			cmd.hover();
+		}
+	}
 	
 	public void droneTakeOff(){
 		System.out.println("We have Liftoff");
@@ -143,15 +155,6 @@ public class DroneCommander extends Canvas {
 	public void droneGoRight(long interval){
 		cmd.goRight(speed).doFor(interval);
 		cmd.hover();
-	}
-	
-	public void droneCirkelFlying(long interval) throws InterruptedException{
-		for(int i=1; i<11; i++){
-            System.out.println("Commandt sendt: " + i);
-            droneFlyingForward(500);
-            droneSpinRight(500);
-            Thread.currentThread().sleep(sleep);
-		}
 	}
 	
 	public void takeOffAndLand(long interval){
