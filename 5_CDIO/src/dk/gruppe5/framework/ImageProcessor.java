@@ -1247,7 +1247,7 @@ public class ImageProcessor {
 			Rect r = Imgproc.boundingRect(contours_1.get(i));
 			double area = Imgproc.contourArea(contours_1.get(i));
 			double radius = r.width / 2;
-			
+
 			if(r.area() > 80){
 				if (contours_1.get(i).total() > 100) {
 					if(Math.abs(1-((double)r.width/(double)r.height)) <= 0.05 && Math.abs(1-(area/Math.PI*Math.pow(radius,2))) >= 0.05){
@@ -1267,10 +1267,13 @@ public class ImageProcessor {
 		return mat1;
 	}
 
-
 	public List<Contour> findPapkasser(Mat frame) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
+		/*
+		 * I HAVE NO IDEA WHAT IM DOING LOL
+		 */
+		
+		List<Contour> papkasser = new ArrayList<>();
+		return papkasser;
+	}
 }

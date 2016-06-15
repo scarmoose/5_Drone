@@ -114,8 +114,6 @@ public class PPanel extends JPanel implements Runnable {
 			long t = System.currentTimeMillis();
 			long dt = System.currentTimeMillis() - t;
 
-			repaint();
-
 			if (Values_cam.getMethod() == 1) {
 				opticalFlowCall(frame);
 			} else if (Values_cam.getMethod() == 0) {
@@ -153,10 +151,24 @@ public class PPanel extends JPanel implements Runnable {
 			} else if(Values_cam.getMethod()==13){
 				Mat backUp = new Mat();
 				backUp = frame;
-				
+				int ratio = 1;
+
+				frame = imgproc.toGrayScale(frame);
+				frame = imgproc.equalizeHistogramBalance(frame);
 				frame = imgproc.blur(frame);
-				List<Contour>listofSquaresWithCirclesIn = imgproc.findPapkasser(frame);
+				frame = imgproc.toCanny(frame);
 				
+				List<Contour> papkasser = imgproc.findPapkasser(frame);
+				frame = imgproc.convertMatToColor(frame);
+
+				for (Contour contour : papkasser) {
+
+					Scalar color = new Scalar(255, 255, 0);
+					frame = imgproc.drawLinesBetweenContourPoints(contour, frame, ratio, color);
+				
+				}
+				Filterstates.setImage1(imgproc.toBufferedImage(frame));
+				image = imgproc.toBufferedImage(backUp);
 			}
 			repaint();
 		}
