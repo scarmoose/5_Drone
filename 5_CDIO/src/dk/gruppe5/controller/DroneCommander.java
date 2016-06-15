@@ -135,9 +135,11 @@ public class DroneCommander extends Canvas {
 		
 		if (navl.getAltitude() < 1450){
 			cmd.up(speed).doFor(500);
+			cmd.hover().doFor(1000);
 
 		}else if(navl.getAltitude() > 1550){
 				cmd.down(speed).doFor(500);
+				cmd.hover().doFor(1000);
 
 		}else if (navl.getAltitude() > 1450 && navl.getAltitude() <1550 ){
 			cmd.hover();
