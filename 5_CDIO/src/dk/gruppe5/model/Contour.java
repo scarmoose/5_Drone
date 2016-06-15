@@ -97,7 +97,7 @@ public class Contour {
 
 		double area = 0; // Accumulates area in the loop
 		int j = points.size() - 1; // The last vertex is the 'previous' one to
-									// the first
+		// the first
 
 		for (int i = 0; i < points.size(); i++) {
 			area = area + (points.get(j).x + points.get(i).x) * (points.get(j).y - points.get(i).x);
@@ -189,11 +189,13 @@ public class Contour {
 	public List<Point> getAllContourPoints(int ratio) {
 		List<Point> source = new ArrayList<Point>();
 		int i = 0;
-		while (approxCurve.get(i, 0) != null) {
+		//		System.out.println(contour.height());
+		while (contour.get(i, 0) != null) {
 			double[] temp_double;
-			temp_double = approxCurve.get(i, 0);
+			temp_double = contour.get(i, 0);
 			Point p1 = new Point(temp_double[0] * ratio, temp_double[1] * ratio);
 			source.add(p1);
+			i++;
 		}
 
 		return source;

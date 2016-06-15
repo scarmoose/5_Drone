@@ -138,19 +138,19 @@ public class PPanel extends JPanel implements Runnable {
 				frame = imgproc.equalizeHistogramBalance(frame);
 				frame = imgproc.blur(frame);
 				frame = imgproc.toCanny(frame);
-				List<Contour> petertest = imgproc.findCircles(frame);
+				
+				List<Contour> listofCircles = imgproc.findCircles(frame);
 
-				frame = imgproc.toColor(frame);
 				frame = imgproc.convertMatToColor(frame);
 
-				for (Contour contour : petertest) {
+				for (Contour contour : listofCircles) {
 
 					Scalar color = new Scalar(255, 255, 0);
 					frame = imgproc.drawLinesBetweenContourPoints(contour, frame, ratio, color);
-
+				
 				}
 				Filterstates.setImage1(imgproc.toBufferedImage(frame));
-				image = imgproc.toBufferedImage(frame);
+				image = imgproc.toBufferedImage(backUp);
 			}
 			repaint();
 		}
