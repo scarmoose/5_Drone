@@ -57,17 +57,24 @@ public class Position {
 	 * @param angleToQr vinklen fra midten af dronens synsfelt, ud til QR koden
 	 * @return vinklen fra linjen mellem de to givne punkter, og y-aksen
 	 */
-	public float getDirectionAngleRelativeToYAxis(DPoint dronePos, DPoint qrPos, float angleToQr) {
+	public float getDirectionAngleRelativeToYAxis(DPoint dronePos, 
+			DPoint qrPos, float angleToQr) {
 		DPoint vector = qrPos.sub(dronePos);
 		DPoint yaxis = new DPoint(0,1);
 		float angleToY = getSignedAngleBetweenVectors(vector, yaxis);
-		float v = (float) ((angleToY > 0) ? (angleToY - angleToQr) : (angleToY + angleToQr));
+		/*
+		 * hvis angleToY er over 0, skal vinklen til QR-koden trækkes fra. 
+		 * hvis under 0, skal vinklen til QR-koden lægges til. 
+		 */
+		float v = (float) ((angleToY > 0) ? (angleToY - angleToQr) 
+				: (angleToY + angleToQr));
 		currentAngle = v;
 		return v;
 	}
 	
 	public float getSignedAngleBetweenVectors(DPoint v1, DPoint v2) {
-		float signed_angle = (float) (Math.atan2(v1.x, v1.y) - Math.atan2(v2.x, v2.y));
+		float signed_angle = (float) 
+				(Math.atan2(v1.x, v1.y) - Math.atan2(v2.x, v2.y));
 		return signed_angle;
 	}
 
