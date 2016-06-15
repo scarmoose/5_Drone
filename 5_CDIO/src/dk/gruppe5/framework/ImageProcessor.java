@@ -517,7 +517,7 @@ public class ImageProcessor {
 			// den giver tror jeg
 			// indre cirkel og ydre cirkel. G�r det nok ogs� med firkant...
 
-			 if (containedCircles == 2) {
+			if (containedCircles == 2) {
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
 				Point txtPoint = new Point(tlPt.x + rect.getWidth() / 4, tlPt.y + rect.getHeight() / 2);
@@ -1141,7 +1141,7 @@ public class ImageProcessor {
 
 		return image;
 	}
-	
+
 	public Mat drawLinesBetweenContourPoints(Contour contour, Mat image, int ratio, Scalar color) {
 		List<Point> points = contour.getAllContourPoints(ratio);
 		int n = points.size();
@@ -1230,9 +1230,9 @@ public class ImageProcessor {
 		// Here contours are stored, we will check each one to see if it matches
 		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
 		Mat hierarchy_1 = new Mat();
-		Imgproc.findContours(frame, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+		Imgproc.findContours(frame, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
 
-		List<Contour> contours = new ArrayList<>();
+		List<Contour> circleContours = new ArrayList<>();
 
 		// Detecting shapes in the contours
 		for (int i = 0; i < contours_1.size(); i++) {
@@ -1245,21 +1245,28 @@ public class ImageProcessor {
 			// we save them.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
 			Rect r = Imgproc.boundingRect(contours_1.get(i));
+			double area = Imgproc.contourArea(contours_1.get(i));
+			double radius = r.width / 2;
+			
 			if(r.area() > 80){
-				if (approxCurve.total() > 3) {
-					Contour contour1 = new Contour(contour, approxCurve);
-					contours.add(contour1);
+				if (contours_1.get(i).total() > 100) {
+					if(Math.abs(1-((double)r.width/(double)r.height)) <= 0.05 && Math.abs(1-(area/Math.PI*Math.pow(radius,2))) >= 0.05){
+						Contour contour1 = new Contour(contour, approxCurve);
+						circleContours.add(contour1);
+					}
 				}
 			}
 		}
-		return contours;
+		return circleContours;
 	}
+
+
 
 	public Mat convertMatToColor(Mat mat){
 		Mat mat1 = new Mat();
 		Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_BayerBG2RGB);
-		
+
 		return mat1;
 	}
-	
+
 }
