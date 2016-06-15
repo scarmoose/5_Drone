@@ -159,7 +159,25 @@ public class PPanel extends JPanel implements Runnable {
 				frame = imgproc.equalizeHistogramBalance(frame);
 				frame = imgproc.blur(frame);
 				frame = imgproc.toCanny(frame);
-				frame = imgproc.findAirfield(frame,ratio);
+				// Nu skal vi prøve at finde firkanter af en hvis størrelse
+				List<Contour> contours = imgproc.findQRsquares(frame);
+		
+				// vi finder de potentielle QR kode områder
+				List<BufferedImage> cutouts = imgproc.warp(backUp, contours, ratio);
+				List<Result> results = imgproc.readQRCodes(cutouts);
+				
+				int i = 0;
+				for (Result result : results) {
+					if (result != null) {
+						// backUp =
+						// imgProc.drawLinesBetweenBoundingRectPoints(contours.get(i),
+						// backUp, ratio);
+						Scalar color = new Scalar(255, 255, 0);
+						backUp = imgproc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
+						backUp = imgproc.putText(result.getText(), contours.get(i).getCenter(ratio), backUp);
+					}
+					i++;
+				}
 				
 				
 				Filterstates.setImage1(imgproc.toBufferedImage(frame));

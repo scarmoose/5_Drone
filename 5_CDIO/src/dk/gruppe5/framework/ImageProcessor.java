@@ -436,54 +436,47 @@ public class ImageProcessor {
 		Random rn = new Random();
 		Mat standIn = new Mat();
 		Imgproc.cvtColor(input, standIn, Imgproc.COLOR_BayerBG2RGB);
-		List<Contour> rects = new ArrayList();
-		List<Contour> cirRects = new ArrayList();
+		List<Contour> rects = findQRsquares(input);
+		List<Contour> cirRects = findCircles(input);
 
-		// Detecting shapes in the contours
-		for (int i = 0; i < contours_1.size(); i++) {
-			MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
-
-			MatOfPoint2f approxCurve = new MatOfPoint2f();
-			double epsilon = Imgproc.arcLength(contour, true) * 0.01;
-			// we wanna se if a contour is a square.
-			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
-			if (approxCurve.height() <  10 && approxCurve.height() > 3) {
-
-				// We find the rect that surronds the square and adds it to
-				// rects
-//				Rect r = Imgproc.boundingRect(contours_1.get(i));
-				RotatedRect p = Imgproc.minAreaRect(contour);
-				Rect r = p.boundingRect();
+//		// Detecting shapes in the contours
+//		for (int i = 0; i < contours_1.size(); i++) {
+//			MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
 //
-				if ((r.width * 2 > r.height) && (r.height / 2 < r.width)) { 
-					rects.add(new Contour(contour, approxCurve));
-				}
-//					rects.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
-					
-					// rn.nextInt(255), rn.nextInt(255));
-					// Imgproc.rectangle(standIn, r.br(), r.tl(), color);
+//			MatOfPoint2f approxCurve = new MatOfPoint2f();
+//			double epsilon = Imgproc.arcLength(contour, true) * 0.01;
+//			// we wanna se if a contour is a square.
+//			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
+//			if (approxCurve.height() <  10 && approxCurve.height() > 3) {
+//
+//				RotatedRect p = Imgproc.minAreaRect(contour);
+//				Rect r = p.boundingRect();
+//
+//				if ((r.width * 2 > r.height) && (r.height / 2 < r.width)) { 
+//					rects.add(new Contour(contour, approxCurve));
 //				}
-				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
-
-			}
-			// we just say any contour/shap with more than 6 edges we call it a
-			// circle
-			if (approxCurve.height() > 10) {
-				Rect r = Imgproc.boundingRect(contours_1.get(i));
-				double area = Imgproc.contourArea(contours_1.get(i));
-				int radius = r.width / 2;
-				if (Math.abs(1 - ((double) r.width / (double) r.height)) <= 0.2
-						&& Math.abs(1 - (area / (Math.PI * Math.pow((double) radius, 2)))) <= 0.1) {
-					if (r.area() > 80) {
-						cirRects.add(new Contour(contour,approxCurve));
-
-					}
-
-				}
-
-			}
-
-		}
+//
+//
+//				
+//
+//			}
+//
+//			if (approxCurve.height() > 10) {
+//				Rect r = Imgproc.boundingRect(contours_1.get(i));
+//				double area = Imgproc.contourArea(contours_1.get(i));
+//				int radius = r.width / 2;
+//				if (Math.abs(1 - ((double) r.width / (double) r.height)) <= 0.2
+//						&& Math.abs(1 - (area / (Math.PI * Math.pow((double) radius, 2)))) <= 0.1) {
+//					if (r.area() > 80) {
+//						cirRects.add(new Contour(contour,approxCurve));
+//
+//					}
+//
+//				}
+//
+//			}
+//
+//		}
 
 		double pixelWidth = 0.0;
 		int nr = 0;
@@ -522,7 +515,6 @@ public class ImageProcessor {
 		}
 		return standIn;
 	}
-
 
 	public Mat findDirection(Mat frameOne, Mat frameTwo) {
 		// Først finder vi de gode features at tracker
@@ -1234,7 +1226,7 @@ public class ImageProcessor {
 			MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
 
 			MatOfPoint2f approxCurve = new MatOfPoint2f();
-			double epsilon = Imgproc.arcLength(contour, true) * 0.05;
+			double epsilon = Imgproc.arcLength(contour, true) * 0.01;
 
 			// we wanna se if a contour is a square, or has one or more edges so
 			// we save them.
@@ -1244,7 +1236,7 @@ public class ImageProcessor {
 			double radius = r.width / 2;
 			
 			if(r.area() > 80){
-				if (contours_1.get(i).total() > 100) {
+				if (contours_1.get(i).total() > 100 && approxCurve.total()> 10) {
 					if(Math.abs(1-((double)r.width/(double)r.height)) <= 0.05 && Math.abs(1-(area/Math.PI*Math.pow(radius,2))) >= 0.05){
 						Contour contour1 = new Contour(contour, approxCurve);
 						circleContours.add(contour1);
@@ -1254,8 +1246,6 @@ public class ImageProcessor {
 		}
 		return circleContours;
 	}
-
-
 
 	public Mat convertMatToColor(Mat mat){
 		Mat mat1 = new Mat();
