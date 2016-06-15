@@ -71,7 +71,7 @@ public class PWindow {
 		frame.setFocusable(true);
 
 		//frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
-		frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
+		//frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
 		
 
 		frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
@@ -132,7 +132,7 @@ public class PWindow {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				System.out.println("KILL IT");
-				// dCommando.droneKillAll();
+				 dCommando.droneKillAll();
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();
@@ -143,7 +143,7 @@ public class PWindow {
 		btnTakeoff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("TAKEOFF");
-				// dCommando.droneFlightControl();
+				dCommando.droneFlightControl();
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();
