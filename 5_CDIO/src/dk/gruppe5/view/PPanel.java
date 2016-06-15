@@ -105,7 +105,7 @@ public class PPanel extends JPanel implements Runnable {
 			Mat frame = new Mat();
 			capture.read(frame);
 
-			image = imgproc.toBufferedImage(frame);
+			//image = imgproc.toBufferedImage(frame);
 
 			if (old_frame == null) {
 				old_frame = frame;
@@ -139,7 +139,10 @@ public class PPanel extends JPanel implements Runnable {
 				frame = imgproc.blur(frame);
 				frame = imgproc.toCanny(frame);
 				List<Contour> petertest = imgproc.findCircles(frame);
+
+			
 				frame = imgproc.convertMatToColor(frame);
+
 				for (Contour contour : petertest) {
 
 					Scalar color = new Scalar(255, 255, 0);
