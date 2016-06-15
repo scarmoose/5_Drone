@@ -1141,8 +1141,9 @@ public class ImageProcessor {
 
 		return image;
 	}
+	
 	public Mat drawLinesBetweenContourPoints(Contour contour, Mat image, int ratio, Scalar color) {
-		List<Point> points = contour.getCorners(ratio);
+		List<Point> points = contour.getAllContourPoints(ratio);
 		int n = points.size();
 		for (int i = 0; i < n; i++) {
 			drawLine(points.get(i), points.get((i + 1) % n), image, color);
