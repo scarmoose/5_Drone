@@ -12,7 +12,7 @@ public class DronePosition {
 	 */
 	private static int x=630;
 	private static int y=-70;
-	private static double degrees = 45.0;
+	private static double degrees = 0.0;
 	
 	private static boolean found=false;
 

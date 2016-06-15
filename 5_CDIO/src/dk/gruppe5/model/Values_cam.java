@@ -9,7 +9,7 @@ public class Values_cam {
 	private static double goodQualLvl = 0.1;
 	private static double goodMinDist = 10;
 	
-	private static int method = 12;
+	private static int method = 0;
 	
 	private static double circlePrecision = 0.2;
 	
