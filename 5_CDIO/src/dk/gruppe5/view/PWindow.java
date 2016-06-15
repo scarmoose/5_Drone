@@ -28,7 +28,7 @@ public class PWindow {
 	private JTextArea textArea;
 	Values_cam vall = Values_cam.getInstance();
 
-	//		DroneCommander dCommando = new DroneCommander();
+		//DroneCommander dCommando = new DroneCommander();
 
 	public PWindow(int w, int h) {
 
@@ -68,12 +68,11 @@ public class PWindow {
 		 */
 
 
-		//		VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
-		//		new Thread(panel).start();
-		//		frame.setFocusable(true);
-		//		frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
-		//frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
-		//frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
+		/*VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
+		new Thread(panel).start();
+		frame.setFocusable(true);
+		frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
+		frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));*/
 		
 
 		
@@ -104,7 +103,7 @@ public class PWindow {
 
 		rightPanel.add(filters);
 		frame.add(videoFeed);
-		//		frame.add(panel);
+		//frame.add(panel);
 		frame.add(rightPanel);
 		frame.add(leftPanel);
 		frame.setVisible(true);
