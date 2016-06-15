@@ -17,21 +17,13 @@ public class DronePosition {
 	private static boolean found=false;
 
 	
-	private static int xcorn=350;
-	private static int ycorn=700;
-	private static int xlen=50;
-	private static int ylen=50;
 	private static int ymirror = 0;
-	private static String airName ="";
 	
 	public static int getXPoint(){return x;}
 	public static void setXPoint(int input) {x = input;}
 
 	public static int getYPoint(){return y;}
 	public static void setYPoint(int input) {y = input;}
-	
-	public static boolean getFound(){return found;}
-	public static void setFound(boolean input) {found = input;}
 	
 	public static void setCoordinates(DPoint v){
 		x = (int) v.x;
@@ -40,16 +32,6 @@ public class DronePosition {
 	
 	public static int getYMirror(){return ymirror;}
 	public static void setYMirror(int input) {ymirror = input;}
-	
-	public static int getxCorn(){return xcorn;}
-	public static void setxCorn(int input) {xcorn = input;}
-	public static int getyCorn(){return ycorn;}
-	public static void setyCorn(int input) {ycorn = input;}
-	
-	public static int getxLen(){return xlen;}
-	public static void setxLen(int input) {xlen = input;}
-	public static int getyLen(){return ylen;}
-	public static void setyLen(int input) {ylen = input;}
 	
 	public static double getDegree(){return degrees;}
 	public static void setDegree(double input) {degrees = input;}
