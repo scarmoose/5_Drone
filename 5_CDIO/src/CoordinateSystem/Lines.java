@@ -41,17 +41,7 @@ public class Lines {
         
         /*AirfieldList.addAirfield(new Airfield("Airfield1",new Point(350,700)));
         AirfieldList.addAirfield(new Airfield("Airfield2",new Point(530,200)));
-        */
-        String airname = "Airfield3";
-        int nameFound = 0;
-        for (int h = 0;h<AirfieldList.getArray().size();h++){
-        	if(AirfieldList.getArray().get(h).name == airname){
-        		nameFound++;
-        	}
-        }
-        if(nameFound==0){
-        	//AirfieldList.addAirfield(new Airfield(airname,new Point(800,800)));
-        }
+        AirfieldList.addAirfield(new Airfield("Airfield3",new Point(800,800)));*/
                 
     }
 
