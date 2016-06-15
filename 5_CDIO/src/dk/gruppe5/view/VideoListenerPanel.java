@@ -126,7 +126,8 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					image = imgProc.toBufferedImage(frame);
 
-				} else if (Values_cam.getMethod() == 10) {
+				}
+				else if (Values_cam.getMethod() == 10) {
 					Mat backUp = new Mat();
 					backUp = frame;
 					int ratio = 2;
@@ -165,7 +166,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					image = imgProc.toBufferedImage(backUp);
 				
 				} else if (Values_cam.getMethod() == 6) {
-
+					
 					Filterstates.setImage2(imgProc.toBufferedImage(frame));
 					frame = imgProc.calibrateCamera(frame);
 					Filterstates.setImage1(imgProc.toBufferedImage(frame));

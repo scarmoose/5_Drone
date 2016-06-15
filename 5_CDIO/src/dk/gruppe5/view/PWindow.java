@@ -31,38 +31,38 @@ public class PWindow {
 	Values_cam vall = Values_cam.getInstance();
 
 	DroneCommander dCommando;
-
+	
 	public PWindow(int w, int h) {
 
 		textArea = new JTextArea(50, 10);
 		textArea.setEditable(false);
 		PrintStream printStream = new PrintStream(new CustomOutputStream(textArea));
 
-	
+
 		JFrame droneOrWebcamFrame = new JFrame();
 		droneOrWebcamFrame.setSize(w,h);
 		droneOrWebcamFrame.setTitle("Chose a video source");
-	
+
 		JFrame frame = new JFrame();
 		frame.setSize(w, h);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Super programmet");
-		
-		
+
+
 		JButton btnSelectDrone = new JButton("Use drone");
 		JButton btnSelectWebcam = new JButton("Use webcam");
-		
+
 		JPanel droneOrWebcamPanel = new JPanel();
 		droneOrWebcamPanel.setLayout(new GridLayout(0,1));
 		droneOrWebcamFrame.add(droneOrWebcamPanel);
 		droneOrWebcamPanel.add(btnSelectDrone);
 		droneOrWebcamPanel.add(btnSelectWebcam);
-		
+
 		Filterstates filters = new Filterstates();
 		Thread filtersThread = new Thread(filters);
 		filtersThread.start();
-	
-		frame.setLayout(new GridLayout(2,2));
+
+		frame.setLayout(new GridLayout(2, 2));
 
 		JPanel leftPanel = new JPanel();
 		JPanel innerLeftPanel = new JPanel();
@@ -78,10 +78,17 @@ public class PWindow {
 
 		JTextField txtMethod = new JTextField();
 		txtMethod.setHorizontalAlignment(JTextField.CENTER);
-		
-		droneOrWebcamFrame.setVisible(true);
-		
 
+
+		droneOrWebcamFrame.setVisible(true);
+
+		leftPanel.add(innerLeftPanel);
+		innerLeftPanel.add(btnUpdate);
+		innerLeftPanel.add(txtMethod);
+		leftPanel.add(btnTakeoff);
+		leftPanel.add(btnLand);
+		leftPanel.add(btnEmergency);
+		btnEmergency.setForeground(Color.RED);
 		/*
 		 * Button-functionality
 		 */
@@ -98,7 +105,7 @@ public class PWindow {
 
 		btnEmergency.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				System.out.println("KILL IT");
 				//				 dCommando.droneKillAll();
 				SwingUtilities.updateComponentTreeUI(frame);
@@ -129,7 +136,7 @@ public class PWindow {
 				frame.repaint();
 			}
 		});
-		
+
 		btnSelectDrone.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
 				dCommando = new DroneCommander();
@@ -138,7 +145,7 @@ public class PWindow {
 				frame.setFocusable(true);
 				frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
 				frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
-							
+
 				leftPanel.add(innerLeftPanel);
 				innerLeftPanel.add(btnUpdate);
 				innerLeftPanel.add(txtMethod);
@@ -154,10 +161,10 @@ public class PWindow {
 				frame.setVisible(true);
 			}
 		});
-		
+
 		btnSelectWebcam.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
-				
+
 				PPanel videoFeed = new PPanel();
 				Thread camThread = new Thread(videoFeed);
 				camThread.start();
@@ -168,7 +175,7 @@ public class PWindow {
 						camThread.stop();
 					}
 				});
-				
+
 				leftPanel.add(innerLeftPanel);
 				innerLeftPanel.add(btnUpdate);
 				innerLeftPanel.add(txtMethod);
