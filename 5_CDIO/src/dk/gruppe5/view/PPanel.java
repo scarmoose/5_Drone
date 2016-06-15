@@ -150,6 +150,13 @@ public class PPanel extends JPanel implements Runnable {
 				}
 				Filterstates.setImage1(imgproc.toBufferedImage(frame));
 				image = imgproc.toBufferedImage(backUp);
+			} else if(Values_cam.getMethod()==13){
+				Mat backUp = new Mat();
+				backUp = frame;
+				
+				frame = imgproc.blur(frame);
+				List<Contour>listofSquaresWithCirclesIn = imgproc.findPapkasser(frame);
+				
 			}
 			repaint();
 		}

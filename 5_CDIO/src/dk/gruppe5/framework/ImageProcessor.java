@@ -1260,13 +1260,17 @@ public class ImageProcessor {
 		return circleContours;
 	}
 
-
-
 	public Mat convertMatToColor(Mat mat){
 		Mat mat1 = new Mat();
 		Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_BayerBG2RGB);
 
 		return mat1;
+	}
+
+
+	public List<Contour> findPapkasser(Mat frame) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

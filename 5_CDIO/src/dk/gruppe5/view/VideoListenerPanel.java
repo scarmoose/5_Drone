@@ -280,6 +280,29 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					image = imgProc.toBufferedImage(backUp);
 
 				}
+				else if (Values_cam.getMethod() == 12) {
+					
+					Mat backUp = new Mat();
+					backUp = frame;
+					int ratio = 1;
+					
+					frame = imgProc.toGrayScale(frame);
+					frame = imgProc.equalizeHistogramBalance(frame);
+					frame = imgProc.blur(frame);
+					frame = imgProc.toCanny(frame);
+					
+					List<Contour> listofCircles = imgProc.findCircles(frame);
+					frame = imgProc.convertMatToColor(frame);
+
+					for (Contour contour : listofCircles) {
+
+						Scalar color = new Scalar(255, 255, 0);
+						frame = imgProc.drawLinesBetweenContourPoints(contour, frame, ratio, color);
+					
+					}
+					Filterstates.setImage1(imgProc.toBufferedImage(frame));
+					image = imgProc.toBufferedImage(backUp);
+				}
 
 				//System.out.println(image.getWidth() +","+ image.getHeight());
 
