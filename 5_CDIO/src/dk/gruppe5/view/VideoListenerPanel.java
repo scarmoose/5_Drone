@@ -117,12 +117,12 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 				if (Values_cam.getMethod() == 0) {
 					image = imgProc.toBufferedImage(frame);
 				} else if (Values_cam.getMethod() == 4) {
-
+					int ratio = 2;
 					frame = imgProc.toGrayScale(frame);
 					frame = imgProc.blur(frame);
 					frame = imgProc.toCanny(frame);
 
-					frame = imgProc.findAirfield(frame);
+					frame = imgProc.findAirfield(frame, ratio);
 
 					image = imgProc.toBufferedImage(frame);
 
