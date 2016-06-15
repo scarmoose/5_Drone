@@ -11,7 +11,7 @@ import dk.gruppe5.app.App;
 import dk.gruppe5.positioning.Movement;
 
 public class DroneCommander extends Canvas {
-	private final static int speed = 10;
+	private final static int speed = 5;
 	private final static int sleep = 500;
 	
 	/**

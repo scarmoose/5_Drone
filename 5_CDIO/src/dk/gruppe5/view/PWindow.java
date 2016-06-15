@@ -28,7 +28,7 @@ public class PWindow {
 	private JTextArea textArea;
 	Values_cam vall = Values_cam.getInstance();
 
-	//	DroneCommander dCommando = new DroneCommander();
+		DroneCommander dCommando = new DroneCommander();
 
 	public PWindow(int w, int h) {
 
@@ -48,6 +48,7 @@ public class PWindow {
 		/*
 		 * Indkommente rnedenst�ende for at bruge webcam
 		 */
+		
 
 		PPanel videoFeed = new PPanel();
 		Thread camThread = new Thread(videoFeed);
@@ -59,15 +60,16 @@ public class PWindow {
 			}
 		});
 
+		
 		/*
 		 * nedenst�ende bruger dronen.
 		 */
 
-
-		//		VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
-		//		new Thread(panel).start();
-		//		frame.setFocusable(true);
-		//		frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
+//
+//				VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
+//				new Thread(panel).start();
+//				frame.setFocusable(true);
+//				frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
 
 
 		frame.setLayout(new GridLayout(2, 2));
