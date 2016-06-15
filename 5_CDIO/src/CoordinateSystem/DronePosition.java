@@ -30,8 +30,16 @@ public class DronePosition {
 		y = (int) v.y;
 	}
 	
-	public static int getYMirror(){return ymirror;}
-	public static void setYMirror(int input) {ymirror = input;}
+	public static int getYMirror(){
+		if (y < 530){
+			ymirror = (530+(530-y));
+		}
+		else if (y > 530){
+			ymirror = 530-(y-530);
+		}
+		
+		return ymirror;
+	}
 	
 	public static double getDegree(){return degrees;}
 	public static void setDegree(double input) {degrees = input;}
