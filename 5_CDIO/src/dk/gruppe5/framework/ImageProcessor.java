@@ -452,7 +452,7 @@ public class ImageProcessor {
 				// rects
 				Rect r = Imgproc.boundingRect(contours_1.get(i));
 
-				if ((r.width * 2 > r.height) && (r.height / 2 < r.width)) {
+				if ((r.width * 2 > r.height) && (r.height / 2 < r.width)) { // SKAL KIGGES PÅ I MORGEN
 
 					rects.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
 					// Scalar color = new Scalar(rn.nextInt(255),
@@ -517,32 +517,15 @@ public class ImageProcessor {
 			// den giver tror jeg
 			// indre cirkel og ydre cirkel. G�r det nok ogs� med firkant...
 
-			if (containedCircles == 6) {
+			 if (containedCircles == 2) {
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
 				Point txtPoint = new Point(tlPt.x + rect.getWidth() / 4, tlPt.y + rect.getHeight() / 2);
-
-				Imgproc.putText(standIn, "Airfield1", txtPoint, 5, 2, color);
-
-			} else if (containedCircles == 10) {
-				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
-				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
-				Point txtPoint = new Point(tlPt.x + rect.getWidth() / 4, tlPt.y + rect.getHeight() / 2);
-
-				Imgproc.putText(standIn, "Airfield2", txtPoint, 5, 2, color);
-			} else if (containedCircles == 2) {
-				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
-				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
-				Point txtPoint = new Point(tlPt.x + rect.getWidth() / 4, tlPt.y + rect.getHeight() / 2);
-
-				pixelWidth += rect.getHeight();
-				nr++;
 
 				Imgproc.putText(standIn, "testAirfield", txtPoint, 5, 2, color);
 			}
 
 		}
-		
 		return standIn;
 	}
 
@@ -1149,8 +1132,18 @@ public class ImageProcessor {
 		return outputs;
 	}
 
-	public Mat drawLinesBetweenContourPoints(Contour contour, Mat image, int ratio, Scalar color) {
+	public Mat drawLinesBetweenContourCornerPoints(Contour contour, Mat image, int ratio, Scalar color) {
 		List<Point> points = contour.getCorners(ratio);
+		int n = points.size();
+		for (int i = 0; i < n; i++) {
+			drawLine(points.get(i), points.get((i + 1) % n), image, color);
+		}
+
+		return image;
+	}
+	
+	public Mat drawLinesBetweenContourPoints(Contour contour, Mat image, int ratio, Scalar color) {
+		List<Point> points = contour.getAllContourPoints(ratio);
 		int n = points.size();
 		for (int i = 0; i < n; i++) {
 			drawLine(points.get(i), points.get((i + 1) % n), image, color);

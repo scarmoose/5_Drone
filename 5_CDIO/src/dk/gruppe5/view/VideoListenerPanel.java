@@ -157,7 +157,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					for (Result result : results) {
 						if (result != null) {
 							Scalar color = new Scalar(0, 255, 0);
-							backUp = imgProc.drawLinesBetweenContourPoints(contours.get(i), backUp, ratio, color);
+							backUp = imgProc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
 						}
 						i++;
 					}
@@ -199,11 +199,11 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 							// imgProc.drawLinesBetweenBoundingRectPoints(contours.get(i),
 							// backUp, ratio);
 							Scalar color = new Scalar(255, 255, 0);
-							backUp = imgProc.drawLinesBetweenContourPoints(contours.get(i), backUp, ratio, color);
+							backUp = imgProc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
 							backUp = imgProc.putText("QR CODE TEST", contours.get(i).getCenter(2), backUp);
 						}else{
 							Scalar color = new Scalar(0, 255, 255);
-							backUp = imgProc.drawLinesBetweenContourPoints(contours.get(i), backUp, ratio, color);
+							backUp = imgProc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
 						}
 						i++;
 					}
