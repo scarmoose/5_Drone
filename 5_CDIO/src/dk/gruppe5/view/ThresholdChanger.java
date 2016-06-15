@@ -68,11 +68,12 @@ public class ThresholdChanger {
 					Values_cam.setCanTres2(Double.parseDouble(txtCannyThreshold2.getText()));
 				}
 				
-				if(!(Integer.parseInt(txtCannyAperture.getText()) % 2 == 1 || Integer.parseInt(txtCannyAperture.getText()) == 0)){
+				if(Integer.parseInt(txtCannyAperture.getText()) % 2 == 1 && Integer.parseInt(txtCannyAperture.getText()) != 1){
 					Values_cam.setCanAp(Integer.parseInt(txtCannyAperture.getText()));
+					System.out.println("aperture changed");
 				}
 				
-				if((Integer.parseInt(txtCannyAperture.getText()) % 2 == 1 || Integer.parseInt(txtCannyAperture.getText()) == 0)){
+				if(Integer.parseInt(txtCannyAperture.getText()) % 2 == 0 || Integer.parseInt(txtCannyAperture.getText()) == 0  || Integer.parseInt(txtCannyAperture.getText()) == 1){
 					JOptionPane.showMessageDialog(frame, "Aperture must be an odd number!");
 				}
 			}
