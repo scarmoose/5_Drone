@@ -3,13 +3,18 @@ package dk.gruppe5.controller;
 import java.awt.Canvas;
 import java.util.Random;
 
+import CoordinateSystem.DronePosition;
+import de.yadrone.apps.controlcenter.plugins.altitude.AltitudeChart;
+import de.yadrone.apps.controlcenter.plugins.altitude.AltitudeChartPanel;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.command.VideoCodec;
+import de.yadrone.base.navdata.Altitude;
 import dk.gruppe5.app.App;
 import dk.gruppe5.positioning.Movement;
+import dk.gruppe5.positioning.Position;
 
 public class DroneCommander extends Canvas {
 	private final static int speed = 5;
@@ -87,6 +92,7 @@ public class DroneCommander extends Canvas {
 
 	public void droneFlightControl(){
 		
+
 		Thread thread = new Thread(new Runnable() {
 	         public void run() {
 	             
@@ -111,14 +117,23 @@ public class DroneCommander extends Canvas {
 	        		 e.printStackTrace();
 	        	 }
 	         }
-	});
-		thread.start();
+	}); 
+	thread.start();
 		
-		}
+	}
+		
+
+		
+
 	
 	
 	public void droneHeight(){
 		
+
+	}
+	/*public void droneHeight(){
+	
+>>>>>>> branch 'preMartinIgen' of https://github.com/scarmoose/5_Drone.git
 		if (navl.getAltitude() < 1450){
 			cmd.up(speed).doFor(500);
 			cmd.hover().doFor(1000);
@@ -131,7 +146,7 @@ public class DroneCommander extends Canvas {
 			cmd.hover();
 		}
 	}
-	
+	*/
 	public void droneTakeOff(){
 		System.out.println("We have Liftoff");
 		cmd.flatTrim();

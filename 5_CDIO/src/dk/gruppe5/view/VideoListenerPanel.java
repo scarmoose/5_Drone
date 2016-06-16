@@ -10,9 +10,12 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
@@ -32,6 +35,7 @@ import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.Contour;
 import dk.gruppe5.model.DPoint;
+import dk.gruppe5.positioning.Movement;
 import dk.gruppe5.positioning.Position;
 
 public class VideoListenerPanel extends JPanel implements Runnable {
@@ -132,9 +136,13 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 				if (Values_cam.getMethod() == 0) {
 					image = imgProc.toBufferedImage(frame);
 				}else if(Values_cam.getMethod() == 11){
-					findAirFieldInImageWithBottomCamera(frame);
+					Point qrPoint = findAirFieldInImageWithBottomCamera(frame);
+					if(qrPoint != null){
+						Movement movement = new Movement();
+						movement.centerPointInFrame(new DPoint(qrPoint), new DPoint(frame.width(),frame.height()));
+					}
 				}
-				else if (Values_cam.getMethod() == 10) {
+				else if (Values_cam.getMethod() == 1) {
 
 					Mat backUp = new Mat();
 					backUp = frame;
@@ -148,7 +156,6 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					// først gør vi det sort hvidt
 					frame = imgProc.toGrayScale(frame);
 
-					//
 					frame = imgProc.equalizeHistogramBalance(frame);
 					// Vi tester først med blur og ser hvor godt det bliver
 					// prøv også uden
@@ -173,12 +180,12 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					image = imgProc.toBufferedImage(backUp);
 				
-				} else if (Values_cam.getMethod() == 6) {
+				} else if (Values_cam.getMethod() == 2) {
 					
 					locationEstimationFrom3Points(frame);
 
 				}
-				else if (Values_cam.getMethod() == 12) {
+				else if (Values_cam.getMethod() == 3) {
 					
 					Mat backUp = new Mat();
 					backUp = frame;
@@ -200,6 +207,69 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					}
 					Filterstates.setImage1(imgProc.toBufferedImage(frame));
 					image = imgProc.toBufferedImage(backUp);
+				}else if(Values_cam.getMethod() == 4){
+					
+					//her vil vi prøve at finde position ud fra et qr markering og de trekanter der er på hver side halvvejs til feltet
+					findPositionFromQRandTriangles(frame);
+					
+					
+				}
+				
+				else if (Values_cam.getMethod() == 13){
+				
+					
+					Mat blurredImage = new Mat();
+					Mat hsvImage = new Mat();
+					Mat mask = new Mat();
+					Mat morphOutput = new Mat();
+
+					// remove some noise
+					Imgproc.blur(frame, blurredImage, new Size(7, 7));
+
+					// convert the frame to HSV
+					Imgproc.cvtColor(blurredImage, hsvImage, Imgproc.COLOR_BGR2HSV);
+					
+					// get thresholding values from the UI
+					// remember: H ranges 0-180, S and V range 0-255
+					Scalar minValues = new Scalar(110, 50, 50);
+					Scalar maxValues = new Scalar(130, 255, 255);
+
+					// threshold HSV image to select tennis balls
+					Core.inRange(hsvImage, minValues, maxValues, mask);
+					// show the partial output
+					Filterstates.setImage1(imgProc.toBufferedImage(mask));
+					
+					// morphological operators
+					// dilate with large element, erode with small ones
+					 Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
+					 Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
+
+					 Imgproc.erode(mask, morphOutput, erodeElement);
+					 Imgproc.erode(mask, morphOutput, erodeElement);
+
+					 Imgproc.dilate(mask, morphOutput, dilateElement);
+					 Imgproc.dilate(mask, morphOutput, dilateElement);
+
+					 // show the partial output
+					Filterstates.setImage2(imgProc.toBufferedImage(morphOutput));
+					 
+					// init
+					 List<MatOfPoint> contours = new ArrayList<>();
+					 Mat hierarchy = new Mat();
+
+					 // find contours
+					 Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+
+					 // if any contour exist...
+					 if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
+					 {
+					         // for each contour, display it in blue
+					         for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
+					         {
+					                 Imgproc.drawContours(frame, contours, idx, new Scalar(250, 0, 0));
+					         }
+					 }
+					 image = imgProc.toBufferedImage(blurredImage);
 				}
 
 				//System.out.println(image.getWidth() +","+ image.getHeight());
@@ -216,7 +286,57 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 		}
 	}
 
-	public void findAirFieldInImageWithBottomCamera(Mat frame) {
+	private void findPositionFromQRandTriangles(Mat frame) {
+		frame = imgProc.calibrateCamera(frame);
+		Mat backUp = new Mat();
+		backUp = frame;
+		int ratio = 2;
+		frame = imgProc.downScale(backUp, ratio);
+		// først gør vi det sort hvidt
+		frame = imgProc.toGrayScale(frame);
+		//
+		frame = imgProc.equalizeHistogramBalance(frame);
+		// blur virker bedre
+		frame = imgProc.blur(frame);
+
+		// Til canny for at nemmere kunne finde contourer
+		frame = imgProc.toCanny(frame);
+		Result result = imgProc.readQRcodeFromWholeImage(imgProc.toBufferedImage(backUp));
+		
+		if(result != null){
+			Scalar color = new Scalar(0, 0, 255);
+			ResultPoint[] Rpoints = result.getResultPoints();
+			List<Point> points = new ArrayList<>();
+			int rPointsSpot = 0;
+			for(ResultPoint point : Rpoints){
+				points.add(new Point(Rpoints[rPointsSpot].getX(),Rpoints[rPointsSpot].getY()));
+				rPointsSpot++;
+			}
+			
+			double qrX,qrY; 
+			qrX = (points.get(0).x+points.get(1).x+points.get(2).x)/3.0;
+			qrY = (points.get(0).y+points.get(1).y+points.get(2).y)/3.0;
+			Point qrPosition = new Point(qrX,qrY);
+			points.add(qrPosition);
+			backUp = imgProc.drawLinesBetweenPoints(backUp, points, color);
+			
+			
+			
+			
+			
+			//cutout part of image and run analysis of that
+			
+			
+			
+		}
+
+		image = imgProc.toBufferedImage(backUp);
+
+		
+		
+	}
+
+	public Point findAirFieldInImageWithBottomCamera(Mat frame) {
 		Mat backUp = new Mat();
 		backUp = frame;
 		int ratio = 1;
@@ -230,6 +350,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 		// vi finder de potentielle QR kode områder
 		//List<BufferedImage> cutouts = imgProc.getImagesFromContours(backUp,contours,ratio);
 		Result result = imgProc.readQRcodeFromWholeImage(imgProc.toBufferedImage(backUp));
+		Point qrCenter = null;
 		if(result != null){
 			Scalar color = new Scalar(0, 0, 255);
 			ResultPoint[] Rpoints = result.getResultPoints();
@@ -239,15 +360,22 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 				points.add(new Point(Rpoints[rPointsSpot].getX(),Rpoints[rPointsSpot].getY()));
 				rPointsSpot++;
 			}
-			backUp = imgProc.drawLinesBetweenPoints(backUp, points, color);
 			
+			
+			backUp = imgProc.drawLinesBetweenPoints(backUp, points, color);
+			double qrX = (points.get(0).x+points.get(1).x+points.get(2).x)/3;
+			double qrY = (points.get(0).y+points.get(1).y+points.get(2).y)/3;
+			qrCenter = new Point(qrX,qrY);
 			
 		}
 
 		image = imgProc.toBufferedImage(backUp);
+		
+		return  qrCenter;
 	}
 
 	public void locationEstimationFrom3Points(Mat frame) {
+		
 		frame = imgProc.calibrateCamera(frame);
 		Mat backUp = new Mat();
 		backUp = frame;
@@ -292,8 +420,11 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 								int middleOfScreen = screenWidth/2;
 								int pixelsFromMiddleToQr =  Math.abs(((int)data.getPoints()[1].x-middleOfScreen)); 
 								DPoint mapPos = new DPoint(mapPosition);
+								String text = data.getQrNames()[0];
+								String wallNr =""+text.charAt(2);
+								int x = Integer.parseInt(wallNr);
 								System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
-								
+								DronePosition.setDegree((90*x)+test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
 							}
 				
 						}

@@ -12,8 +12,8 @@ public class Position {
 	
 	final static float TOTAL_PIXELS = 720.0f;
 	final static float TOTAL_ANGLE = 67.7f;
-	static DPoint currentPos;
-	static float currentAngle;
+	public static DPoint currentPos;
+	public static float currentAngle;
 	
 	public Position() {}
 	
