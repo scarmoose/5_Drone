@@ -144,7 +144,7 @@ public class PWindow {
 				new Thread(panel).start();
 				frame.setFocusable(true);
 				frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
-				frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
+				//frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
 
 				leftPanel.add(innerLeftPanel);
 				innerLeftPanel.add(btnUpdate);

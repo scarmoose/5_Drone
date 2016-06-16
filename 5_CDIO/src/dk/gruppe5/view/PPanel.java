@@ -201,14 +201,16 @@ public class PPanel extends JPanel implements Runnable {
 											data.getPoints()[0], data.getPoints()[1], data.getPoints()[2]);
 									if (mapPosition != null) {
 										DronePosition.setPosition(mapPosition);
-										DronePosition.setDegree(90.0);
 										// System.out.println(mapPosition);
 										int screenWidth = image.getWidth();
 										int middleOfScreen = screenWidth/2;
 										int pixelsFromMiddleToQr =  Math.abs(((int)data.getPoints()[1].x-middleOfScreen)); 
 										DPoint mapPos = new DPoint(mapPosition);
-										System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
-										
+										System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr)+" grader");
+										String text = data.getQrNames()[0];
+										String wallNr =""+text.charAt(2);
+										int x = Integer.parseInt(wallNr);
+										DronePosition.setDegree((90.0*x)+test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
 									}
 						
 								}

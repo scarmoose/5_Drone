@@ -94,7 +94,17 @@ public class DroneCommander extends Canvas {
 				Thread.sleep(1000);
 				cmd.hover().doFor(7000);
 				Thread.sleep(1000);
-				cmd.spinLeft(5).doFor(1000);
+				
+				/*long t= System.currentTimeMillis();
+				long end = t+5000;
+				while(System.currentTimeMillis() < end) {
+					//do something
+					//cmd.spinLeft(40).doFor(1000);
+					cmd.hover().doFor(700);
+					//pause to avoid churning
+					Thread.sleep(200);	
+				}*/
+
 				
 			} catch (InterruptedException e){
 				Thread.currentThread().interrupt();
