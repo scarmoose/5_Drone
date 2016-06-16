@@ -166,7 +166,6 @@ public class Movement {
 }
 
 class MyVelocityListener implements VelocityListener {
-	private Movement move;
 	@Override
 	public void velocityChanged(float vx, float vy, float vz) {
 		System.out.println("Velocity - vx: "+vx+", vy: "+vy+", vz: "+vz);
@@ -174,7 +173,6 @@ class MyVelocityListener implements VelocityListener {
 }
 
 class MyGyroListener implements GyroListener {
-	private Movement move;
 	@Override
 	public void receivedOffsets(float[] offset_g) {
 		System.out.println("Gyro - offset_g: "+offset_g);
@@ -192,7 +190,6 @@ class MyGyroListener implements GyroListener {
 }
 
 class MyAcceleroListener implements AcceleroListener {
-	private Movement move;
 	@Override
 	public void receivedPhysData(AcceleroPhysData d) {
 		System.out.println(d);
@@ -205,7 +202,6 @@ class MyAcceleroListener implements AcceleroListener {
 }
 
 class MyAttitudeListener implements AttitudeListener {
-	private Movement move;
 	@Override
 	public void windCompensation(float pitch, float roll) {
 		System.out.println("windCompensation - pitch: "+roll+", roll: "+roll);
@@ -225,8 +221,6 @@ class MyAttitudeListener implements AttitudeListener {
 }
 
 class MyBatteryListener implements BatteryListener {
-	private Movement move;
-
 	@Override
 	public void voltageChanged(int vbat_raw) {
 		System.out.println("voltageChanged - vbat_raw: "+vbat_raw);
@@ -241,8 +235,6 @@ class MyBatteryListener implements BatteryListener {
 }
 
 class MyAltitudeListener implements AltitudeListener {
-private Movement move;
-
 	@Override
 	public void receivedAltitude(int altitude) {
 		if (altitude > 0){
@@ -258,7 +250,6 @@ private Movement move;
 }
 
 class MyExceptionListener implements IExceptionListener {
-	
 	@Override
 	public void exeptionOccurred(ARDroneException exc)
 	{
