@@ -31,7 +31,6 @@ import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
-import com.google.zxing.ResultPoint;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 
@@ -1269,11 +1268,22 @@ public class ImageProcessor {
 
 	public List<Contour> findPapkasser(Mat frame) {
 
-		/*
-		 * I HAVE NO IDEA WHAT IM DOING LOL
-		 */
-		
 		List<Contour> papkasser = new ArrayList<>();
+		
+		
+		
+		
+//		/*
+//		 * I HAVE NO IDEA WHAT IM DOING LOL
+//		 */
+//		
+//		Mat mat1 = new Mat();
+//		List<MatOfPoint> contours = new ArrayList<>();
+//		Imgproc.cvtColor(frame, mat1, Imgproc.COLOR_RGB2HSV);
+//		Core.inRange(frame, new Scalar(20, 0, 0), new Scalar(250, 0, 0), mat1);
+//		
+//		
+//		
 		return papkasser;
 	}
 }

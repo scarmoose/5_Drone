@@ -10,9 +10,12 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
@@ -303,6 +306,63 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					}
 					Filterstates.setImage1(imgProc.toBufferedImage(frame));
 					image = imgProc.toBufferedImage(backUp);
+				}
+				
+				else if (Values_cam.getMethod() == 13){
+				
+					
+					Mat blurredImage = new Mat();
+					Mat hsvImage = new Mat();
+					Mat mask = new Mat();
+					Mat morphOutput = new Mat();
+
+					// remove some noise
+					Imgproc.blur(frame, blurredImage, new Size(7, 7));
+
+					// convert the frame to HSV
+					Imgproc.cvtColor(blurredImage, hsvImage, Imgproc.COLOR_BGR2HSV);
+					
+					// get thresholding values from the UI
+					// remember: H ranges 0-180, S and V range 0-255
+					Scalar minValues = new Scalar(110, 50, 50);
+					Scalar maxValues = new Scalar(130, 255, 255);
+
+					// threshold HSV image to select tennis balls
+					Core.inRange(hsvImage, minValues, maxValues, mask);
+					// show the partial output
+					Filterstates.setImage1(imgProc.toBufferedImage(mask));
+					
+					// morphological operators
+					// dilate with large element, erode with small ones
+					 Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
+					 Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
+
+					 Imgproc.erode(mask, morphOutput, erodeElement);
+					 Imgproc.erode(mask, morphOutput, erodeElement);
+
+					 Imgproc.dilate(mask, morphOutput, dilateElement);
+					 Imgproc.dilate(mask, morphOutput, dilateElement);
+
+					 // show the partial output
+					Filterstates.setImage2(imgProc.toBufferedImage(morphOutput));
+					 
+					// init
+					 List<MatOfPoint> contours = new ArrayList<>();
+					 Mat hierarchy = new Mat();
+
+					 // find contours
+					 Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+
+					 // if any contour exist...
+					 if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
+					 {
+					         // for each contour, display it in blue
+					         for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
+					         {
+					                 Imgproc.drawContours(frame, contours, idx, new Scalar(250, 0, 0));
+					         }
+					 }
+					 image = imgProc.toBufferedImage(blurredImage);
 				}
 
 				//System.out.println(image.getWidth() +","+ image.getHeight());
