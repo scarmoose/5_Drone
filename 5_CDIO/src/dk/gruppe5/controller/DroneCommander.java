@@ -3,11 +3,17 @@ package dk.gruppe5.controller;
 import java.awt.Canvas;
 import java.util.Random;
 
+import javax.sound.midi.Receiver;
+
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.command.VideoCodec;
+import de.yadrone.base.navdata.Altitude;
+import de.yadrone.base.navdata.AltitudeListener;
+import de.yadrone.base.navdata.NavData;
+import de.yadrone.base.navdata.NavDataManager;
 import dk.gruppe5.app.App;
 import dk.gruppe5.positioning.Movement;
 
@@ -18,13 +24,12 @@ public class DroneCommander extends Canvas {
 	/**
 	 * 
 	 */
+	
 	private static final long serialVersionUID = -869265015784363288L;
 	
 	CommandManager cmd;
 
-	//private NavDataListener navl;
 	private Movement navl;
-
 	public DroneCommander() {
 		
 		try {
@@ -90,27 +95,13 @@ public class DroneCommander extends Canvas {
 		
 		while (true) {
 			try{	
-				cmd.takeOff();
-				System.out.println("Drone Tråden: Dronen letter nu.");
-
-				Thread.sleep(1000);
 				
-				if(cmd.takeOff() != null) {
-					cmd.hover().doFor(5000);
-					System.out.println("Drone Tråden: Dronen svæver nu.");
-					Thread.sleep(1000);
-				}
-				
-				cmd.forward(10).doFor(500);
-				System.out.println("DroneTråden: Dronen flyver foran");
-				Thread.sleep(1000);
-				cmd.backward(10).doFor(100);
-				Thread.sleep(1000);
-				
-
+				cmd.hover().spinRight(speed).doFor(5000);
+				droneTakeOff();
 				droneFlyingForward();
 				hover();
-				killAll();
+				droneKillAll();
+				
 
 			} catch (InterruptedException e){
 				Thread.currentThread().interrupt();
@@ -119,9 +110,9 @@ public class DroneCommander extends Canvas {
 			break;
 		}
 	}
-	/*public void droneHeight(){
-	
-		if (navl.getAltitude() < 1450){
+	/*
+	public void droneHeight(){
+		if ( < 1450){
 			cmd.up(speed).doFor(500);
 			cmd.hover().doFor(1000);
 
@@ -133,7 +124,7 @@ public class DroneCommander extends Canvas {
 			cmd.hover();
 		}
 	}
-	*/
+*/
 	public void droneTakeOff(){
 		System.out.println("We have Liftoff");
 		cmd.flatTrim();
