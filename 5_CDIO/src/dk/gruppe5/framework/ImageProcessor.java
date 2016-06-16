@@ -20,6 +20,7 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -428,87 +429,73 @@ public class ImageProcessor {
 		return new opticalFlowData(standIn, startPoints, endPoints);
 	}
 
-	public Mat findAirfield(Mat input) {
+	public Mat findAirfield(Mat input, int ratio) {
 		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
 		Mat hierarchy_1 = new Mat();
 		Imgproc.findContours(input, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 		Random rn = new Random();
 		Mat standIn = new Mat();
 		Imgproc.cvtColor(input, standIn, Imgproc.COLOR_BayerBG2RGB);
-		List<Shape> rects = new ArrayList();
-		List<Shape> cirRects = new ArrayList();
+		List<Contour> rects = findQRsquares(input);
+		List<Contour> cirRects = findCircles(input);
 
-		// Detecting shapes in the contours
-		for (int i = 0; i < contours_1.size(); i++) {
-			MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
-
-			MatOfPoint2f approxCurve = new MatOfPoint2f();
-			double epsilon = Imgproc.arcLength(contour, true) * 0.01;
-			// we wanna se if a contour is a square.
-			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
-			if (approxCurve.height() == 4) {
-
-				// We find the rect that surronds the square and adds it to
-				// rects
-				Rect r = Imgproc.boundingRect(contours_1.get(i));
-
-				if ((r.width * 2 > r.height) && (r.height / 2 < r.width)) { // SKAL KIGGES PÅ I MORGEN
-
-					rects.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
-					// Scalar color = new Scalar(rn.nextInt(255),
-					// rn.nextInt(255), rn.nextInt(255));
-					// Imgproc.rectangle(standIn, r.br(), r.tl(), color);
-				}
-				// Imgproc.drawContours(standIn, contours_1, i, color, 2);
-
-			}
-			// we just say any contour/shap with more than 6 edges we call it a
-			// circle
-			if (approxCurve.height() > 10) {
-
-				// Scalar color = new Scalar(0, 0, 255);
-				Rect r = Imgproc.boundingRect(contours_1.get(i));
-				double area = Imgproc.contourArea(contours_1.get(i));
-				int radius = r.width / 2;
-
-				// Imgproc.rectangle(standIn, r.br(), r.tl(), color);
-				// System.out.println(Math.abs(1 - (r.width / r.height)));
-				if (Math.abs(1 - ((double) r.width / (double) r.height)) <= 0.2
-						&& Math.abs(1 - (area / (Math.PI * Math.pow((double) radius, 2)))) <= 0.1) {
-					if (r.area() > 80) {
-						// System.out.println(r.area());
-						// Imgproc.drawContours(standIn, contours_1, i,
-						// color,2);
-						cirRects.add(new Shape(r.area(), r.tl(), r.br(), approxCurve.height()));
-
-					}
-
-				}
-
-			}
-
-		}
+		// // Detecting shapes in the contours
+		// for (int i = 0; i < contours_1.size(); i++) {
+		// MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
+		//
+		// MatOfPoint2f approxCurve = new MatOfPoint2f();
+		// double epsilon = Imgproc.arcLength(contour, true) * 0.01;
+		// // we wanna se if a contour is a square.
+		// Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
+		// if (approxCurve.height() < 10 && approxCurve.height() > 3) {
+		//
+		// RotatedRect p = Imgproc.minAreaRect(contour);
+		// Rect r = p.boundingRect();
+		//
+		// if ((r.width * 2 > r.height) && (r.height / 2 < r.width)) {
+		// rects.add(new Contour(contour, approxCurve));
+		// }
+		//
+		//
+		//
+		//
+		// }
+		//
+		// if (approxCurve.height() > 10) {
+		// Rect r = Imgproc.boundingRect(contours_1.get(i));
+		// double area = Imgproc.contourArea(contours_1.get(i));
+		// int radius = r.width / 2;
+		// if (Math.abs(1 - ((double) r.width / (double) r.height)) <= 0.2
+		// && Math.abs(1 - (area / (Math.PI * Math.pow((double) radius, 2)))) <=
+		// 0.1) {
+		// if (r.area() > 80) {
+		// cirRects.add(new Contour(contour,approxCurve));
+		//
+		// }
+		//
+		// }
+		//
+		// }
+		//
+		// }
 
 		double pixelWidth = 0.0;
 		int nr = 0;
 		// check if circles are contained in a rect
-		for (Shape rect : rects) {
-
-			Point tlPt = rect.getTlPoint();
-			Point brPt = rect.getBrPoint();
+		for (Contour rect : rects) {
+			double rectArea = rect.getArea(ratio);
 			int containedCircles = 0;
-			for (Shape cirRect : cirRects) {
-				double carea = cirRect.getArea();
-				Point ctlPt = cirRect.getTlPoint();
-				Point cbrPt = cirRect.getBrPoint();
-				// area check dosent work, buuut its unlikely anything will
-				// match the requirements for airfield1 or 2
-				if (cirRect.getArea() > rect.getArea() * 0.15 && true) {
+			for (Contour cirRect : cirRects) {
+				double carea = cirRect.getArea(ratio);
+				Point ctlPt = cirRect.getBoundingRect(ratio).tl();
+				Point cbrPt = cirRect.getBoundingRect(ratio).br();
 
-					if (ctlPt.inside(rect.getRect())) {
+				if (carea > rectArea * 0.15 && true) {
+
+					if (ctlPt.inside(rect.getBoundingRect(ratio))) {
 						containedCircles++;
 						Scalar color = new Scalar(255, 0, 0);
-						Imgproc.rectangle(standIn, cirRect.getBrPoint(), cirRect.getTlPoint(), color, 3);
+						Imgproc.rectangle(standIn, cirRect.getBrPoint(ratio), cirRect.getTlPoint(ratio), color, 3);
 					}
 				}
 
@@ -519,8 +506,8 @@ public class ImageProcessor {
 
 			if (containedCircles == 2) {
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
-				Imgproc.rectangle(standIn, tlPt, brPt, color, 3);
-				Point txtPoint = new Point(tlPt.x + rect.getWidth() / 4, tlPt.y + rect.getHeight() / 2);
+				drawLinesBetweenBoundingRectPoints(rect, standIn, ratio, color);
+				Point txtPoint = rect.getCenter(ratio);
 
 				Imgproc.putText(standIn, "testAirfield", txtPoint, 5, 2, color);
 			}
@@ -701,8 +688,9 @@ public class ImageProcessor {
 			MultiFormatReader reader = new MultiFormatReader();
 			try {
 				scanResult = reader.decode(bitmap);
-			} catch (ReaderException e) {
+			} catch (ReaderException | IndexOutOfBoundsException e1) {
 				// no code found.
+	
 				scanResult = null;
 			}
 			qrData.add(scanResult);
@@ -715,6 +703,28 @@ public class ImageProcessor {
 		//
 		// }
 		return qrData;
+	}
+	
+	
+	public Result readQRcodeFromWholeImage(BufferedImage wholeImage){
+		
+		Result scanResult;
+		LuminanceSource source = new BufferedImageLuminanceSource(wholeImage);
+		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+		// decode the barcode (if only QR codes are used, the QRCodeReader
+		// might be a better choice)
+		MultiFormatReader reader = new MultiFormatReader();
+		try {
+			scanResult = reader.decode(bitmap);
+		} catch (ReaderException | IndexOutOfBoundsException e1) {
+			// no code found.
+
+			scanResult = null;
+		}
+		
+		return scanResult;
+		
 	}
 
 	public DetectedWallmarksAndNames markQrCodes(List<Result> results, List<Contour> contours, Mat backUp, int ratio) {
@@ -778,7 +788,7 @@ public class ImageProcessor {
 							if (wallmark.getName().equals(qrCodeResultText)) {
 
 								Point txtPoint = shape.getCenter(ratio);
-								txtPoint = new Point(txtPoint.x * 2, txtPoint.y * 2);
+								txtPoint = new Point(txtPoint.x * ratio, txtPoint.y * ratio);
 								rightPoints.add(txtPoint);
 
 								// System.out.println("name on right set");
@@ -795,7 +805,7 @@ public class ImageProcessor {
 
 							if (wallmark.getName().equals(qrCodeResultConfirms.get(z).getText())) {
 								Point txtPoint = shape.getCenter(ratio);
-								txtPoint = new Point(txtPoint.x * 2, txtPoint.y * 2);
+								txtPoint = new Point(txtPoint.x * ratio, txtPoint.y * ratio);
 								leftPoints.add(txtPoint);
 								// System.out.println("name on left set");
 								nameOfQROnTheLeft = Mathmagic.getNameFromInt(nrWallMark - 1);
@@ -996,8 +1006,8 @@ public class ImageProcessor {
 	}
 
 	public Mat drawLine(Point point, Point point2, Mat backUp, Scalar color) {
-
-		Imgproc.line(backUp, point, point2, color);
+		int thickness = 2;
+		Imgproc.line(backUp, point, point2, color, thickness);
 
 		return backUp;
 	}
@@ -1035,7 +1045,6 @@ public class ImageProcessor {
 		Point p3 = new Point(mat.width(), mat.height());
 		Point p4 = new Point(mat.width(), 0);
 		lp2.add(t1);
-		lp2.add(t2);
 		lp2.add(t3);
 		lp2.add(t4);
 		lp.add(p1);
@@ -1074,6 +1083,7 @@ public class ImageProcessor {
 			int index = 100;
 			double testdistance = 100000;
 			double y = 100000;
+
 			for (Point point : points) {
 
 				double dx = point.x;
@@ -1195,7 +1205,7 @@ public class ImageProcessor {
 					squares = new ArrayList<MatOfPoint>();
 				squares.add(c);
 
-			} 
+			}
 		}
 
 		return squares;
@@ -1214,7 +1224,7 @@ public class ImageProcessor {
 		cameraMatrix.put(2, 2, 1);
 
 		Mat dst = new Mat();
-		Mat distCoeffs = new Mat(1,4,5);
+		Mat distCoeffs = new Mat(1, 4, 5);
 		distCoeffs.put(0, 0, -0.5675);
 		distCoeffs.put(0, 1, 0.4046);
 		distCoeffs.put(0, 2, 0);
@@ -1239,7 +1249,7 @@ public class ImageProcessor {
 			MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
 
 			MatOfPoint2f approxCurve = new MatOfPoint2f();
-			double epsilon = Imgproc.arcLength(contour, true) * 0.05;
+			double epsilon = Imgproc.arcLength(contour, true) * 0.01;
 
 			// we wanna se if a contour is a square, or has one or more edges so
 			// we save them.
@@ -1260,12 +1270,72 @@ public class ImageProcessor {
 		return circleContours;
 	}
 
+
 	public Mat convertMatToColor(Mat mat){
 		Mat mat1 = new Mat();
 		Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_BayerBG2RGB);
 
 		return mat1;
 	}
+
+
+	public Mat drawLinesBetweenPoints(Mat input, List<Point> points, Scalar color) {
+		int n = points.size();
+		for (int i = 0; i < n; i++) {
+			drawLine(points.get(i), points.get((i + 1) % n), input, color);
+		}
+
+		return input;
+	}
+
+	public List<Contour> findQRsquaresBottomCamera(Mat frame) {
+		// Here contours are stored, we will check each one to see if it matches
+		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
+		Mat hierarchy_1 = new Mat();
+		Imgproc.findContours(frame, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
+
+		List<Contour> contours = new ArrayList<>();
+
+		// Detecting shapes in the contours
+		for (int i = 0; i < contours_1.size(); i++) {
+			MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
+
+			MatOfPoint2f approxCurve = new MatOfPoint2f();
+			double closeness = 0.1;
+			double epsilon = Imgproc.arcLength(contour, true) * closeness;
+			// we wanna se if a contour is a square, or has one or more edges so
+			// we save them.
+			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
+			Rect r = Imgproc.boundingRect(contours_1.get(i));
+			if (r.area() > 300) {
+				//if (approxCurve.total() > 3 && approxCurve.total() < 10) {
+					Contour contour1 = new Contour(contour, approxCurve);
+					contours.add(contour1);
+				//}
+
+			}
+		}
+
+		return contours;
+	}
+
+	public List<BufferedImage> getImagesFromContours(Mat backUp, List<Contour> contours, int ratio) {
+		List<BufferedImage> outputs = new ArrayList<>();
+
+		for (Contour contour : contours) {
+		
+			// List<Point> points = contour.getBoundingRectPoints(ratio);
+			Rect r = contour.getBoundingRect(ratio);
+			
+			Mat outputMat = new Mat(backUp, r);
+			
+			outputs.add(toBufferedImage(outputMat));
+
+		}
+
+		return outputs;
+	}
+
 
 	public List<Contour> findPapkasser(Mat frame) {
 
@@ -1276,4 +1346,5 @@ public class ImageProcessor {
 		List<Contour> papkasser = new ArrayList<>();
 		return papkasser;
 	}
+
 }
