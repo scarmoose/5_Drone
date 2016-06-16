@@ -55,6 +55,7 @@ public class Contour {
 	
 		} catch (Exception e) {
 			//e.printStackTrace();
+			System.err.println("getCorners exception -> no enoguh corners fix method?");
 		}
 		return source;
 	}
@@ -63,7 +64,7 @@ public class Contour {
 		Point center;
 		double sumX = 0.0;
 		double sumY = 0.0;
-		List<Point> points = getCorners(ratio);
+		List<Point> points = getBoundingRectPoints(ratio);
 		for (Point point : points) {
 			sumX += point.x;
 			sumY += point.y;
@@ -100,7 +101,7 @@ public class Contour {
 
 	public double getArea(int ratio) {
 
-		List<Point> points = getCorners(ratio);
+		List<Point> points = getAllContourPoints(ratio);
 
 		double area = 0; // Accumulates area in the loop
 		int j = points.size() - 1; // The last vertex is the 'previous' one to
@@ -110,7 +111,7 @@ public class Contour {
 			area = area + (points.get(j).x + points.get(i).x) * (points.get(j).y - points.get(i).x);
 			j = i; // j is previous vertex to i
 		}
-		return area / 2;
+		return Math.abs(area / 2);
 
 	}
 

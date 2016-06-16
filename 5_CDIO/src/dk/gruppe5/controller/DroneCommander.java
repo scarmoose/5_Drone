@@ -3,13 +3,18 @@ package dk.gruppe5.controller;
 import java.awt.Canvas;
 import java.util.Random;
 
+import CoordinateSystem.DronePosition;
+import de.yadrone.apps.controlcenter.plugins.altitude.AltitudeChart;
+import de.yadrone.apps.controlcenter.plugins.altitude.AltitudeChartPanel;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.command.VideoCodec;
+import de.yadrone.base.navdata.Altitude;
 import dk.gruppe5.app.App;
 import dk.gruppe5.positioning.Movement;
+import dk.gruppe5.positioning.Position;
 
 public class DroneCommander extends Canvas {
 	private final static int speed = 5;
@@ -94,23 +99,22 @@ public class DroneCommander extends Canvas {
 				System.out.println("Drone Tråden: Dronen letter nu.");
 
 				Thread.sleep(1000);
+				cmd.hover().doFor(7000);
+				Thread.sleep(1000);
 				
-				if(cmd.takeOff() != null) {
-					cmd.hover().doFor(5000);
-					System.out.println("Drone Tråden: Dronen svæver nu.");
-					Thread.sleep(1000);
+				long t= System.currentTimeMillis();
+				long end = t+5000;
+				while(System.currentTimeMillis() < end) {
+					if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!= -70){
+						System.out.println("Yay!");
+						break;
+					}
+					//do something
+					//cmd.spinLeft(40).doFor(1000);
+					cmd.hover().doFor(700);
+					//pause to avoid churning
+					Thread.sleep(200);	
 				}
-				
-				cmd.forward(10).doFor(500);
-				System.out.println("DroneTråden: Dronen flyver foran");
-				Thread.sleep(1000);
-				cmd.backward(10).doFor(100);
-				Thread.sleep(1000);
-				
-
-				droneFlyingForward();
-				hover();
-				killAll();
 
 			} catch (InterruptedException e){
 				Thread.currentThread().interrupt();
