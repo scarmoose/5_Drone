@@ -101,8 +101,8 @@ public class DroneCommander extends Canvas {
 			break;
 		}
 	}
-	public void droneHeight(){
-		
+	/*public void droneHeight(){
+	
 		if (navl.getAltitude() < 1450){
 			cmd.up(speed).doFor(500);
 			cmd.hover().doFor(1000);
@@ -115,7 +115,7 @@ public class DroneCommander extends Canvas {
 			cmd.hover();
 		}
 	}
-	
+	*/
 	public void droneTakeOff(){
 		System.out.println("We have Liftoff");
 		cmd.flatTrim();
