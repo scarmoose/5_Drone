@@ -87,6 +87,13 @@ public class DroneCommander extends Canvas {
 	        		 long t = System.currentTimeMillis();
 	        		 long end = t+5000;
 	        		 while(System.currentTimeMillis() < end) {
+	        			 
+	 					if(DronePosition.getXPoint()!=630 || DronePosition.getYPoint()!= -70){
+							System.out.println("Yay!");
+							break;
+						}
+
+	        			 
 	        			 cmd.hover().doFor(5000);
 	        			 System.out.println("Drone Thread: Drone is now Howering.");	
 	        			 Thread.sleep(1000);
