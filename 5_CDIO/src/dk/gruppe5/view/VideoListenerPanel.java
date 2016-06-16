@@ -248,14 +248,10 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 	}
 
 	public void locationEstimationFrom3Points(Mat frame) {
-		Filterstates.setImage2(imgProc.toBufferedImage(frame));
 		frame = imgProc.calibrateCamera(frame);
-		Filterstates.setImage1(imgProc.toBufferedImage(frame));
 		Mat backUp = new Mat();
 		backUp = frame;
 		int ratio = 2;
-
-		
 		frame = imgProc.downScale(backUp, ratio);
 		// først gør vi det sort hvidt
 		frame = imgProc.toGrayScale(frame);
