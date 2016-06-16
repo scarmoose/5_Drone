@@ -5,6 +5,7 @@ import java.util.Random;
 
 import javax.sound.midi.Receiver;
 
+import CoordinateSystem.DronePosition;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
@@ -90,18 +91,13 @@ public class DroneCommander extends Canvas {
 //		cmd.landing();
 //	}
 
+	/*
 	public void droneFlightControl(){
 			
 		
 		while (true) {
 			try{	
-				
-				cmd.hover().spinRight(speed).doFor(5000);
-				droneTakeOff();
-				droneFlyingForward();
-				hover();
-				droneKillAll();
-				
+
 
 			} catch (InterruptedException e){
 				Thread.currentThread().interrupt();
@@ -110,6 +106,7 @@ public class DroneCommander extends Canvas {
 			break;
 		}
 	}
+	*/
 	/*
 	public void droneHeight(){
 		if ( < 1450){
