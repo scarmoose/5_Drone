@@ -86,14 +86,21 @@ public class DroneCommander extends Canvas {
 //	}
 
 	public void droneFlightControl(){
+			
+		
 		while (true) {
 			
 			try{	
-				droneTakeOff();
+				cmd.takeOff();
 				System.out.println("Drone Tråden: Dronen letter nu.");
 				Thread.sleep(1000);
-				cmd.hover().doFor(7000);
-				Thread.sleep(1000);
+				
+				if(cmd.takeOff() != null) {
+					cmd.hover().doFor(5000);
+					System.out.println("Drone Tråden: Dronen svæver nu.");
+					Thread.sleep(1000);
+				}
+				
 				cmd.forward(10).doFor(500);
 				System.out.println("DroneTråden: Dronen flyver foran");
 				Thread.sleep(1000);
