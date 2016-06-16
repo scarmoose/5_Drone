@@ -268,9 +268,40 @@ public class PPanel extends JPanel implements Runnable {
 				}
 				Filterstates.setImage1(imgproc.toBufferedImage(frame));
 				image = imgproc.toBufferedImage(backUp);
-			} 
+				
+			}else if(Values_cam.getMethod() == 10){
+				Mat backUp = new Mat();
+				backUp = frame;
+				int ratio = 1;
 
-			else if(Values_cam.getMethod()==13){
+				frame = imgproc.toGrayScale(frame);
+				frame = imgproc.equalizeHistogramBalance(frame);
+				frame = imgproc.blur(frame);
+				frame = imgproc.toCanny(frame);
+				// Nu skal vi prøve at finde firkanter af en hvis størrelse
+				List<Contour> contours = imgproc.findQRsquares(frame);
+		
+				// vi finder de potentielle QR kode områder
+				List<BufferedImage> cutouts = imgproc.warp(backUp, contours, ratio);
+//				List<Result> results = imgproc.readQRCodes(cutouts);
+				Result result = imgproc.readQRcodeFromWholeImage(imgproc.toBufferedImage(backUp));
+				
+//				int i = 0;
+//				for (Result result : results) {
+//					if (result != null) {
+//						// backUp =
+//						// imgProc.drawLinesBetweenBoundingRectPoints(contours.get(i),
+//						// backUp, ratio);
+//						Scalar color = new Scalar(255, 255, 0);
+//						backUp = imgproc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
+//						backUp = imgproc.putText(result.getText(), contours.get(i).getCenter(ratio), backUp);
+//					}
+//					i++;
+//				}
+//				
+				
+
+			} else if(Values_cam.getMethod()==13){
 
 				Mat backUp = new Mat();
 				backUp = frame;

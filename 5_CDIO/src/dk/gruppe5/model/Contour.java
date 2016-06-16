@@ -34,8 +34,11 @@ public class Contour {
 	}
 
 	public List<Point> getCorners(int ratio) {
+		List<Point> source = new ArrayList<Point>();
+	
 
 		double[] temp_double;
+		try {
 		temp_double = approxCurve.get(0, 0);
 		Point p1 = new Point(temp_double[0] * ratio, temp_double[1] * ratio);
 		temp_double = approxCurve.get(1, 0);
@@ -44,11 +47,15 @@ public class Contour {
 		Point p3 = new Point(temp_double[0] * ratio, temp_double[1] * ratio);
 		temp_double = approxCurve.get(3, 0);
 		Point p4 = new Point(temp_double[0] * ratio, temp_double[1] * ratio);
-		List<Point> source = new ArrayList<Point>();
+	
 		source.add(p1);
 		source.add(p2);
 		source.add(p3);
 		source.add(p4);
+	
+		} catch (Exception e) {
+			//e.printStackTrace();
+		}
 		return source;
 	}
 
