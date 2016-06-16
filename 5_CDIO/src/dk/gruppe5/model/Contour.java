@@ -54,7 +54,7 @@ public class Contour {
 		source.add(p4);
 	
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return source;
 	}

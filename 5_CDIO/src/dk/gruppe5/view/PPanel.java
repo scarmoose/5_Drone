@@ -164,21 +164,22 @@ public class PPanel extends JPanel implements Runnable {
 		
 				// vi finder de potentielle QR kode områder
 				List<BufferedImage> cutouts = imgproc.warp(backUp, contours, ratio);
-				List<Result> results = imgproc.readQRCodes(cutouts);
+//				List<Result> results = imgproc.readQRCodes(cutouts);
+				Result result = imgproc.readQRcodeFromWholeImage(imgproc.toBufferedImage(backUp));
 				
-				int i = 0;
-				for (Result result : results) {
-					if (result != null) {
-						// backUp =
-						// imgProc.drawLinesBetweenBoundingRectPoints(contours.get(i),
-						// backUp, ratio);
-						Scalar color = new Scalar(255, 255, 0);
-						backUp = imgproc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
-						backUp = imgproc.putText(result.getText(), contours.get(i).getCenter(ratio), backUp);
-					}
-					i++;
-				}
-				
+//				int i = 0;
+//				for (Result result : results) {
+//					if (result != null) {
+//						// backUp =
+//						// imgProc.drawLinesBetweenBoundingRectPoints(contours.get(i),
+//						// backUp, ratio);
+//						Scalar color = new Scalar(255, 255, 0);
+//						backUp = imgproc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
+//						backUp = imgproc.putText(result.getText(), contours.get(i).getCenter(ratio), backUp);
+//					}
+//					i++;
+//				}
+//				
 				
 				Filterstates.setImage1(imgproc.toBufferedImage(frame));
 				image = imgproc.toBufferedImage(backUp);

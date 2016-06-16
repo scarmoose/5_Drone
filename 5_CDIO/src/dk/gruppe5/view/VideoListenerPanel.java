@@ -17,11 +17,13 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
 import com.google.zxing.Result;
+import com.google.zxing.ResultPoint;
 
 import CoordinateSystem.DronePosition;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.video.ImageListener;
+import dk.gruppe5.app.App;
 import dk.gruppe5.controller.Mathmagic;
 import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.FrameGrabber;
@@ -52,6 +54,18 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 	public VideoListenerPanel(final IARDrone drone) {
 		frameGrabber = new FrameGrabber(drone);
 		imgProc = new ImageProcessor();
+
+		addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+
+				// imgProc.saveImage(imgProc.bufferedImageToMat(image), "IMAGE"
+				// + picsNr + ".jpg");
+				//
+				// picsNr++;
+				App.drone.getCommandManager().setVideoChannel(VideoChannel.NEXT);
+
+			}
+		});
 	}
 
 	public synchronized void paint(Graphics g) {
@@ -59,9 +73,10 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 		if (image != null) {
 			int x = this.getWidth();
 			int y = this.getHeight();
-			
+
 			g.drawImage(image, 0, 0, x, y, null);
-//			g.drawImage(image, 0, 0,image.getWidth(), image.getHeight(), null);
+			// g.drawImage(image, 0, 0,image.getWidth(), image.getHeight(),
+			// null);
 		}
 	}
 
@@ -126,10 +141,39 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					image = imgProc.toBufferedImage(frame);
 
+				}else if(Values_cam.getMethod() == 11){
+					Mat backUp = new Mat();
+					backUp = frame;
+					int ratio = 1;
+					//frame = imgProc.calibrateCamera(frame);
+					frame = imgProc.toGrayScale(frame);
+					frame = imgProc.equalizeHistogramBalance(frame);
+					frame = imgProc.blur(frame);
+					frame = imgProc.toCanny(frame);
+					// Nu skal vi prøve at finde firkanter af en hvis størrelse
+				
+					// vi finder de potentielle QR kode områder
+					//List<BufferedImage> cutouts = imgProc.getImagesFromContours(backUp,contours,ratio);
+					Result result = imgProc.readQRcodeFromWholeImage(imgProc.toBufferedImage(backUp));
+					if(result != null){
+						Scalar color = new Scalar(0, 0, 255);
+						ResultPoint[] Rpoints = result.getResultPoints();
+						List<Point> points = new ArrayList<>();
+						int rPointsSpot = 0;
+						for(ResultPoint point : Rpoints){
+							points.add(new Point(Rpoints[rPointsSpot].getX(),Rpoints[rPointsSpot].getY()));
+							rPointsSpot++;
+						}
+						backUp = imgProc.drawLinesBetweenPoints(backUp, points, color);
+						
+						
+					}
+
+					image = imgProc.toBufferedImage(backUp);
 				} else if (Values_cam.getMethod() == 10) {
 					Mat backUp = new Mat();
 					backUp = frame;
-					int ratio = 2;
+					int ratio = 1;
 					frame = imgProc.downScale(backUp, ratio);
 
 					// kig på whitebalancing og eventuelt at reducere området
@@ -191,31 +235,6 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					// vi finder de potentielle QR kode områder
 					List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
 					List<Result> results = imgProc.readQRCodes(cutouts);
-
-					int i = 0;
-					for (Result result : results) {
-						if (result != null) {
-							// backUp =
-							// imgProc.drawLinesBetweenBoundingRectPoints(contours.get(i),
-							// backUp, ratio);
-							Scalar color = new Scalar(255, 255, 0);
-							backUp = imgProc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
-							backUp = imgProc.putText("QR CODE TEST", contours.get(i).getCenter(2), backUp);
-						}else{
-							Scalar color = new Scalar(0, 255, 255);
-							backUp = imgProc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
-						}
-						i++;
-					}
-					// Vi aflæser de potentielle QR koder og ser om vi har nogen
-					// matches, hvis vi har!
-					// så marker dette og firkanter der har ca samme højde og
-					// størrelse!
-					// skriv i disse hvilken en firkant de nok er ud fra dataene
-					// vi har.
-					// udregn afstand til QR kode via python afstands
-					// bestemmelse på papir
-
 					// backUp = imgProc.markQrCodes(results, shapes, backUp);
 					int contourNr = 0;
 					for (Result result : results) {
@@ -228,14 +247,10 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 									if (data.getQrNames()[0] != null && data.getQrNames()[1] != null
 											&& data.getQrNames()[2] != null) {
 										Scalar color1 = new Scalar(0, 0, 255);
-										backUp = imgProc.drawLine(data.getPoints()[0], data.getPoints()[1], backUp,
-												color1);
-
-										backUp = imgProc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp,
-												color1);
+										backUp = imgProc.drawLine(data.getPoints()[0], data.getPoints()[1], backUp, color1);
+										backUp = imgProc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp, color1);
 										Position test = new Position();
-										Point mapPosition = test.getPositionFromPoints(data.getQrNames(),
-												data.getPoints()[0], data.getPoints()[1], data.getPoints()[2]);
+										Point mapPosition = test.getPositionFromPoints(data.getQrNames(), data.getPoints()[0], data.getPoints()[1], data.getPoints()[2]);
 										if (mapPosition != null) {
 											DronePosition.setPosition(mapPosition);
 											// System.out.println(mapPosition);
@@ -284,15 +299,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 				//System.out.println(image.getWidth() +","+ image.getHeight());
 
 
-				// addMouseListener(new MouseAdapter() {
-				// public void mouseClicked(MouseEvent e) {
-				//
-				// imgProc.saveImage(imgProc.bufferedImageToMat(image), "IMAGE"
-				// + picsNr + ".jpg");
-				//
-				// picsNr++;
-				// }
-				// });
+				 
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						repaint();
