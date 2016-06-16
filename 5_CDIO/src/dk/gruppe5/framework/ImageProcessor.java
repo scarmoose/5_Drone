@@ -43,6 +43,7 @@ import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.Wallmark;
 import dk.gruppe5.model.opticalFlowData;
 import dk.gruppe5.model.templateMatch;
+import dk.gruppe5.view.Filterstates;
 
 public class ImageProcessor {
 
@@ -689,7 +690,7 @@ public class ImageProcessor {
 				scanResult = reader.decode(bitmap);
 			} catch (ReaderException | IndexOutOfBoundsException e1) {
 				// no code found.
-	
+
 				scanResult = null;
 			}
 			qrData.add(scanResult);
@@ -703,10 +704,10 @@ public class ImageProcessor {
 		// }
 		return qrData;
 	}
-	
-	
+
+
 	public Result readQRcodeFromWholeImage(BufferedImage wholeImage){
-		
+
 		Result scanResult;
 		LuminanceSource source = new BufferedImageLuminanceSource(wholeImage);
 		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
@@ -721,9 +722,9 @@ public class ImageProcessor {
 
 			scanResult = null;
 		}
-		
+
 		return scanResult;
-		
+
 	}
 
 	public DetectedWallmarksAndNames markQrCodes(List<Result> results, List<Contour> contours, Mat backUp, int ratio) {
@@ -1246,7 +1247,6 @@ public class ImageProcessor {
 		// Detecting shapes in the contours
 		for (int i = 0; i < contours_1.size(); i++) {
 			MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
-
 			MatOfPoint2f approxCurve = new MatOfPoint2f();
 			double epsilon = Imgproc.arcLength(contour, true) * 0.01;
 
@@ -1308,8 +1308,8 @@ public class ImageProcessor {
 			Rect r = Imgproc.boundingRect(contours_1.get(i));
 			if (r.area() > 300) {
 				//if (approxCurve.total() > 3 && approxCurve.total() < 10) {
-					Contour contour1 = new Contour(contour, approxCurve);
-					contours.add(contour1);
+				Contour contour1 = new Contour(contour, approxCurve);
+				contours.add(contour1);
 				//}
 
 			}
@@ -1322,12 +1322,12 @@ public class ImageProcessor {
 		List<BufferedImage> outputs = new ArrayList<>();
 
 		for (Contour contour : contours) {
-		
+
 			// List<Point> points = contour.getBoundingRectPoints(ratio);
 			Rect r = contour.getBoundingRect(ratio);
-			
+
 			Mat outputMat = new Mat(backUp, r);
-			
+
 			outputs.add(toBufferedImage(outputMat));
 
 		}
@@ -1335,26 +1335,76 @@ public class ImageProcessor {
 		return outputs;
 	}
 
-
 	public List<Contour> findPapkasser(Mat frame) {
 
 		List<Contour> papkasser = new ArrayList<>();
-		
-		
-		
-		
-//		/*
-//		 * I HAVE NO IDEA WHAT IM DOING LOL
-//		 */
-//		
-//		Mat mat1 = new Mat();
-//		List<MatOfPoint> contours = new ArrayList<>();
-//		Imgproc.cvtColor(frame, mat1, Imgproc.COLOR_RGB2HSV);
-//		Core.inRange(frame, new Scalar(20, 0, 0), new Scalar(250, 0, 0), mat1);
-//		
-//		
-//		
+
+		Mat blurredImage = new Mat();
+		Mat hsvImage = new Mat();
+		Mat mask = new Mat();
+		Mat morphOutput = new Mat();
+
+		// remove some noise
+		Imgproc.blur(frame, blurredImage, new Size(7, 7));
+
+		// convert the frame to HSV
+		Imgproc.cvtColor(blurredImage, hsvImage, Imgproc.COLOR_BGR2HSV);
+
+		/*
+		 * get thresholding values from the UI
+		 * remember: H ranges 0-180, S and V range 0-255
+		 */
+
+		Scalar minValues = new Scalar(49, 64, 50);
+		Scalar maxValues = new Scalar(128, 184, 255);
+		Core.inRange(hsvImage, minValues, maxValues, mask);
+
+		/*
+		 * morphological operators
+		 * dilate with large element, erode with small ones
+		 */
+		Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
+		Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
+		Imgproc.erode(mask, morphOutput, erodeElement);
+		Imgproc.erode(mask, morphOutput, erodeElement);
+		Imgproc.dilate(mask, morphOutput, dilateElement);
+		Imgproc.dilate(mask, morphOutput, dilateElement);
+
+		// init
+		List<MatOfPoint> contours = new ArrayList<>();
+		Mat hierarchy = new Mat();
+
+		// find contours
+		Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+
+		// if any contour exist...
+		if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
+		{
+			// for each contour, display it in blue
+			for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
+			{
+				Imgproc.drawContours(frame, contours, idx, new Scalar(250, 0, 0));
+				MatOfPoint2f contour = new MatOfPoint2f(contours.get(idx).toArray());
+				MatOfPoint2f approxCurve = new MatOfPoint2f();
+				double epsilon = Imgproc.arcLength(contour, true) * 0.01;
+
+				// we wanna se if a contour is a square, or has one or more edges so
+				// we save them.
+				Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
+				Rect r = Imgproc.boundingRect(contours.get(idx));
+				double area = Imgproc.contourArea(contours.get(idx));
+				double radius = r.width / 2;
+
+				if(r.area() > 80){
+					if (contours.get(idx).total() > 100) {
+						if(Math.abs(1-((double)r.width/(double)r.height)) <= 0.05 && Math.abs(1-(area/Math.PI*Math.pow(radius,2))) >= 0.05){
+							Contour contour1 = new Contour(contour, approxCurve);
+							papkasser.add(contour1);
+						}
+					}
+				}
+			}
+		}
 		return papkasser;
 	}
-
 }
