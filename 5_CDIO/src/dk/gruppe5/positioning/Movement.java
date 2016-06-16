@@ -119,10 +119,10 @@ public class Movement {
 	}
 	
 	//Getter og setter for MyAltitudeListener
-	public int getAltitudeList() {
+	public int getAltitude() {
 		return altitude;
 	}
-	public void setAltitudeList(int currentAltitudeList) {
+	public void setAltitude(int currentAltitudeList) {
 		this.altitude = currentAltitudeList;
 	}
 
@@ -377,7 +377,7 @@ private Movement move;
 
 	@Override
 	public void receivedAltitude(int altitude) {
-		move.setAltitudeList(altitude);
+		move.setAltitude(altitude);
 		if (altitude > 0){
 			System.out.println("Altitude: " + altitude);
 		}

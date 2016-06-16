@@ -47,12 +47,11 @@ public class Filterstates extends JPanel implements Runnable {
 		int x = this.getWidth();
 		int y = this.getHeight();
 			
-		if(image1 != null){
+		if(image1 != null){	
 			g.drawImage(image1, 0, 0,	x/2, y/2, null);			
 		}
-		
 		if(image2 != null){
-			g.drawImage(image2, x/2, 0, x/2,y/2, null);
+			g.drawImage(image2, x/2, 0, x/2, y/2, null);
 		}
 		
 		if(image3 != null){
@@ -62,6 +61,7 @@ public class Filterstates extends JPanel implements Runnable {
 		if(image4 != null){
 			g.drawImage(image4, x/2, y/2, x/2, y/2, null);
 		}		
+
 	}
 	
 	public void run(){
