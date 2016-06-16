@@ -27,6 +27,10 @@ public final class DPoint extends org.opencv.core.Point
 	public DPoint(org.opencv.core.Point point){
 		super(point.x, point.y);
 	}
+	
+	public DPoint clone() {
+		return new DPoint(this.x, this.y);
+	}
 
 	public DPoint add(DPoint a) {
 		return new DPoint(x + a.x, y + a.y);

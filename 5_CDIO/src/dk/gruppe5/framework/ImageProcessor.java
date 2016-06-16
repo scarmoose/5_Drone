@@ -1258,10 +1258,9 @@ public class ImageProcessor {
 			double area = Imgproc.contourArea(contours_1.get(i));
 			double radius = r.width / 2;
 
-			if (r.area() > 80) {
-				if (contours_1.get(i).total() > 100 && approxCurve.total() > 10) {
-					if (Math.abs(1 - ((double) r.width / (double) r.height)) <= 0.05
-							&& Math.abs(1 - (area / Math.PI * Math.pow(radius, 2))) >= 0.05) {
+			if(r.area() > 80){
+				if (contours_1.get(i).total() > 100) {
+					if(Math.abs(1-((double)r.width/(double)r.height)) <= 0.05 && Math.abs(1-(area/Math.PI*Math.pow(radius,2))) >= 0.05){
 						Contour contour1 = new Contour(contour, approxCurve);
 						circleContours.add(contour1);
 					}
@@ -1271,12 +1270,14 @@ public class ImageProcessor {
 		return circleContours;
 	}
 
-	public Mat convertMatToColor(Mat mat) {
+
+	public Mat convertMatToColor(Mat mat){
 		Mat mat1 = new Mat();
 		Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_BayerBG2RGB);
 
 		return mat1;
 	}
+
 
 	public Mat drawLinesBetweenPoints(Mat input, List<Point> points, Scalar color) {
 		int n = points.size();
@@ -1333,6 +1334,17 @@ public class ImageProcessor {
 		}
 
 		return outputs;
+	}
+
+
+	public List<Contour> findPapkasser(Mat frame) {
+
+		/*
+		 * I HAVE NO IDEA WHAT IM DOING LOL
+		 */
+		
+		List<Contour> papkasser = new ArrayList<>();
+		return papkasser;
 	}
 
 }
