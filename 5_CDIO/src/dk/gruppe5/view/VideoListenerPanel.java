@@ -352,8 +352,11 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 								int middleOfScreen = screenWidth/2;
 								int pixelsFromMiddleToQr =  Math.abs(((int)data.getPoints()[1].x-middleOfScreen)); 
 								DPoint mapPos = new DPoint(mapPosition);
+								String text = data.getQrNames()[0];
+								String wallNr =""+text.charAt(2);
+								int x = Integer.parseInt(wallNr);
 								System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
-								
+								DronePosition.setDegree((90*x)+test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
 							}
 				
 						}

@@ -4,13 +4,17 @@ import java.awt.Canvas;
 import java.util.Random;
 
 import CoordinateSystem.DronePosition;
+import de.yadrone.apps.controlcenter.plugins.altitude.AltitudeChart;
+import de.yadrone.apps.controlcenter.plugins.altitude.AltitudeChartPanel;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.command.VideoCodec;
+import de.yadrone.base.navdata.Altitude;
 import dk.gruppe5.app.App;
 import dk.gruppe5.positioning.Movement;
+import dk.gruppe5.positioning.Position;
 
 public class DroneCommander extends Canvas {
 	private final static int speed = 5;
@@ -101,7 +105,7 @@ public class DroneCommander extends Canvas {
 				long t= System.currentTimeMillis();
 				long end = t+5000;
 				while(System.currentTimeMillis() < end) {
-					if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!=70){
+					if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!= -70){
 						System.out.println("Yay!");
 						break;
 					}
