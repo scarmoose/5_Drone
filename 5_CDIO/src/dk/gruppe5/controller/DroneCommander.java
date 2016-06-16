@@ -91,77 +91,62 @@ public class DroneCommander extends Canvas {
 //		cmd.landing();
 //	}
 
-	/*
+	
 	public void droneFlightControl(){
-			
+		droneTakeOff();
+		hover();
+		killAll();
 		
-		while (true) {
-			try{	
-
-
-			} catch (InterruptedException e){
-				Thread.currentThread().interrupt();
-				e.printStackTrace();
-			}
-			break;
-		}
+		
 	}
-	*/
-	/*
+	
+	
 	public void droneHeight(){
-		if ( < 1450){
+		if (App.currentAltitude < 1450){
 			cmd.up(speed).doFor(500);
 			cmd.hover().doFor(1000);
 
-		}else if(navl.getAltitude() > 1550){
+		}else if(App.currentAltitude > 1550){
 				cmd.down(speed).doFor(500);
 				cmd.hover().doFor(1000);
 
-		}else if (navl.getAltitude() > 1450 && navl.getAltitude() <1550 ){
+		}else if (App.currentAltitude > 1450 && App.currentAltitude <1550 ){
 			cmd.hover();
 		}
 	}
-*/
+
 	public void droneTakeOff(){
 		System.out.println("We have Liftoff");
 		cmd.flatTrim();
 		cmd.takeOff();
 		System.out.println("takeoff done");
 	}
-	public void droneFlyingForward() throws InterruptedException{
+	public void droneFlyingForward(){
 		cmd.forward(speed);
-		Thread.currentThread().sleep(sleep);
 	}
-	public void droneFlyingBackward() throws InterruptedException{
+	public void droneFlyingBackward(){
 		cmd.backward(speed);
-		Thread.currentThread().sleep(sleep);
 	}
-	public void droneFlyingUp() throws InterruptedException{
+	public void droneFlyingUp(){
 		cmd.up(speed).doFor(speed);
-		Thread.currentThread().sleep(sleep);
 	}
-	public void droneFlyingDown() throws InterruptedException{
+	public void droneFlyingDown(){
 		cmd.down(speed);
-		Thread.currentThread().sleep(sleep);
 	}
-	public void droneSpinLeft() throws InterruptedException{
+	public void droneSpinLeft(){
 		cmd.spinLeft(speed*2);
-		Thread.currentThread().sleep(sleep);
 	}
-	public void droneSpinRight() throws InterruptedException{
+	public void droneSpinRight(){
 		cmd.spinRight(speed*2);
-		Thread.currentThread().sleep(sleep);
-	}
+		}
 	public void droneKillAll(){
 		cmd.landing();
 	}
-	public void droneGoLeft() throws InterruptedException{
+	public void droneGoLeft(){
 		cmd.goLeft(speed);
-		Thread.currentThread().sleep(sleep);
 	}
-	public void droneGoRight() throws InterruptedException{
+	public void droneGoRight(){
 		cmd.goRight(speed);
-		Thread.currentThread().sleep(sleep);
 	}
 	
 	public void takeOffAndLand(long interval){
@@ -170,9 +155,10 @@ public class DroneCommander extends Canvas {
 		cmd.landing();
 	}
 	
-	public void hover() throws InterruptedException{
-		cmd.hover();
-		Thread.currentThread().sleep(sleep);
+	public void hover(){
+		System.out.println("Altitude1: " + App.currentAltitude);
+		cmd.hover().doFor(5000);
+		System.out.println("Altitude2: " + App.currentAltitude);
 	}
 	public void killAll(){
 		cmd.landing();
