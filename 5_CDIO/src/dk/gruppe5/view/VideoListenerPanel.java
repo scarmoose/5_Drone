@@ -134,7 +134,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 				}else if(Values_cam.getMethod() == 11){
 					findAirFieldInImageWithBottomCamera(frame);
 				}
-				else if (Values_cam.getMethod() == 10) {
+				else if (Values_cam.getMethod() == 1) {
 
 					Mat backUp = new Mat();
 					backUp = frame;
@@ -173,12 +173,12 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					image = imgProc.toBufferedImage(backUp);
 				
-				} else if (Values_cam.getMethod() == 6) {
+				} else if (Values_cam.getMethod() == 2) {
 					
 					locationEstimationFrom3Points(frame);
 
 				}
-				else if (Values_cam.getMethod() == 12) {
+				else if (Values_cam.getMethod() == 3) {
 					
 					Mat backUp = new Mat();
 					backUp = frame;
@@ -239,6 +239,8 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 				points.add(new Point(Rpoints[rPointsSpot].getX(),Rpoints[rPointsSpot].getY()));
 				rPointsSpot++;
 			}
+			
+			
 			backUp = imgProc.drawLinesBetweenPoints(backUp, points, color);
 			
 			
@@ -288,11 +290,11 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 							if (mapPosition != null) {
 								DronePosition.setPosition(mapPosition);
 								// System.out.println(mapPosition);
-								int screenWidth = image.getWidth();
-								int middleOfScreen = screenWidth/2;
-								int pixelsFromMiddleToQr =  Math.abs(((int)data.getPoints()[1].x-middleOfScreen)); 
-								DPoint mapPos = new DPoint(mapPosition);
-								System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
+//								int screenWidth = image.getWidth();
+//								int middleOfScreen = screenWidth/2;
+//								int pixelsFromMiddleToQr =  Math.abs(((int)data.getPoints()[1].x-middleOfScreen)); 
+//								DPoint mapPos = new DPoint(mapPosition);
+//								System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
 								
 							}
 				
