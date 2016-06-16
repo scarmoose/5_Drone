@@ -37,8 +37,8 @@ public class Lines {
         
         //S�tter airfields
         
-        AirfieldList.addAirfield(new Airfield("Airfield1",new Point(DronePosition.getXPoint(),DronePosition.getYMirror())));
-        /*AirfieldList.addAirfield(new Airfield("Airfield2",new Point(530,200)));
+        /*AirfieldList.addAirfield(new Airfield("Airfield1",new Point(DronePosition.getXPoint(),DronePosition.getYMirror())));
+        AirfieldList.addAirfield(new Airfield("Airfield2",new Point(530,200)));
         AirfieldList.addAirfield(new Airfield("Airfield3",new Point(800,800)));*/
                 
     }
