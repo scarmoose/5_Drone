@@ -35,107 +35,6 @@ public class Movement {
 	private AcceleroPhysData acceleroPhysData;
 	private AcceleroRawData acceleroRawData;
 	private Altitude exAltitude;
-	
-	//Getter og setter for MyVelocityListener
-	public float getVelocityListener() {
-		return velocityListener;
-	}
-	public void setVelocityListener(float vx, float vy, float vz) {
-		this.velocityListener = velocityListener;
-	}
-	
-	//Getter og setter for MyGyroListener
-	public float[] getOffset_g() {
-		return offset_g;
-	}
-	public void setOffset_g(float[] currentOffset_g) {
-		this.offset_g = currentOffset_g;
-	}
-	
-	public GyroPhysData getGyroPhysData() {
-		return gyroPhysData;
-	}
-	public void setGyroPhysData(GyroPhysData currentGyroPhysData) {
-		this.gyroPhysData = currentGyroPhysData;
-	}
-	
-	public GyroRawData getGyroRawData() {
-		return gyroRawData;
-	}
-	public void setGyroRawData(GyroRawData currentGyroRawData) {
-		this.gyroRawData = currentGyroRawData;
-	}
-	
-	//Getter og setter for MyAcceleroListener
-	public AcceleroPhysData getAcceleroPhysData() {
-		return acceleroPhysData;
-	}
-	public void setAcceleroPhysData(AcceleroPhysData currentAcceleroPhysData) {
-		this.acceleroPhysData = currentAcceleroPhysData;
-	}
-	
-	public AcceleroRawData getAcceleroRawData() {
-		return acceleroRawData;
-	}
-	public void setAcceleroRawData(AcceleroRawData currentAcceleroRawData) {
-		this.acceleroRawData = currentAcceleroRawData;
-	}
-
-	//Getter og setter for MyAttitudeListener
-	public float getWindCompensation() {
-		return windCompensation;
-	}
-	public void setWindCompensation(float pitch,float roll) {
-		this.windCompensation = windCompensation;
-	}
-	
-	public float getAttitudeUpdatedPRY() {
-		return attitudeUpdatedPRY;
-	}
-	public void setAttitudeUpdatedPRY(float pitch, float roll, float yaw) {
-		this.attitudeUpdatedPRY = attitudeUpdatedPRY;
-	}
-	
-	public float getAttitudeUpdatedPR() {
-		return attitudeUpdatedPR;
-	}
-	public void setAttitudeUpdatedPR(float pitch, float roll) {
-		this.attitudeUpdatedPR = attitudeUpdatedPR;
-	}
-	
-	//Getter og setter for MyBatteryListener
-	public int getVoltageChanged() {
-		return voltageChanged;
-	}
-	public void setVoltageChanged(int currentVoltageChanged) {
-		this.voltageChanged = currentVoltageChanged;
-	}
-	
-	public int getVoltagePercentage() {
-		return batteryLevelChanged;
-	}
-	public void setVoltagePercentage(int currentVoltagePercentage) {
-		this.batteryLevelChanged = currentVoltagePercentage;
-	}
-	
-	//Getter og setter for MyAltitudeListener
-	public int getAltitudeList() {
-		return altitude;
-	}
-	public void setAltitudeList(int currentAltitudeList) {
-		this.altitude = currentAltitudeList;
-	}
-
-	public Altitude getExAltitude() {
-		return exAltitude;
-	}
-	public void setExAltitude(Altitude currentExAltitude) {
-		this.exAltitude = currentExAltitude;
-	}
-	
-	
-
-	
 	private final IARDrone drone;
 	private final CommandManager cmd;
 	private Position pos;
@@ -184,28 +83,49 @@ public class Movement {
 		double cy = frameSize.y/2;
 		DPoint center = new DPoint(cx, cy);
 		DPoint centerToPoint = point.sub(center);
-		double length = centerToPoint.length();
-		System.out.println("Length of vector: "+length);
-		if(centerToPoint.y+10 < 0) {
-			cmd.backward(10).doFor(1000);
-		} if(centerToPoint.y-10 > 0) {
-			cmd.forward(10).doFor(1000);
-		} if(centerToPoint.x+10 < 0) {
-			cmd.goLeft(10).doFor(1000);
-		} if(centerToPoint.x-10 > 0) {
-			cmd.goRight(10).doFor(1000);
+		double vlength = centerToPoint.length();
+		double vx = centerToPoint.x;
+		double vy = centerToPoint.y;
+		System.out.println("Length of vector: "+vlength);
+		if(vlength < 15) {
+			land();
+		} else if(Math.abs(vy) > Math.abs(vx)) {
+			if(vy > 0) {
+				forward(100, 10);
+			} else backward(100, 10);
+		} else {
+			if(vx > 0) {
+				right(100, 10);
+			} else left(100, 10);
 		}
+		
 	}
 	
+	public void left(int speed, int interval) {
+		cmd.goLeft(speed).doFor(interval);
+	}
 	
+	public void right(int speed, int interval) {
+		cmd.goRight(speed).doFor(interval);
+	}
 	
-
+	public void forward(int speed, int interval) {
+		cmd.forward(speed).doFor(interval);
+	}
+	
+	public void backward(int speed, int interval) {
+		cmd.backward(speed).doFor(interval);
+	}
+	
+	public void land() {
+		cmd.landing();
+	}
+	
 	/**
 	 * Udregner gennemsnitsvektoren for et array vektorer
 	 * @param vectors vektorer, der skal findes gennemsnit af
 	 * @return gennemsnitsvektoren
 	 */
-
 	public DPoint getAverageVector(DPoint[] vectors) {		
 		double sumx = 0;
 		double sumy = 0;
@@ -271,135 +191,221 @@ public class Movement {
 		} 
 		return new DPoint(cx, cy); 
 	}
-
-}
-
-class MyVelocityListener implements VelocityListener {
-	private Movement move;
-	@Override
-	public void velocityChanged(float vx, float vy, float vz) {
-
-		//System.out.println("Velocity - vx: "+vx+", vy: "+vy+", vz: "+vz);
-
-		move.setVelocityListener(vx,vy,vz);
-		System.out.println("Velocity - vx: "+vx+", vy: "+vy+", vz: "+vz);
-
-	}
 	
-}
-
-class MyGyroListener implements GyroListener {
-	private Movement move;
-	@Override
-	public void receivedOffsets(float[] offset_g) {
-		move.setOffset_g(offset_g);
-		System.out.println("Gyro - offset_g: "+offset_g);
-	}
-
-	@Override
-	public void receivedPhysData(GyroPhysData arg0) {
-		move.setGyroPhysData(arg0);
-		System.out.println(arg0);	
-	}
-
-	@Override
-	public void receivedRawData(GyroRawData arg0) {
-		move.setGyroRawData(arg0);
-		System.out.println(arg0);
-	}	
-}
-
-class MyAcceleroListener implements AcceleroListener {
-	private Movement move;
-	@Override
-	public void receivedPhysData(AcceleroPhysData d) {
-		move.setAcceleroPhysData(d);
-		System.out.println(d);
-		
-	}
-
-	@Override
-	public void receivedRawData(AcceleroRawData d) {
-		move.setAcceleroRawData(d);
-		System.out.println(d);
-		
-	}
-	
-}
-
-class MyAttitudeListener implements AttitudeListener {
-	private Movement move;
-	@Override
-	public void windCompensation(float pitch, float roll) {
-		move.setWindCompensation(pitch, roll);
-		System.out.println("windCompensation - pitch: "+roll+", roll: "+roll);
-	}
-
-	@Override
-	public void attitudeUpdated(float pitch, float roll, float yaw) {
-
-		//System.out.println("Pitch: " + pitch + " Roll: " + roll + " Yaw: " + yaw);
-
-		move.setAttitudeUpdatedPRY(pitch, roll, yaw);
-		System.out.println("Pitch: " + pitch + " Roll: " + roll + " Yaw: " + yaw);
-
-	}
-
-	@Override
-	public void attitudeUpdated(float pitch, float roll) {
-		move.setAttitudeUpdatedPR(pitch, roll);
-		System.out.println("attitudeUpdated - pitch: "+pitch+", roll: "+roll);
-	}
-
-}
-
-class MyBatteryListener implements BatteryListener {
-	private Movement move;
-
-	@Override
-	public void voltageChanged(int vbat_raw) {
-		move.setVoltageChanged(vbat_raw);
-		System.out.println("voltageChanged - vbat_raw: "+vbat_raw);
-	}
-
-	@Override
-	public void batteryLevelChanged(int percentage) {
-
-		move.setVoltagePercentage(percentage);
-		System.out.println("Battery: " + percentage + " %");			
-
-	}
-
-}
-
-class MyAltitudeListener implements AltitudeListener {
-private Movement move;
-
-	@Override
-	public void receivedAltitude(int altitude) {
-		move.setAltitudeList(altitude);
-		if (altitude > 0){
-			System.out.println("Altitude: " + altitude);
+	//Getter og setter for MyVelocityListener
+		public float getVelocityListener() {
+			return velocityListener;
 		}
-	}
+		
+		//Getter og setter for MyGyroListener
+		public float[] getOffset_g() {
+			return offset_g;
+		}
+		public void setOffset_g(float[] currentOffset_g) {
+			this.offset_g = currentOffset_g;
+		}
+		
+		public GyroPhysData getGyroPhysData() {
+			return gyroPhysData;
+		}
+		public void setGyroPhysData(GyroPhysData currentGyroPhysData) {
+			this.gyroPhysData = currentGyroPhysData;
+		}
+		
+		public GyroRawData getGyroRawData() {
+			return gyroRawData;
+		}
+		public void setGyroRawData(GyroRawData currentGyroRawData) {
+			this.gyroRawData = currentGyroRawData;
+		}
+		
+		//Getter og setter for MyAcceleroListener
+		public AcceleroPhysData getAcceleroPhysData() {
+			return acceleroPhysData;
+		}
+		public void setAcceleroPhysData(AcceleroPhysData currentAcceleroPhysData) {
+			this.acceleroPhysData = currentAcceleroPhysData;
+		}
+		
+		public AcceleroRawData getAcceleroRawData() {
+			return acceleroRawData;
+		}
+		public void setAcceleroRawData(AcceleroRawData currentAcceleroRawData) {
+			this.acceleroRawData = currentAcceleroRawData;
+		}
 
-	@Override
-	public void receivedExtendedAltitude(Altitude exAltitude) {
-		move.setExAltitude(exAltitude);
-		System.out.println("receivedExtendedAltitude - Altitude: "+exAltitude);
-	}
+		//Getter og setter for MyAttitudeListener
+		public float getWindCompensation() {
+			return windCompensation;
+		}
+		
+		public float getAttitudeUpdatedPRY() {
+			return attitudeUpdatedPRY;
+		}
+		
+		public float getAttitudeUpdatedPR() {
+			return attitudeUpdatedPR;
+		}
+		
+		//Getter og setter for MyBatteryListener
+		public int getVoltageChanged() {
+			return voltageChanged;
+		}
+		public void setVoltageChanged(int currentVoltageChanged) {
+			this.voltageChanged = currentVoltageChanged;
+		}
+		
+		public int getVoltagePercentage() {
+			return batteryLevelChanged;
+		}
+		public void setVoltagePercentage(int currentVoltagePercentage) {
+			this.batteryLevelChanged = currentVoltagePercentage;
+		}
+		
+		//Getter og setter for MyAltitudeListener
+		public int getAltitudeList() {
+			return altitude;
+		}
+		public void setAltitudeList(int currentAltitudeList) {
+			this.altitude = currentAltitudeList;
+		}
+
+		public Altitude getExAltitude() {
+			return exAltitude;
+		}
+		public void setExAltitude(Altitude currentExAltitude) {
+			this.exAltitude = currentExAltitude;
+		}
+		
+		
+		class MyVelocityListener implements VelocityListener {
+			@Override
+			public void velocityChanged(float vx, float vy, float vz) {
+
+				//System.out.println("Velocity - vx: "+vx+", vy: "+vy+", vz: "+vz);
+
+				setVelocityListener(vx,vy,vz);
+				System.out.println("Velocity - vx: "+vx+", vy: "+vy+", vz: "+vz);
+
+			}
+			
+		}
+
+		class MyGyroListener implements GyroListener {
+			@Override
+			public void receivedOffsets(float[] offset_g) {
+				setOffset_g(offset_g);
+				System.out.println("Gyro - offset_g: "+offset_g);
+			}
+
+			@Override
+			public void receivedPhysData(GyroPhysData arg0) {
+				setGyroPhysData(arg0);
+				System.out.println(arg0);	
+			}
+
+			@Override
+			public void receivedRawData(GyroRawData arg0) {
+				setGyroRawData(arg0);
+				System.out.println(arg0);
+			}	
+		}
+
+		class MyAcceleroListener implements AcceleroListener {
+			@Override
+			public void receivedPhysData(AcceleroPhysData d) {
+				setAcceleroPhysData(d);
+				System.out.println(d);
+				
+			}
+
+			@Override
+			public void receivedRawData(AcceleroRawData d) {
+				setAcceleroRawData(d);
+				System.out.println(d);
+				
+			}
+			
+		}
+
+		class MyAttitudeListener implements AttitudeListener {
+			private Movement move;
+			@Override
+			public void windCompensation(float pitch, float roll) {
+				setWindCompensation(pitch, roll);
+				System.out.println("windCompensation - pitch: "+roll+", roll: "+roll);
+			}
+
+			@Override
+			public void attitudeUpdated(float pitch, float roll, float yaw) {
+
+				//System.out.println("Pitch: " + pitch + " Roll: " + roll + " Yaw: " + yaw);
+
+				setAttitudeUpdatedPRY(pitch, roll, yaw);
+				System.out.println("Pitch: " + pitch + " Roll: " + roll + " Yaw: " + yaw);
+
+			}
+
+			@Override
+			public void attitudeUpdated(float pitch, float roll) {
+				setAttitudeUpdatedPR(pitch, roll);
+				System.out.println("attitudeUpdated - pitch: "+pitch+", roll: "+roll);
+			}
+
+		}
+
+		class MyBatteryListener implements BatteryListener {
+
+			@Override
+			public void voltageChanged(int vbat_raw) {
+				setVoltageChanged(vbat_raw);
+				System.out.println("voltageChanged - vbat_raw: "+vbat_raw);
+			}
+
+			@Override
+			public void batteryLevelChanged(int percentage) {
+
+				setVoltagePercentage(percentage);
+				System.out.println("Battery: " + percentage + " %");			
+
+			}
+
+		}
+
+		class MyAltitudeListener implements AltitudeListener {
+
+			@Override
+			public void receivedAltitude(int altitude) {
+				setAltitudeList(altitude);
+				if (altitude > 0){
+					System.out.println("Altitude: " + altitude);
+				}
+			}
+
+			@Override
+			public void receivedExtendedAltitude(Altitude exAltitude) {
+				setExAltitude(exAltitude);
+				System.out.println("receivedExtendedAltitude - Altitude: "+exAltitude);
+			}
+
+		}
+
+		class MyExceptionListener implements IExceptionListener {
+			
+			@Override
+			public void exeptionOccurred(ARDroneException exc)
+			{
+				exc.printStackTrace();
+			}
+			
+		}
 
 }
 
-class MyExceptionListener implements IExceptionListener {
-	
-	@Override
-	public void exeptionOccurred(ARDroneException exc)
-	{
-		exc.printStackTrace();
-	}
-	
-}
+
+
+
+
 
 
 
