@@ -303,9 +303,15 @@ public class PPanel extends JPanel implements Runnable {
 
 			} else if(Values_cam.getMethod()==13){
 
+				/*
+				 * Method 13 finds all blue stuff - used for finding cardboard boxes 
+				 */
 				Mat backUp = new Mat();
 				backUp = frame;
 				
+				/*
+				 * Tyvstjålet fra nettet, http://opencv-java-tutorials.readthedocs.io/en/latest/08-object-detection.html
+				 */
 				Mat blurredImage = new Mat();
 				Mat hsvImage = new Mat();
 				Mat mask = new Mat();
@@ -319,11 +325,9 @@ public class PPanel extends JPanel implements Runnable {
 
 				// get thresholding values from the UI
 				// remember: H ranges 0-180, S and V range 0-255
-				Scalar minValues = new Scalar(110, 50, 50);
-				Scalar maxValues = new Scalar(130, 255, 255);
+				Scalar minValues = new Scalar(49, 64, 50);
+				Scalar maxValues = new Scalar(128, 184, 255);
 
-
-				// threshold HSV image to select tennis balls
 				Core.inRange(hsvImage, minValues, maxValues, mask);
 				// show the partial output
 				Filterstates.setImage1(imgproc.toBufferedImage(blurredImage));
@@ -358,7 +362,7 @@ public class PPanel extends JPanel implements Runnable {
 						Imgproc.drawContours(frame, contours, idx, new Scalar(250, 0, 0));
 					}
 				}
-
+				
 				Filterstates.setImage3(imgproc.toBufferedImage(mask));
 				Filterstates.setImage4(imgproc.toBufferedImage(morphOutput));
 				image = imgproc.toBufferedImage(backUp);
