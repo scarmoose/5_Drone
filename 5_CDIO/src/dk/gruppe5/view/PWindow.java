@@ -30,11 +30,8 @@ public class PWindow {
 	private JTextArea textArea;
 	Values_cam vall = Values_cam.getInstance();
 
-
-
 	DroneCommander dCommando;
 	
-
 	public PWindow(int w, int h) {
 
 		textArea = new JTextArea(50, 10);
@@ -81,9 +78,17 @@ public class PWindow {
 
 		JTextField txtMethod = new JTextField();
 		txtMethod.setHorizontalAlignment(JTextField.CENTER);
-		droneOrWebcamFrame.setVisible(true);
-		btnEmergency.setForeground(Color.RED);
 
+
+		droneOrWebcamFrame.setVisible(true);
+
+		leftPanel.add(innerLeftPanel);
+		innerLeftPanel.add(btnUpdate);
+		innerLeftPanel.add(txtMethod);
+		leftPanel.add(btnTakeoff);
+		leftPanel.add(btnLand);
+		leftPanel.add(btnEmergency);
+		btnEmergency.setForeground(Color.RED);
 		/*
 		 * Button-functionality
 		 */
@@ -102,11 +107,7 @@ public class PWindow {
 			public void actionPerformed(ActionEvent arg0) {
 
 				System.out.println("KILL IT");
-
-				// dCommando.droneKillAll();
-
 				//				 dCommando.droneKillAll();
-
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();
@@ -117,6 +118,7 @@ public class PWindow {
 		btnTakeoff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("TAKEOFF");
+				dCommando.droneFlightControl();
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();

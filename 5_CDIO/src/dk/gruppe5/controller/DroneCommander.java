@@ -94,11 +94,7 @@ public class DroneCommander extends Canvas {
 				Thread.sleep(1000);
 				cmd.hover().doFor(7000);
 				Thread.sleep(1000);
-				cmd.forward(10).doFor(500);
-				System.out.println("DroneTråden: Dronen flyver foran");
-				Thread.sleep(1000);
-				cmd.backward(10).doFor(100);
-				Thread.sleep(1000);
+				cmd.spinLeft(5).doFor(1000);
 				
 			} catch (InterruptedException e){
 				Thread.currentThread().interrupt();
