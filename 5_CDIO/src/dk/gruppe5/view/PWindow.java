@@ -30,13 +30,11 @@ public class PWindow {
 	private JTextArea textArea;
 	Values_cam vall = Values_cam.getInstance();
 
-<<<<<<< HEAD
-	DroneCommander dCommando = new DroneCommander();
 
-=======
+
 	DroneCommander dCommando;
 	
->>>>>>> branch 'preMartinIgen' of https://github.com/scarmoose/5_Drone.git
+
 	public PWindow(int w, int h) {
 
 		textArea = new JTextArea(50, 10);
@@ -67,34 +65,6 @@ public class PWindow {
 		Thread filtersThread = new Thread(filters);
 		filtersThread.start();
 
-<<<<<<< HEAD
-		/*
-		 * Indkommente rnedenst�ende for at bruge webcam
-		 */
-
-		// PPanel videoFeed = new PPanel();
-		// Thread camThread = new Thread(videoFeed);
-		// camThread.start();
-		// frame.addWindowListener(new WindowAdapter() {
-		// @Override
-		// public void windowClosing(WindowEvent e) {
-		// //N�dl�sning, nu slukker programmet da :P
-		// camThread.stop();
-		// }
-		// });
-
-		/*
-		 * nedenst�ende bruger dronen.
-		 */
-
-		VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
-		new Thread(panel).start();
-		frame.setFocusable(true);
-		// frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
-		frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
-
-=======
->>>>>>> branch 'preMartinIgen' of https://github.com/scarmoose/5_Drone.git
 		frame.setLayout(new GridLayout(2, 2));
 
 		JPanel leftPanel = new JPanel();
@@ -111,28 +81,9 @@ public class PWindow {
 
 		JTextField txtMethod = new JTextField();
 		txtMethod.setHorizontalAlignment(JTextField.CENTER);
-
-
 		droneOrWebcamFrame.setVisible(true);
-
-		leftPanel.add(innerLeftPanel);
-		innerLeftPanel.add(btnUpdate);
-		innerLeftPanel.add(txtMethod);
-		leftPanel.add(btnTakeoff);
-		leftPanel.add(btnLand);
-		leftPanel.add(btnEmergency);
 		btnEmergency.setForeground(Color.RED);
-<<<<<<< HEAD
 
-		rightPanel.add(filters);
-		// frame.add(videoFeed);
-		frame.add(panel);
-		frame.add(rightPanel);
-		frame.add(leftPanel);
-		frame.setVisible(true);
-
-=======
->>>>>>> branch 'preMartinIgen' of https://github.com/scarmoose/5_Drone.git
 		/*
 		 * Button-functionality
 		 */
@@ -151,11 +102,11 @@ public class PWindow {
 			public void actionPerformed(ActionEvent arg0) {
 
 				System.out.println("KILL IT");
-<<<<<<< HEAD
+
 				// dCommando.droneKillAll();
-=======
+
 				//				 dCommando.droneKillAll();
->>>>>>> branch 'preMartinIgen' of https://github.com/scarmoose/5_Drone.git
+
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();
@@ -166,11 +117,6 @@ public class PWindow {
 		btnTakeoff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("TAKEOFF");
-<<<<<<< HEAD
-				// dCommando.droneFlightControl();
-=======
-				//				dCommando.droneFlightControl();
->>>>>>> branch 'preMartinIgen' of https://github.com/scarmoose/5_Drone.git
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();
