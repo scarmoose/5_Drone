@@ -3,6 +3,7 @@ package dk.gruppe5.controller;
 import java.awt.Canvas;
 import java.util.Random;
 
+import CoordinateSystem.DronePosition;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
@@ -12,7 +13,7 @@ import dk.gruppe5.app.App;
 import dk.gruppe5.positioning.Movement;
 
 public class DroneCommander extends Canvas {
-	private final static int speed = 10;
+	private final static int speed = 5;
 	private final static int sleep = 500;
 	
 	/**
@@ -86,127 +87,106 @@ public class DroneCommander extends Canvas {
 //	}
 
 	public void droneFlightControl(){
-		while (true) {
 			
+		
+		while (true) {
 			try{	
-				droneTakeOff();
+				cmd.takeOff();
 				System.out.println("Drone Tråden: Dronen letter nu.");
+
 				Thread.sleep(1000);
 				cmd.hover().doFor(7000);
 				Thread.sleep(1000);
 				
-				/*long t= System.currentTimeMillis();
+				long t= System.currentTimeMillis();
 				long end = t+5000;
 				while(System.currentTimeMillis() < end) {
+					if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!=70){
+						System.out.println("Yay!");
+						break;
+					}
 					//do something
 					//cmd.spinLeft(40).doFor(1000);
 					cmd.hover().doFor(700);
 					//pause to avoid churning
 					Thread.sleep(200);	
-				}*/
+				}
 
-				
 			} catch (InterruptedException e){
 				Thread.currentThread().interrupt();
 				e.printStackTrace();
 			}
 			break;
 		}
-		
-		//cmd.move(1, 5, 0, 0).doFor(2000);
-		//cmd.forward(5).doFor(1000);
-//		cmd.hover().doFor(5000);
-//		cmd.backward(5).doFor(1000);
-//		cmd.hover().doFor(2000);
-		
-//		cmd.hover().doFor(2000);
-//		//cmd.up(20).doFor(2600);
-//		cmd.hover().doFor(2000);
-//		cmd.forward(15).doFor(500);
-//		cmd.backward(15).doFor(500);
-//		cmd.hover().doFor(5000);
-//		cmd.spinLeft(20).doFor(4000);
-//		cmd.hover().doFor(3000);
-//		cmd.forward(15).doFor(500);
-//		cmd.hover().doFor(3000);
-//		cmd.move(1.1f, 1.1f, 1.1f, 1.1f);
-		
-		//cmd.spinLeft(40).doFor(10000);
-		//cmd.hover().doFor(3000);
-		//cmd.spinRight(40).doFor(10000);
-		//Thread.currentThread().sleep(sleep);
-		/*try {
-			droneCirkelFlying(3000);
-			System.out.println("rod");
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
-		cmd.landing();
 	}
+	/*public void droneHeight(){
 	
+		if (navl.getAltitude() < 1450){
+			cmd.up(speed).doFor(500);
+			cmd.hover().doFor(1000);
+
+		}else if(navl.getAltitude() > 1550){
+				cmd.down(speed).doFor(500);
+				cmd.hover().doFor(1000);
+
+		}else if (navl.getAltitude() > 1450 && navl.getAltitude() <1550 ){
+			cmd.hover();
+		}
+	}
+	*/
 	public void droneTakeOff(){
 		System.out.println("We have Liftoff");
 		cmd.flatTrim();
 		cmd.takeOff();
 		System.out.println("takeoff done");
 	}
-	public void droneFlyingForward(long interval){
-		cmd.forward(speed).doFor(interval);
-		cmd.hover();
+	public void droneFlyingForward() throws InterruptedException{
+		cmd.forward(speed);
+		Thread.currentThread().sleep(sleep);
 	}
-	public void droneFlyingBackward(long interval){
-		cmd.backward(speed).doFor(interval);
-		cmd.hover();
+	public void droneFlyingBackward() throws InterruptedException{
+		cmd.backward(speed);
+		Thread.currentThread().sleep(sleep);
 	}
-	public void droneFlyingUp(long interval){
-		cmd.up(speed).doFor(interval);
-		cmd.hover();
+	public void droneFlyingUp() throws InterruptedException{
+		cmd.up(speed).doFor(speed);
+		Thread.currentThread().sleep(sleep);
 	}
-	public void droneFlyingDown(long interval){
-		cmd.down(speed).doFor(interval);
-		cmd.hover();
+	public void droneFlyingDown() throws InterruptedException{
+		cmd.down(speed);
+		Thread.currentThread().sleep(sleep);
 	}
-	public void droneSpinLeft(long interval){
-		cmd.spinLeft(speed).doFor(interval);
-		cmd.hover();
+	public void droneSpinLeft() throws InterruptedException{
+		cmd.spinLeft(speed*2);
+		Thread.currentThread().sleep(sleep);
 	}
-	public void droneSpinRight(long interval){
-		cmd.spinRight(speed).doFor(interval);
-		cmd.hover();
+	public void droneSpinRight() throws InterruptedException{
+		cmd.spinRight(speed*2);
+		Thread.currentThread().sleep(sleep);
 	}
 	public void droneKillAll(){
-		//cmd.emergency();
 		cmd.landing();
 	}
-	public void droneGoLeft(long interval){
-		cmd.goLeft(speed).doFor(interval);
-		cmd.hover();
+	public void droneGoLeft() throws InterruptedException{
+		cmd.goLeft(speed);
+		Thread.currentThread().sleep(sleep);
 	}
-	public void droneGoRight(long interval){
-		cmd.goRight(speed).doFor(interval);
-		cmd.hover();
-	}
-	
-	public void droneCirkelFlying(long interval) throws InterruptedException{
-		for(int i=1; i<11; i++){
-            System.out.println("Commandt sendt: " + i);
-            droneFlyingForward(500);
-            droneSpinRight(500);
-            Thread.currentThread().sleep(sleep);
-		}
+	public void droneGoRight() throws InterruptedException{
+		cmd.goRight(speed);
+		Thread.currentThread().sleep(sleep);
 	}
 	
 	public void takeOffAndLand(long interval){
+		cmd.takeOff();
 		cmd.waitFor(interval);
 		cmd.landing();
 	}
-	public void hover(long interval){
-		cmd.hover().doFor(interval);
+	
+	public void hover() throws InterruptedException{
+		cmd.hover();
+		Thread.currentThread().sleep(sleep);
 	}
 	public void killAll(){
-
 		cmd.landing();
 	}
 

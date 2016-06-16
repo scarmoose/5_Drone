@@ -27,17 +27,10 @@ import dk.gruppe5.model.Values_cam;
 
 public class PWindow {
 
-	private JTextArea textArea;
 	Values_cam vall = Values_cam.getInstance();
-
 	DroneCommander dCommando;
-	
+
 	public PWindow(int w, int h) {
-
-		textArea = new JTextArea(50, 10);
-		textArea.setEditable(false);
-		PrintStream printStream = new PrintStream(new CustomOutputStream(textArea));
-
 
 		JFrame droneOrWebcamFrame = new JFrame();
 		droneOrWebcamFrame.setSize(w,h);
@@ -47,7 +40,6 @@ public class PWindow {
 		frame.setSize(w, h);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Super programmet");
-
 
 		JButton btnSelectDrone = new JButton("Use drone");
 		JButton btnSelectWebcam = new JButton("Use webcam");
@@ -61,6 +53,7 @@ public class PWindow {
 		Filterstates filters = new Filterstates();
 		Thread filtersThread = new Thread(filters);
 		filtersThread.start();
+
 
 		frame.setLayout(new GridLayout(2, 2));
 
@@ -79,19 +72,11 @@ public class PWindow {
 		JTextField txtMethod = new JTextField();
 		txtMethod.setHorizontalAlignment(JTextField.CENTER);
 
-
 		droneOrWebcamFrame.setVisible(true);
-
-		leftPanel.add(innerLeftPanel);
-		innerLeftPanel.add(btnUpdate);
-		innerLeftPanel.add(txtMethod);
-		leftPanel.add(btnTakeoff);
-		leftPanel.add(btnLand);
-		leftPanel.add(btnEmergency);
-		btnEmergency.setForeground(Color.RED);
+		
 		/*
-		 * Button-functionality
-		 */
+		* Button-functionality
+		*/
 
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
