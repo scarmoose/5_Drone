@@ -86,39 +86,37 @@ public class DroneCommander extends Canvas {
 //	}
 
 	public void droneFlightControl(){
-			
 		
-		while (true) {
-			try{	
-				cmd.takeOff();
-				System.out.println("Drone Tråden: Dronen letter nu.");
-
-				Thread.sleep(1000);
-				
-				if(cmd.takeOff() != null) {
-					cmd.hover().doFor(5000);
-					System.out.println("Drone Tråden: Dronen svæver nu.");
-					Thread.sleep(1000);
-				}
-				
-				cmd.forward(10).doFor(500);
-				System.out.println("DroneTråden: Dronen flyver foran");
-				Thread.sleep(1000);
-				cmd.backward(10).doFor(100);
-				Thread.sleep(1000);
-				
-
-				droneFlyingForward();
-				hover();
-				killAll();
-
-			} catch (InterruptedException e){
-				Thread.currentThread().interrupt();
-				e.printStackTrace();
-			}
-			break;
+		Thread thread = new Thread(new Runnable() {
+	         public void run() {
+	             
+	        	 droneTakeOff();
+	        	 
+	        	 try{
+	        		 long t = System.currentTimeMillis();
+	        		 long end = t+5000;
+	        		 while(System.currentTimeMillis() < end) {
+	        			 cmd.hover().doFor(5000);
+	        			 System.out.println("Drone Thread: Drone is now Howering.");	
+	        			 Thread.sleep(1000);
+	        			 cmd.spinLeft(30).doFor(1000);
+	        			 Thread.sleep(1000);
+	        			 cmd.landing();
+	        			 System.out.println("Drone Flight Control Complete!");
+	        			 Thread.sleep(1000);
+	        			 break;
+	        		 }
+	        	 } catch (InterruptedException e){
+	        		 Thread.currentThread().interrupt();
+	        		 e.printStackTrace();
+	        	 }
+	         }
+	});
+		thread.start();
+		
 		}
-	}
+	
+	
 	public void droneHeight(){
 		
 		if (navl.getAltitude() < 1450){
@@ -140,6 +138,9 @@ public class DroneCommander extends Canvas {
 		cmd.takeOff();
 		System.out.println("takeoff done");
 	}
+	
+	
+	
 	public void droneFlyingForward() throws InterruptedException{
 		cmd.forward(speed);
 		Thread.currentThread().sleep(sleep);
