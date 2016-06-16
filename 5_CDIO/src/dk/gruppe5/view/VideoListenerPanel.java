@@ -141,6 +141,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 						Movement movement = new Movement();
 						movement.centerPointInFrame(new DPoint(qrPoint), new DPoint(frame.width(),frame.height()));
 					}
+					image = imgProc.toBufferedImage(frame);
 				}
 				else if (Values_cam.getMethod() == 1) {
 

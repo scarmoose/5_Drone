@@ -47,11 +47,11 @@ public class Movement {
 
 	private void init() {
 		drone.addExceptionListener(new MyExceptionListener());
-		drone.getNavDataManager().addAltitudeListener(new MyAltitudeListener());
-		drone.getNavDataManager().addAttitudeListener(new MyAttitudeListener());
-		drone.getNavDataManager().addBatteryListener(new MyBatteryListener());
-		drone.getNavDataManager().addAcceleroListener(new MyAcceleroListener());
-		drone.getNavDataManager().addVelocityListener(new MyVelocityListener());
+//		drone.getNavDataManager().addAltitudeListener(new MyAltitudeListener());
+//		drone.getNavDataManager().addAttitudeListener(new MyAttitudeListener());
+//		drone.getNavDataManager().addBatteryListener(new MyBatteryListener());
+//		drone.getNavDataManager().addAcceleroListener(new MyAcceleroListener());
+//		drone.getNavDataManager().addVelocityListener(new MyVelocityListener());
 	}
 
 

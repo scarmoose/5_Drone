@@ -120,9 +120,8 @@ public class PPanel extends JPanel implements Runnable {
 			long dt = System.currentTimeMillis() - t;
 
 			if (Values_cam.getMethod() == 1) {
-				opticalFlowCall(frame);
-			} else if (Values_cam.getMethod() == 0) {
-
+			
+				
 				image = imgproc.toBufferedImage(frame);
 				frame = imgproc.toGrayScale(frame);
 				Filterstates.setImage1(imgproc.toBufferedImage(frame));
@@ -131,6 +130,9 @@ public class PPanel extends JPanel implements Runnable {
 				frame = imgproc.toCanny(frame);
 				Filterstates.setImage3(imgproc.toBufferedImage(frame));
 				Filterstates.setImage4(image);
+			} else if (Values_cam.getMethod() == 0) {
+				image = imgproc.toBufferedImage(frame);
+			
 
 			}else if (Values_cam.getMethod() == 6) {
 				Filterstates.setImage2(imgproc.toBufferedImage(frame));
