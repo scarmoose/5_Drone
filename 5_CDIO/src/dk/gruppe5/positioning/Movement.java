@@ -37,6 +37,7 @@ public class Movement {
 	public Movement(IARDrone drone) {
 		this.drone = drone;
 		this.cmd = drone.getCommandManager();
+		this.pos = new Position();
 		init();
 	}
 
@@ -60,11 +61,14 @@ public class Movement {
 	}
 
 	/**
-	 * Skal gerne centrere et point i billedet
+	 * Skal gerne centrere et point i billedet, ved at rykke på dronen.
 	 * @param p
 	 * @param frameSize
 	 */
 	public void centerPointInFrame(DPoint p, DPoint frameSize) {
+		int speed = 100;
+		int interval = 10;
+		int landIfLower = 15;
 		DPoint point = p.clone();
 		double cx = frameSize.x/2;
 		double cy = frameSize.y/2;
@@ -74,16 +78,16 @@ public class Movement {
 		double vx = centerToPoint.x;
 		double vy = centerToPoint.y;
 		System.out.println("Length of vector: "+vlength);
-		if(vlength < 15) {
+		if(vlength < landIfLower) {
 			land();
 		} else if(Math.abs(vy) > Math.abs(vx)) {
-			if(vy > 0) {
-				forward(100, 10);
-			} else backward(100, 10);
+			if(vy > 0) { // hvis punktet er over centrum
+				forward(speed, interval);
+			} else backward(speed, interval);
 		} else {
-			if(vx > 0) {
-				right(100, 10);
-			} else left(100, 10);
+			if(vx > 0) { // hvis punkter er til højre for centrum
+				right(speed, interval);
+			} else left(speed, interval);
 		}
 
 	}
