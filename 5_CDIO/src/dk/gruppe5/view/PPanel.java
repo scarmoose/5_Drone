@@ -11,11 +11,13 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
@@ -137,8 +139,8 @@ public class PPanel extends JPanel implements Runnable {
 				Mat backUp = new Mat();
 				backUp = frame;
 				int ratio = 2;
-			
-				
+
+
 				frame = imgproc.downScale(backUp, ratio);
 				// først gør vi det sort hvidt
 				frame = imgproc.toGrayScale(frame);
@@ -152,7 +154,7 @@ public class PPanel extends JPanel implements Runnable {
 
 				// Nu skal vi prøve at finde firkanter af en hvis størrelse
 				List<Contour> contours = imgproc.findQRsquares(frame);
-		
+
 				// vi finder de potentielle QR kode områder
 				List<BufferedImage> cutouts = imgproc.warp(backUp, contours, ratio);
 				List<Result> results = imgproc.readQRCodes(cutouts);
@@ -203,16 +205,20 @@ public class PPanel extends JPanel implements Runnable {
 											data.getPoints()[0], data.getPoints()[1], data.getPoints()[2]);
 									if (mapPosition != null) {
 										DronePosition.setPosition(mapPosition);
-										DronePosition.setDegree(90.0);
 										// System.out.println(mapPosition);
 										int screenWidth = image.getWidth();
 										int middleOfScreen = screenWidth/2;
 										int pixelsFromMiddleToQr =  Math.abs(((int)data.getPoints()[1].x-middleOfScreen)); 
 										DPoint mapPos = new DPoint(mapPosition);
+										System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr)+" grader");
+										String text = data.getQrNames()[0];
+										String wallNr =""+text.charAt(2);
+										int x = Integer.parseInt(wallNr);
+										DronePosition.setDegree((90.0*x)+test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
 										System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
-										
+
 									}
-						
+
 								}
 
 							} else if (!Double.isNaN(data.getPoints()[1].x)) {
@@ -246,7 +252,7 @@ public class PPanel extends JPanel implements Runnable {
 				image = imgproc.toBufferedImage(backUp);
 
 			} 
-			
+
 			else if (Values_cam.getMethod() == 12) {
 				Mat backUp = new Mat();
 				backUp = frame;
@@ -256,7 +262,7 @@ public class PPanel extends JPanel implements Runnable {
 				frame = imgproc.equalizeHistogramBalance(frame);
 				frame = imgproc.blur(frame);
 				frame = imgproc.toCanny(frame);
-				
+
 				List<Contour> listofCircles = imgproc.findCircles(frame);
 				frame = imgproc.convertMatToColor(frame);
 
@@ -264,11 +270,11 @@ public class PPanel extends JPanel implements Runnable {
 
 					Scalar color = new Scalar(255, 255, 0);
 					frame = imgproc.drawLinesBetweenContourPoints(contour, frame, ratio, color);
-				
+
 				}
 				Filterstates.setImage1(imgproc.toBufferedImage(frame));
 				image = imgproc.toBufferedImage(backUp);
-
+				
 			}else if(Values_cam.getMethod() == 10){
 				//her vil vi prøve at finde position ud fra et qr markering og de trekanter der er på hver side halvvejs til feltet
 				frame = combi.findPositionFromQRandTriangles(frame);
@@ -276,25 +282,69 @@ public class PPanel extends JPanel implements Runnable {
 				image = imgproc.toBufferedImage(frame);
 
 			} else if(Values_cam.getMethod()==13){
+
+				/*
+				 * Method 13 finds all blue stuff - used for finding cardboard boxes 
+				 */
 				Mat backUp = new Mat();
 				backUp = frame;
-				int ratio = 1;
-
-				frame = imgproc.toGrayScale(frame);
-				frame = imgproc.equalizeHistogramBalance(frame);
-				frame = imgproc.blur(frame);
-				frame = imgproc.toCanny(frame);
 				
-				List<Contour> papkasser = imgproc.findPapkasser(frame);
-				frame = imgproc.convertMatToColor(frame);
+				/*
+				 * Tyvstjålet fra nettet, http://opencv-java-tutorials.readthedocs.io/en/latest/08-object-detection.html
+				 */
+				Mat blurredImage = new Mat();
+				Mat hsvImage = new Mat();
+				Mat mask = new Mat();
+				Mat morphOutput = new Mat();
 
-				for (Contour contour : papkasser) {
+				// remove some noise
+				Imgproc.blur(frame, blurredImage, new Size(7, 7));
 
-					Scalar color = new Scalar(255, 255, 0);
-					frame = imgproc.drawLinesBetweenContourPoints(contour, frame, ratio, color);
-				
+				// convert the frame to HSV
+				Imgproc.cvtColor(blurredImage, hsvImage, Imgproc.COLOR_BGR2HSV);
+
+				// get thresholding values from the UI
+				// remember: H ranges 0-180, S and V range 0-255
+				Scalar minValues = new Scalar(49, 64, 50);
+				Scalar maxValues = new Scalar(128, 184, 255);
+
+				Core.inRange(hsvImage, minValues, maxValues, mask);
+				// show the partial output
+				Filterstates.setImage1(imgproc.toBufferedImage(blurredImage));
+
+				// morphological operators
+				// dilate with large element, erode with small ones
+				Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
+				Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
+
+				Imgproc.erode(mask, morphOutput, erodeElement);
+				Imgproc.erode(mask, morphOutput, erodeElement);
+
+				Imgproc.dilate(mask, morphOutput, dilateElement);
+				Imgproc.dilate(mask, morphOutput, dilateElement);
+
+				// show the partial output
+				Filterstates.setImage2(imgproc.toBufferedImage(hsvImage));
+
+				// init
+				List<MatOfPoint> contours = new ArrayList<>();
+				Mat hierarchy = new Mat();
+
+				// find contours
+				Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+
+				// if any contour exist...
+				if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
+				{
+					// for each contour, display it in blue
+					for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
+					{
+						Imgproc.drawContours(frame, contours, idx, new Scalar(250, 0, 0));
+					}
 				}
-				Filterstates.setImage1(imgproc.toBufferedImage(frame));
+				
+				Filterstates.setImage3(imgproc.toBufferedImage(mask));
+				Filterstates.setImage4(imgproc.toBufferedImage(morphOutput));
 				image = imgproc.toBufferedImage(backUp);
 			}
 			repaint();

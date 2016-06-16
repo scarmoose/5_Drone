@@ -32,7 +32,6 @@ import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
-import com.google.zxing.ResultPoint;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 
@@ -1292,16 +1291,6 @@ public class ImageProcessor {
 		}
 
 		return outputs;
-	}
-
-	public List<Contour> findPapkasser(Mat frame) {
-
-		/*
-		 * I HAVE NO IDEA WHAT IM DOING LOL
-		 */
-
-		List<Contour> papkasser = new ArrayList<>();
-		return papkasser;
 	}
 
 	public List<Contour> findTriangles(Mat frame, double minArea) {

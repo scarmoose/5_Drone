@@ -27,20 +27,10 @@ import dk.gruppe5.model.Values_cam;
 
 public class PWindow {
 
-	private JTextArea textArea;
 	Values_cam vall = Values_cam.getInstance();
-
-
-
 	DroneCommander dCommando;
-	
 
 	public PWindow(int w, int h) {
-
-		textArea = new JTextArea(50, 10);
-		textArea.setEditable(false);
-		PrintStream printStream = new PrintStream(new CustomOutputStream(textArea));
-
 
 		JFrame droneOrWebcamFrame = new JFrame();
 		droneOrWebcamFrame.setSize(w,h);
@@ -50,7 +40,6 @@ public class PWindow {
 		frame.setSize(w, h);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Super programmet");
-
 
 		JButton btnSelectDrone = new JButton("Use drone");
 		JButton btnSelectWebcam = new JButton("Use webcam");
@@ -64,6 +53,7 @@ public class PWindow {
 		Filterstates filters = new Filterstates();
 		Thread filtersThread = new Thread(filters);
 		filtersThread.start();
+
 
 		frame.setLayout(new GridLayout(2, 2));
 
@@ -81,12 +71,12 @@ public class PWindow {
 
 		JTextField txtMethod = new JTextField();
 		txtMethod.setHorizontalAlignment(JTextField.CENTER);
-		droneOrWebcamFrame.setVisible(true);
-		btnEmergency.setForeground(Color.RED);
 
+		droneOrWebcamFrame.setVisible(true);
+		
 		/*
-		 * Button-functionality
-		 */
+		* Button-functionality
+		*/
 
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -102,11 +92,7 @@ public class PWindow {
 			public void actionPerformed(ActionEvent arg0) {
 
 				System.out.println("KILL IT");
-
-				// dCommando.droneKillAll();
-
 				//				 dCommando.droneKillAll();
-
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();
@@ -117,6 +103,7 @@ public class PWindow {
 		btnTakeoff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("TAKEOFF");
+				dCommando.droneFlightControl();
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();
@@ -142,7 +129,7 @@ public class PWindow {
 				new Thread(panel).start();
 				frame.setFocusable(true);
 				frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
-				frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
+				//frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
 
 				leftPanel.add(innerLeftPanel);
 				innerLeftPanel.add(btnUpdate);
