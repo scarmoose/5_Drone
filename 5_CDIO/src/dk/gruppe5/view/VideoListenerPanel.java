@@ -131,45 +131,8 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 				if (Values_cam.getMethod() == 0) {
 					image = imgProc.toBufferedImage(frame);
-				} else if (Values_cam.getMethod() == 4) {
-					int ratio = 2;
-					frame = imgProc.toGrayScale(frame);
-					frame = imgProc.blur(frame);
-					frame = imgProc.toCanny(frame);
-
-					frame = imgProc.findAirfield(frame, ratio);
-
-					image = imgProc.toBufferedImage(frame);
-
 				}else if(Values_cam.getMethod() == 11){
-					Mat backUp = new Mat();
-					backUp = frame;
-					int ratio = 1;
-					//frame = imgProc.calibrateCamera(frame);
-					frame = imgProc.toGrayScale(frame);
-					frame = imgProc.equalizeHistogramBalance(frame);
-					frame = imgProc.blur(frame);
-					frame = imgProc.toCanny(frame);
-					// Nu skal vi prøve at finde firkanter af en hvis størrelse
-				
-					// vi finder de potentielle QR kode områder
-					//List<BufferedImage> cutouts = imgProc.getImagesFromContours(backUp,contours,ratio);
-					Result result = imgProc.readQRcodeFromWholeImage(imgProc.toBufferedImage(backUp));
-					if(result != null){
-						Scalar color = new Scalar(0, 0, 255);
-						ResultPoint[] Rpoints = result.getResultPoints();
-						List<Point> points = new ArrayList<>();
-						int rPointsSpot = 0;
-						for(ResultPoint point : Rpoints){
-							points.add(new Point(Rpoints[rPointsSpot].getX(),Rpoints[rPointsSpot].getY()));
-							rPointsSpot++;
-						}
-						backUp = imgProc.drawLinesBetweenPoints(backUp, points, color);
-						
-						
-					}
-
-					image = imgProc.toBufferedImage(backUp);
+					findAirFieldInImageWithBottomCamera(frame);
 				}
 				else if (Values_cam.getMethod() == 10) {
 
@@ -212,89 +175,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 				
 				} else if (Values_cam.getMethod() == 6) {
 					
-					Filterstates.setImage2(imgProc.toBufferedImage(frame));
-					frame = imgProc.calibrateCamera(frame);
-					Filterstates.setImage1(imgProc.toBufferedImage(frame));
-					Mat backUp = new Mat();
-					backUp = frame;
-					int ratio = 2;
-				
-					
-					frame = imgProc.downScale(backUp, ratio);
-					// først gør vi det sort hvidt
-					frame = imgProc.toGrayScale(frame);
-					//
-					frame = imgProc.equalizeHistogramBalance(frame);
-					// blur virker bedre
-					frame = imgProc.blur(frame);
-
-					// Til canny for at nemmere kunne finde contourer
-					frame = imgProc.toCanny(frame);
-
-					// Nu skal vi prøve at finde firkanter af en hvis størrelse
-					List<Contour> contours = imgProc.findQRsquares(frame);
-			
-					// vi finder de potentielle QR kode områder
-					List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
-					List<Result> results = imgProc.readQRCodes(cutouts);
-					// backUp = imgProc.markQrCodes(results, shapes, backUp);
-					int contourNr = 0;
-					for (Result result : results) {
-						if (result != null) {
-							DetectedWallmarksAndNames data = imgProc.markQrCodesV2(contours.get(contourNr), contours,
-									backUp, result.getText(), ratio);
-							if (data != null) {
-								if (!Double.isNaN(data.getPoints()[0].x) && !Double.isNaN(data.getPoints()[1].x)
-										&& !Double.isNaN(data.getPoints()[2].x)) {
-									if (data.getQrNames()[0] != null && data.getQrNames()[1] != null
-											&& data.getQrNames()[2] != null) {
-										Scalar color1 = new Scalar(0, 0, 255);
-										backUp = imgProc.drawLine(data.getPoints()[0], data.getPoints()[1], backUp, color1);
-										backUp = imgProc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp, color1);
-										Position test = new Position();
-										Point mapPosition = test.getPositionFromPoints(data.getQrNames(), data.getPoints()[0], data.getPoints()[1], data.getPoints()[2]);
-										if (mapPosition != null) {
-											DronePosition.setPosition(mapPosition);
-											// System.out.println(mapPosition);
-											int screenWidth = image.getWidth();
-											int middleOfScreen = screenWidth/2;
-											int pixelsFromMiddleToQr =  Math.abs(((int)data.getPoints()[1].x-middleOfScreen)); 
-											DPoint mapPos = new DPoint(mapPosition);
-											System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
-											
-										}
-							
-									}
-
-								} else if (!Double.isNaN(data.getPoints()[1].x)) {
-
-									Scalar color1 = new Scalar(255, 0, 0);
-									Imgproc.putText(backUp, data.getQrNames()[1], data.getPoints()[1], 5, 2, color1);
-									Point ofset = new Point(data.getPoints()[1].x, data.getPoints()[1].y + 30);
-									Imgproc.putText(backUp, data.getDistance() + "", ofset, 5, 2, color1);
-
-									if (!Double.isNaN(data.getPoints()[0].x)) {
-										Point ofset1 = new Point(data.getPoints()[0].x, data.getPoints()[0].y);
-										Imgproc.putText(backUp, "firkant", ofset1, 5, 2, color1);
-
-									}
-									if (!Double.isNaN(data.getPoints()[2].x)) {
-										Point ofset2 = new Point(data.getPoints()[2].x, data.getPoints()[2].y);
-										Imgproc.putText(backUp, "firkant", ofset2, 5, 2, color1);
-
-									}
-
-								}
-
-							} else {
-								image = imgProc.toBufferedImage(backUp);
-							}
-						}
-						contourNr++;
-
-					}
-
-					image = imgProc.toBufferedImage(backUp);
+					locationEstimationFrom3Points(frame);
 
 				}
 				else if (Values_cam.getMethod() == 12) {
@@ -333,5 +214,118 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 			}
 
 		}
+	}
+
+	public void findAirFieldInImageWithBottomCamera(Mat frame) {
+		Mat backUp = new Mat();
+		backUp = frame;
+		int ratio = 1;
+		//frame = imgProc.calibrateCamera(frame);
+		frame = imgProc.toGrayScale(frame);
+		frame = imgProc.equalizeHistogramBalance(frame);
+		frame = imgProc.blur(frame);
+		frame = imgProc.toCanny(frame);
+		// Nu skal vi prøve at finde firkanter af en hvis størrelse
+
+		// vi finder de potentielle QR kode områder
+		//List<BufferedImage> cutouts = imgProc.getImagesFromContours(backUp,contours,ratio);
+		Result result = imgProc.readQRcodeFromWholeImage(imgProc.toBufferedImage(backUp));
+		if(result != null){
+			Scalar color = new Scalar(0, 0, 255);
+			ResultPoint[] Rpoints = result.getResultPoints();
+			List<Point> points = new ArrayList<>();
+			int rPointsSpot = 0;
+			for(ResultPoint point : Rpoints){
+				points.add(new Point(Rpoints[rPointsSpot].getX(),Rpoints[rPointsSpot].getY()));
+				rPointsSpot++;
+			}
+			backUp = imgProc.drawLinesBetweenPoints(backUp, points, color);
+			
+			
+		}
+
+		image = imgProc.toBufferedImage(backUp);
+	}
+
+	public void locationEstimationFrom3Points(Mat frame) {
+		frame = imgProc.calibrateCamera(frame);
+		Mat backUp = new Mat();
+		backUp = frame;
+		int ratio = 2;
+		frame = imgProc.downScale(backUp, ratio);
+		// først gør vi det sort hvidt
+		frame = imgProc.toGrayScale(frame);
+		//
+		frame = imgProc.equalizeHistogramBalance(frame);
+		// blur virker bedre
+		frame = imgProc.blur(frame);
+
+		// Til canny for at nemmere kunne finde contourer
+		frame = imgProc.toCanny(frame);
+
+		// Nu skal vi prøve at finde firkanter af en hvis størrelse
+		List<Contour> contours = imgProc.findQRsquares(frame);
+
+		// vi finder de potentielle QR kode områder
+		List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
+		List<Result> results = imgProc.readQRCodes(cutouts);
+		// backUp = imgProc.markQrCodes(results, shapes, backUp);
+		int contourNr = 0;
+		for (Result result : results) {
+			if (result != null) {
+				DetectedWallmarksAndNames data = imgProc.markQrCodesV2(contours.get(contourNr), contours,
+						backUp, result.getText(), ratio);
+				if (data != null) {
+					if (!Double.isNaN(data.getPoints()[0].x) && !Double.isNaN(data.getPoints()[1].x)
+							&& !Double.isNaN(data.getPoints()[2].x)) {
+						if (data.getQrNames()[0] != null && data.getQrNames()[1] != null
+								&& data.getQrNames()[2] != null) {
+							Scalar color1 = new Scalar(0, 0, 255);
+							backUp = imgProc.drawLine(data.getPoints()[0], data.getPoints()[1], backUp, color1);
+							backUp = imgProc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp, color1);
+							Position test = new Position();
+							Point mapPosition = test.getPositionFromPoints(data.getQrNames(), data.getPoints()[0], data.getPoints()[1], data.getPoints()[2]);
+							if (mapPosition != null) {
+								DronePosition.setPosition(mapPosition);
+								// System.out.println(mapPosition);
+								int screenWidth = image.getWidth();
+								int middleOfScreen = screenWidth/2;
+								int pixelsFromMiddleToQr =  Math.abs(((int)data.getPoints()[1].x-middleOfScreen)); 
+								DPoint mapPos = new DPoint(mapPosition);
+								System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
+								
+							}
+				
+						}
+
+					} else if (!Double.isNaN(data.getPoints()[1].x)) {
+
+						Scalar color1 = new Scalar(255, 0, 0);
+						Imgproc.putText(backUp, data.getQrNames()[1], data.getPoints()[1], 5, 2, color1);
+						Point ofset = new Point(data.getPoints()[1].x, data.getPoints()[1].y + 30);
+						Imgproc.putText(backUp, data.getDistance() + "", ofset, 5, 2, color1);
+
+						if (!Double.isNaN(data.getPoints()[0].x)) {
+							Point ofset1 = new Point(data.getPoints()[0].x, data.getPoints()[0].y);
+							Imgproc.putText(backUp, "firkant", ofset1, 5, 2, color1);
+
+						}
+						if (!Double.isNaN(data.getPoints()[2].x)) {
+							Point ofset2 = new Point(data.getPoints()[2].x, data.getPoints()[2].y);
+							Imgproc.putText(backUp, "firkant", ofset2, 5, 2, color1);
+
+						}
+
+					}
+
+				} else {
+					image = imgProc.toBufferedImage(backUp);
+				}
+			}
+			contourNr++;
+
+		}
+
+		image = imgProc.toBufferedImage(backUp);
 	}
 }
