@@ -19,12 +19,15 @@ import de.yadrone.base.navdata.AltitudeListener;
 import de.yadrone.base.navdata.NavData;
 import de.yadrone.base.navdata.NavDataManager;
 import dk.gruppe5.app.App;
+import dk.gruppe5.legacy.NavDataListener;
 import dk.gruppe5.positioning.Movement;
+import dk.gruppe5.positioning.Movement.MyAltitudeListener;
 import dk.gruppe5.positioning.Position;
 
 public class DroneCommander extends Canvas {
 	private final static int speed = 5;
 	private final static int sleep = 500;
+
 	
 	/**
 	 * 
@@ -34,7 +37,8 @@ public class DroneCommander extends Canvas {
 	
 	CommandManager cmd;
 
-	private Movement navl;
+	Movement navl = new Movement();
+	
 	public DroneCommander() {
 		
 		try {
@@ -88,6 +92,7 @@ public class DroneCommander extends Canvas {
 	         public void run() {
 	             
 	        	 droneTakeOff();
+	        	 getDroneAltitude(Movement.currentAltitude);
 	        	 
 	        	 try{
 	        		 long t = System.currentTimeMillis();
@@ -126,26 +131,25 @@ public class DroneCommander extends Canvas {
 
 
 	public void droneTest(){
+		//getDroneAltitude(Movement.currentAltitude);
 		droneTakeOff();
-		hover();
+		cmd.hover().doFor(10000);
 		killAll();
 		
 		
 	}
 	
 	
-	public void droneHeight(){
-		if (App.currentAltitude < 1450){
-
-			cmd.up(speed).doFor(500);
-			cmd.hover().doFor(1000);
-
-		}else if(App.currentAltitude > 1550){
-				cmd.down(speed).doFor(500);
-				cmd.hover().doFor(1000);
-
-		}else if (App.currentAltitude > 1450 && App.currentAltitude <1550 ){
-			cmd.hover();
+	
+	public void getDroneAltitude(int altitude){
+		MyAltitudeListener alt = null;
+		
+		Movement.currentAltitude = altitude;
+		if (Movement.currentAltitude <= 2000){
+	
+			System.out.println("Drone Altitude" + altitude);
+		} else {
+			System.out.println("Drone Altitude Null!:" + altitude);
 		}
 	}
 
@@ -190,11 +194,11 @@ public class DroneCommander extends Canvas {
 		cmd.landing();
 	}
 	
-	public void hover(){
-		System.out.println("Altitude1: " + App.currentAltitude);
-		cmd.hover().doFor(5000);
-		System.out.println("Altitude2: " + App.currentAltitude);
-	}
+//	public void hover(){
+//		System.out.println("Altitude1: " + Movement.currentAltitude);
+//		cmd.hover().doFor(5000);
+//		System.out.println("Altitude2: " + Movement.currentAltitude);
+//	}
 	public void killAll(){
 		cmd.landing();
 	}
