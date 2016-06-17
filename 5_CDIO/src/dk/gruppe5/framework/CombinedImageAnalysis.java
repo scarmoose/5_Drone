@@ -49,9 +49,8 @@ public class CombinedImageAnalysis {
 		int contourNr = 0;
 		Point leftTrianglePixelCenter = null;
 		Point rightTrianglePixelCenter = null;
-
-		String nameOfQROnTheLeft = null;
-		String nameOfQROnTheRight = null;
+		java.awt.Point trianglePositionLeft = null;
+		java.awt.Point trianglePositionRight = null;
 		String nameOfQRMark;
 		for (Result result : results) {
 			if (result != null) {
@@ -93,8 +92,8 @@ public class CombinedImageAnalysis {
 					int nrWallMark = 0;
 					for (Wallmark wallmark : Mathmagic.getArray()) {
 						if (wallmark.getName().equals(nameOfQRMark)) {
-							nameOfQROnTheRight = Mathmagic.getNameFromInt(nrWallMark + 1);
-							nameOfQROnTheLeft = Mathmagic.getNameFromInt(nrWallMark - 1);
+							trianglePositionLeft = wallmark.getLeftTrianglePos();
+							trianglePositionRight = wallmark.getRightTrianglePos();
 							break;
 						}
 						nrWallMark++;
@@ -103,16 +102,12 @@ public class CombinedImageAnalysis {
 					// find hvert af qrMærkernes positions data i koordinat
 					// systemet, lav 2 nye punkter med halvt x værdi, lav
 					// udregning for position og opdater korte
-					if (nameOfQROnTheLeft != null && nameOfQROnTheRight != null) {
-
-						Point realPosLeftQrMark = Mathmagic.getPointFromName(nameOfQROnTheLeft);
-						Point realPosRightQrMark = Mathmagic.getPointFromName(nameOfQROnTheRight);
-						DPoint adjustedLeftRealPos = new DPoint(realPosLeftQrMark.x / 2, realPosLeftQrMark.y);
-						DPoint adjustRightRealPos = new DPoint(realPosRightQrMark.x / 2, realPosRightQrMark.y);
-
+					if (trianglePositionLeft != null && trianglePositionRight != null) {
+						DPoint trianglePosLef = new DPoint(trianglePositionLeft.x,trianglePositionLeft.y);
+						DPoint trianglePosRight = new DPoint(trianglePositionRight.x,trianglePositionRight.y);
 						Position test = new Position();
-						Point mapPosition = test.getPositionFromPoints(adjustedLeftRealPos,
-								Mathmagic.getPointFromName(nameOfQRMark), adjustRightRealPos, leftTrianglePixelCenter,
+						Point mapPosition = test.getPositionFromPoints(trianglePosLef,
+								Mathmagic.getPointFromName(nameOfQRMark), trianglePosRight, leftTrianglePixelCenter,
 								centerCurrentContour, rightTrianglePixelCenter);
 						if (mapPosition != null) {
 							DronePosition.setPosition(mapPosition);
