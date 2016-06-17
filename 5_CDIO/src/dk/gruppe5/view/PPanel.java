@@ -324,10 +324,74 @@ public class PPanel extends JPanel implements Runnable {
 				Filterstates.setImage4(imgproc.toBufferedImage(frame));
 				image = imgproc.toBufferedImage(backUp);
 				
+			} else if(Values_cam.getMethod()==23){
+				
+				Mat backUp = new Mat();
+				backUp = frame;
+				
+				Mat blurredImage = new Mat();
+				Mat hsvImage = new Mat();
+				Mat mask = new Mat();
+				Mat morphOutput = new Mat();
+
+				// remove some noise
+				Imgproc.blur(frame, blurredImage, new Size(7, 7));
+
+				// convert the frame to HSV
+				Imgproc.cvtColor(blurredImage, hsvImage, Imgproc.COLOR_BGR2HSV);
+
+				/*
+				 * get thresholding values from the UI
+				 * remember: H ranges 0-180, S and V range 0-255
+				 */
+
+				//		 for black colors:
+				//		 Scalar minValues = new Scalar(0,0,0);
+				//		 Scalar maxValues = new Scalar(179, 50, 100);
+				//		 
+				//		for blue colors:
+				//		Scalar minValues = new Scalar(49, 64, 50);
+				//		Scalar maxValues = new Scalar(128, 184, 255);
+
+				Scalar minValues = new Scalar(0,0,0);
+				Scalar maxValues = new Scalar(179, 50 ,100);
+				Core.inRange(hsvImage, minValues, maxValues, mask);
+				Filterstates.setImage1(imgproc.toBufferedImage(mask));
+
+				/*
+				 * morphological operators
+				 * dilate with large element, erode with small ones
+				 */
+				Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
+				Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
+				Imgproc.erode(mask, morphOutput, erodeElement);
+				Imgproc.erode(mask, morphOutput, erodeElement);
+				Imgproc.dilate(mask, morphOutput, dilateElement);
+				Imgproc.dilate(mask, morphOutput, dilateElement);
+				Filterstates.setImage2(imgproc.toBufferedImage(morphOutput));
+
+				// init
+				List<MatOfPoint> contours = new ArrayList<>();
+				Mat hierarchy = new Mat();
+
+				// find contours
+				Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+
+				// if any contour exist...
+				if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
+				{
+					// for each contour, display it in blue
+					for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
+					{
+						Imgproc.drawContours(frame, contours, idx, new Scalar(250, 0, 0));
+					}
+				}
+				Filterstates.setImage3(imgproc.toBufferedImage(hsvImage));
+				Filterstates.setImage4(imgproc.toBufferedImage(blurredImage));
+				image = imgproc.toBufferedImage(backUp);
 			}
 			repaint();
 		}
-
 	}
 
 	public void opticalFlowCall(Mat frame) {
