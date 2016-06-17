@@ -42,7 +42,10 @@ public class DronePosition {
 	}
 	
 	public static double getDegree(){return degrees;}
-	public static void setDegree(double input) {degrees = input;}
+	public static void setDegree(double input) {
+		degrees = input;
+		System.out.println(degrees);
+	}
 	
 	public static void setPosition(Point p) {
 		x = p.x;

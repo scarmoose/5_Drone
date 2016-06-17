@@ -28,13 +28,16 @@ import dk.gruppe5.model.Values_cam;
 public class PWindow {
 
 	Values_cam vall = Values_cam.getInstance();
+
+
 	DroneCommander dCommando;
+
 
 	public PWindow(int w, int h) {
 
 		JFrame droneOrWebcamFrame = new JFrame();
 		droneOrWebcamFrame.setSize(w,h);
-		droneOrWebcamFrame.setTitle("Chose a video source");
+		droneOrWebcamFrame.setTitle("Choose a video source");
 
 		JFrame frame = new JFrame();
 		frame.setSize(w, h);
@@ -54,7 +57,6 @@ public class PWindow {
 		Filterstates filters = new Filterstates();
 		Thread filtersThread = new Thread(filters);
 		filtersThread.start();
-
 
 		frame.setLayout(new GridLayout(2, 2));
 
@@ -78,10 +80,19 @@ public class PWindow {
 		txtMethod.setHorizontalAlignment(JTextField.CENTER);
 
 		droneOrWebcamFrame.setVisible(true);
-		
+
+
+		leftPanel.add(innerLeftPanel);
+		innerLeftPanel.add(btnUpdate);
+		innerLeftPanel.add(txtMethod);
+		leftPanel.add(btnTakeoff);
+		leftPanel.add(btnLand);
+		leftPanel.add(btnEmergency);
+		btnEmergency.setForeground(Color.RED);
 		/*
-		* Button-functionality
-		*/
+		 * Button-functionality
+		 */
+
 
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -186,5 +197,3 @@ public class PWindow {
 		});
 	}
 }
-
-

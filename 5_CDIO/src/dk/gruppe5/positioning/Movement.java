@@ -80,6 +80,7 @@ public class Movement {
 		double vx = centerToPoint.x;
 		double vy = centerToPoint.y;
 		System.out.println("Length of vector: "+vlength);
+		
 		if(vlength < landIfLower) {
 			System.out.println("LANDING AT COORDINATES");
 			land();
@@ -94,6 +95,12 @@ public class Movement {
 				right(speed, interval);
 			} else left(speed, interval);
 		}
+
+
+	}
+	
+	public void randomSearch() {
+
 		
 	}
 
@@ -264,6 +271,7 @@ public class Movement {
 	class MyAltitudeListener implements AltitudeListener {
 		@Override
 		public void receivedAltitude(int altitude) {
+			App.currentAltitude = altitude;
 			if (altitude > 0){
 				System.out.println("Altitude: " + altitude);
 			}
