@@ -78,6 +78,7 @@ public class Movement {
 		double vx = centerToPoint.x;
 		double vy = centerToPoint.y;
 		System.out.println("Length of vector: "+vlength);
+		
 		if(vlength < landIfLower) {
 			land();
 		} else if(Math.abs(vy) > Math.abs(vx)) {
@@ -89,23 +90,30 @@ public class Movement {
 				right(speed, interval);
 			} else left(speed, interval);
 		}
-
+	}
+	
+	public void randomSearch() {
+		
 	}
 
 	public void left(int speed, int interval) {
 		cmd.goLeft(speed).doFor(interval);
+		cmd.hover();
 	}
 
 	public void right(int speed, int interval) {
 		cmd.goRight(speed).doFor(interval);
+		cmd.hover();
 	}
 
 	public void forward(int speed, int interval) {
 		cmd.forward(speed).doFor(interval);
+		cmd.hover();
 	}
 
 	public void backward(int speed, int interval) {
 		cmd.backward(speed).doFor(interval);
+		cmd.hover();
 	}
 
 	public void land() {
