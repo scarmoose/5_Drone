@@ -14,7 +14,7 @@ public class Wallmark {
 	Point rightTrianglePos;
 	
 	
-	public Wallmark(String name, Point position, Point leftTrianglePos, Point rightTrianglePos) {
+	public Wallmark(String name,  Point leftTrianglePos,Point position, Point rightTrianglePos) {
 		super();
 		this.name = name;
 		this.position = position;
