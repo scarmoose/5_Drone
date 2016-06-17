@@ -1218,9 +1218,8 @@ public class ImageProcessor {
 			double radius = r.width / 2;
 
 			if (r.area() > 80) {
-				if (contours_1.get(i).total() > 100) {
-					if (Math.abs(1 - ((double) r.width / (double) r.height)) <= 0.05
-							&& Math.abs(1 - (area / Math.PI * Math.pow(radius, 2))) >= 0.05) {
+				if (contours_1.get(i).total() > 1500) {
+					if (Math.abs(1 - ((double) r.width / (double) r.height)) <= 0.05 && Math.abs(1 - (area / Math.PI * Math.pow(radius, 2))) >= 0.05) {
 						Contour contour1 = new Contour(contour, approxCurve);
 						circleContours.add(contour1);
 					}
