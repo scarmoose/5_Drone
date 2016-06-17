@@ -18,6 +18,7 @@ import de.yadrone.base.navdata.GyroPhysData;
 import de.yadrone.base.navdata.GyroRawData;
 import de.yadrone.base.navdata.VelocityListener;
 import dk.gruppe5.app.App;
+import dk.gruppe5.controller.DroneCommander;
 import dk.gruppe5.exceptions.Fejl40;
 import dk.gruppe5.model.Circle;
 import dk.gruppe5.model.DPoint;
@@ -27,6 +28,7 @@ public class Movement {
 	private final IARDrone drone;
 	private final CommandManager cmd;
 	private Position pos;
+	public static int currentAltitude;
 
 
 	Runnable rthread = new Runnable(){
@@ -48,12 +50,14 @@ public class Movement {
 	}
 
 	private void init() {
-		drone.addExceptionListener(new MyExceptionListener());
-//		drone.getNavDataManager().addAltitudeListener(new MyAltitudeListener());
-//		drone.getNavDataManager().addAttitudeListener(new MyAttitudeListener());
-//		drone.getNavDataManager().addBatteryListener(new MyBatteryListener());
-//		drone.getNavDataManager().addAcceleroListener(new MyAcceleroListener());
-//		drone.getNavDataManager().addVelocityListener(new MyVelocityListener());
+
+		//drone.addExceptionListener(new MyExceptionListener());
+		drone.getNavDataManager().addAltitudeListener(new MyAltitudeListener());
+		//drone.getNavDataManager().addAttitudeListener(new MyAttitudeListener());
+		//drone.getNavDataManager().addBatteryListener(new MyBatteryListener());
+		//drone.getNavDataManager().addAcceleroListener(new MyAcceleroListener());
+		//drone.getNavDataManager().addVelocityListener(new MyVelocityListener());
+
 	}
 
 
@@ -268,10 +272,10 @@ public class Movement {
 
 	}
 	
-	class MyAltitudeListener implements AltitudeListener {
+	public class MyAltitudeListener implements AltitudeListener {
 		@Override
 		public void receivedAltitude(int altitude) {
-			App.currentAltitude = altitude;
+			currentAltitude = altitude;
 			if (altitude > 0){
 				System.out.println("Altitude: " + altitude);
 			}
