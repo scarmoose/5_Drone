@@ -95,25 +95,26 @@ public class DroneCommander extends Canvas {
 	        	 getDroneAltitude(Movement.currentAltitude);
 	        	 
 	        	 try{
-	        		 long t = System.currentTimeMillis();
-	        		 long end = t+5000;
-	        		 while(System.currentTimeMillis() < end) {
-	        			 
-	 					if(DronePosition.getXPoint()!=630 || DronePosition.getYPoint()!= -70){
+	        		 //long t = System.currentTimeMillis();
+	        		 //long end = t+100000;
+	        		 while(true) {
+	 					if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!= -70){
 							System.out.println("Yay!");
+							long t = System.currentTimeMillis();
+			        		long end = t+10000;
+			        		while(System.currentTimeMillis()<end){
+			        			cmd.spinLeft(30).doFor(100);
+			        			Thread.sleep(10);
+			        		}
+							cmd.landing();
 							break;
 						}
-
-	        			 
-	        			 cmd.hover().doFor(5000);
+	        			 cmd.hover().doFor(10);
 	        			 System.out.println("Drone Thread: Drone is now Howering.");	
-	        			 Thread.sleep(1000);
-	        			 cmd.spinLeft(30).doFor(1000);
-	        			 Thread.sleep(1000);
-	        			 cmd.landing();
+	        			 Thread.sleep(100);
+	        			 //cmd.spinLeft(30).doFor(1000);
+	        			 //Thread.sleep(1000);
 	        			 System.out.println("Drone Flight Control Complete!");
-	        			 Thread.sleep(1000);
-	        			 break;
 	        		 }
 	        	 } catch (InterruptedException e){
 	        		 Thread.currentThread().interrupt();
