@@ -200,9 +200,17 @@ public class Lines {
             g2d.drawLine(930/2+20, 1060/2+50, 930/2+20, 50);
             ArrayList<Integer> Xelements = new ArrayList<>();
     		ArrayList<Integer> Yelements = new ArrayList<>();
+    		ArrayList<Integer> LeftXelements = new ArrayList<>();
+    		ArrayList<Integer> LeftYelements = new ArrayList<>();
+    		ArrayList<Integer> RightXelements = new ArrayList<>();
+    		ArrayList<Integer> RightYelements = new ArrayList<>();
     		for (int i = 0 ; i < Mathmagic.getArray().length ; i++){
     			Xelements.add((int) Mathmagic.getArray()[i].getPosition().getX());
     			Yelements.add((int) Mathmagic.getArray()[i].getPosition().getY());
+    			LeftXelements.add((int) Mathmagic.getArray()[i].getLeftTrianglePos().getX());
+    			LeftYelements.add((int) Mathmagic.getArray()[i].getLeftTrianglePos().getY());
+    			RightXelements.add((int) Mathmagic.getArray()[i].getRightTrianglePos().getX());
+    			RightYelements.add((int) Mathmagic.getArray()[i].getRightTrianglePos().getY());
     		}
         	
     		for (int k = 0;k< Yelements.size();k++){
