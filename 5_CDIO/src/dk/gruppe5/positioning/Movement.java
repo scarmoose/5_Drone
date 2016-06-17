@@ -1,5 +1,7 @@
 package dk.gruppe5.positioning;
 
+import com.google.zxing.datamatrix.encoder.SymbolShapeHint;
+
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.exception.ARDroneException;
@@ -66,9 +68,9 @@ public class Movement {
 	 * @param frameSize
 	 */
 	public void centerPointInFrame(DPoint p, DPoint frameSize) {
-		int speed = 100;
+		int speed = 20;
 		int interval = 10;
-		int landIfLower = 15;
+		int landIfLower = 45;
 		DPoint point = p.clone();
 		double cx = frameSize.x/2;
 		double cy = frameSize.y/2;
@@ -79,33 +81,40 @@ public class Movement {
 		double vy = centerToPoint.y;
 		System.out.println("Length of vector: "+vlength);
 		if(vlength < landIfLower) {
+			System.out.println("LANDING AT COORDINATES");
 			land();
 		} else if(Math.abs(vy) > Math.abs(vx)) {
+			System.out.println("correcting");
 			if(vy > 0) { // hvis punktet er over centrum
 				forward(speed, interval);
+				
 			} else backward(speed, interval);
 		} else {
 			if(vx > 0) { // hvis punkter er til højre for centrum
 				right(speed, interval);
 			} else left(speed, interval);
 		}
-
+		
 	}
 
 	public void left(int speed, int interval) {
 		cmd.goLeft(speed).doFor(interval);
+		cmd.hover();
 	}
 
 	public void right(int speed, int interval) {
 		cmd.goRight(speed).doFor(interval);
+		cmd.hover();
 	}
 
 	public void forward(int speed, int interval) {
 		cmd.forward(speed).doFor(interval);
+		cmd.hover();
 	}
 
 	public void backward(int speed, int interval) {
 		cmd.backward(speed).doFor(interval);
+		cmd.hover();
 	}
 
 	public void land() {

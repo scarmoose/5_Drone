@@ -27,7 +27,7 @@ import com.google.zxing.ResultPoint;
 import CoordinateSystem.DronePosition;
 import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.ImageProcessor;
-import dk.gruppe5.framework.combinedImageAnalysis;
+import dk.gruppe5.framework.CombinedImageAnalysis;
 import dk.gruppe5.legacy.KeyInput;
 import dk.gruppe5.model.Contour;
 import dk.gruppe5.model.DPoint;
@@ -48,7 +48,7 @@ public class PPanel extends JPanel implements Runnable {
 	// public int method = 2;
 
 	public int method = Values_cam.getMethod();
-	combinedImageAnalysis combi = new combinedImageAnalysis();
+	CombinedImageAnalysis combi = new CombinedImageAnalysis();
 	List<Point> startPoints;
 	List<Point> endPoints;
 	Point direction;
@@ -279,8 +279,7 @@ public class PPanel extends JPanel implements Runnable {
 				
 			}else if(Values_cam.getMethod() == 10){
 				//her vil vi prøve at finde position ud fra et qr markering og de trekanter der er på hver side halvvejs til feltet
-				frame = combi.findPositionFromQRandTriangles(frame);
-//				
+				frame = combi.findPositionFromQRandTriangles(frame);		
 				image = imgproc.toBufferedImage(frame);
 
 			} else if(Values_cam.getMethod()==13){

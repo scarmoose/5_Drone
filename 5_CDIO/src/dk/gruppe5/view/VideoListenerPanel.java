@@ -31,6 +31,7 @@ import dk.gruppe5.controller.Mathmagic;
 import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.FrameGrabber;
 import dk.gruppe5.framework.ImageProcessor;
+import dk.gruppe5.framework.CombinedImageAnalysis;
 import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.Contour;
@@ -142,8 +143,11 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 						movement.centerPointInFrame(new DPoint(qrPoint), new DPoint(frame.width(),frame.height()));
 					}
 					image = imgProc.toBufferedImage(frame);
-				}
-				else if (Values_cam.getMethod() == 1) {
+				}else if(Values_cam.getMethod() == 21){
+					CombinedImageAnalysis combi = new CombinedImageAnalysis();
+					frame = combi.findPositionFromQRandTriangles(frame);		
+					image = imgProc.toBufferedImage(frame);	
+				}else if (Values_cam.getMethod() == 1) {
 
 					Mat backUp = new Mat();
 					backUp = frame;
