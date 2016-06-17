@@ -1299,6 +1299,10 @@ public class ImageProcessor {
 
 		List<Contour> papkasser = new ArrayList<>();
 
+		/*
+		 * Tyvstjålet colordetection fra nettet, http://opencv-java-tutorials.readthedocs.io/en/latest/08-object-detection.html
+		 */
+		
 		Mat blurredImage = new Mat();
 		Mat hsvImage = new Mat();
 		Mat mask = new Mat();
@@ -1356,7 +1360,7 @@ public class ImageProcessor {
 				double radius = r.width / 2;
 
 				if(r.area() > 80){
-					if (contours.get(idx).total() > 100) {
+					if (contours.get(idx).total() > 700) {
 						if(Math.abs(1-((double)r.width/(double)r.height)) <= 0.05 && Math.abs(1-(area/Math.PI*Math.pow(radius,2))) >= 0.05){
 							Contour contour1 = new Contour(contour, approxCurve);
 							papkasser.add(contour1);

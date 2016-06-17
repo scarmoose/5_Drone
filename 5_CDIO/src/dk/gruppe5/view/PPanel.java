@@ -324,64 +324,6 @@ public class PPanel extends JPanel implements Runnable {
 				Filterstates.setImage4(imgproc.toBufferedImage(frame));
 				image = imgproc.toBufferedImage(backUp);
 				
-				/*
-				 * Tyvstjålet fra nettet, http://opencv-java-tutorials.readthedocs.io/en/latest/08-object-detection.html
-				 */
-				
-//				Mat blurredImage = new Mat();
-//				Mat hsvImage = new Mat();
-//				Mat mask = new Mat();
-//				Mat morphOutput = new Mat();
-//
-//				// remove some noise
-//				Imgproc.blur(frame, blurredImage, new Size(7, 7));
-//
-//				// convert the frame to HSV
-//				Imgproc.cvtColor(blurredImage, hsvImage, Imgproc.COLOR_BGR2HSV);
-//
-//				// get thresholding values from the UI
-//				// remember: H ranges 0-180, S and V range 0-255
-//				Scalar minValues = new Scalar(49, 64, 50);
-//				Scalar maxValues = new Scalar(128, 184, 255);
-//
-//				Core.inRange(hsvImage, minValues, maxValues, mask);
-//				// show the partial output
-//				Filterstates.setImage1(imgproc.toBufferedImage(blurredImage));
-//
-//				// morphological operators
-//				// dilate with large element, erode with small ones
-//				Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
-//				Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
-//
-//				Imgproc.erode(mask, morphOutput, erodeElement);
-//				Imgproc.erode(mask, morphOutput, erodeElement);
-//
-//				Imgproc.dilate(mask, morphOutput, dilateElement);
-//				Imgproc.dilate(mask, morphOutput, dilateElement);
-//
-//				// show the partial output
-//				Filterstates.setImage2(imgproc.toBufferedImage(hsvImage));
-//
-//				// init
-//				List<MatOfPoint> contours = new ArrayList<>();
-//				Mat hierarchy = new Mat();
-//
-//				// find contours
-//				Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
-//
-//				// if any contour exist...
-//				if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
-//				{
-//					// for each contour, display it in blue
-//					for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
-//					{
-//						Imgproc.drawContours(frame, contours, idx, new Scalar(250, 0, 0));
-//					}
-//				}
-//				
-//				Filterstates.setImage3(imgproc.toBufferedImage(mask));
-//				Filterstates.setImage4(imgproc.toBufferedImage(morphOutput));
-//				image = imgproc.toBufferedImage(backUp);
 			}
 			repaint();
 		}
