@@ -1,20 +1,16 @@
 package dk.gruppe5.view;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -26,13 +22,13 @@ import com.google.zxing.Result;
 import CoordinateSystem.DronePosition;
 import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.ImageProcessor;
-import dk.gruppe5.legacy.KeyInput;
+//github.com/scarmoose/5_Drone.git
 import dk.gruppe5.model.Contour;
 import dk.gruppe5.model.DPoint;
-import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.opticalFlowData;
 import dk.gruppe5.positioning.Position;
+import dk.gruppe5.test.CircleTest;
 
 public class PPanel extends JPanel implements Runnable {
 
@@ -119,7 +115,7 @@ public class PPanel extends JPanel implements Runnable {
 
 			if (Values_cam.getMethod() == 1) {
 				opticalFlowCall(frame);
-			} else if (Values_cam.getMethod() == 0) {
+			} else if (Values_cam.getMethod() == 0){
 
 				image = imgproc.toBufferedImage(frame);
 				frame = imgproc.toGrayScale(frame);
@@ -325,7 +321,6 @@ public class PPanel extends JPanel implements Runnable {
 				image = imgproc.toBufferedImage(backUp);
 				
 			} else if(Values_cam.getMethod()==23){
-				
 				Mat backUp = new Mat();
 				backUp = frame;
 				
@@ -390,7 +385,77 @@ public class PPanel extends JPanel implements Runnable {
 				Filterstates.setImage4(imgproc.toBufferedImage(blurredImage));
 				image = imgproc.toBufferedImage(backUp);
 			}
-			repaint();
+				
+//				Mat blurredImage = new Mat();
+//				Mat hsvImage = new Mat();
+//				Mat mask = new Mat();
+//				Mat morphOutput = new Mat();
+//
+//				// remove some noise
+//				Imgproc.blur(frame, blurredImage, new Size(7, 7));
+//
+//				// convert the frame to HSV
+//				Imgproc.cvtColor(blurredImage, hsvImage, Imgproc.COLOR_BGR2HSV);
+//
+//				// get thresholding values from the UI
+//				// remember: H ranges 0-180, S and V range 0-255
+//				Scalar minValues = new Scalar(49, 64, 50);
+//				Scalar maxValues = new Scalar(128, 184, 255);
+//
+//				Core.inRange(hsvImage, minValues, maxValues, mask);
+//				// show the partial output
+//				Filterstates.setImage1(imgproc.toBufferedImage(blurredImage));
+//
+//				// morphological operators
+//				// dilate with large element, erode with small ones
+//				Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
+//				Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
+//
+//				Imgproc.erode(mask, morphOutput, erodeElement);
+//				Imgproc.erode(mask, morphOutput, erodeElement);
+//
+//				Imgproc.dilate(mask, morphOutput, dilateElement);
+//				Imgproc.dilate(mask, morphOutput, dilateElement);
+//
+//				// show the partial output
+//				Filterstates.setImage2(imgproc.toBufferedImage(hsvImage));
+//
+//				// init
+//				List<MatOfPoint> contours = new ArrayList<>();
+//				Mat hierarchy = new Mat();
+//
+//				// find contours
+//				Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+//
+//				// if any contour exist...
+//				if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
+//				{
+//					// for each contour, display it in blue
+//					for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
+//					{
+//						Imgproc.drawContours(frame, contours, idx, new Scalar(250, 0, 0));
+//					}
+//				}
+//				
+//				Filterstates.setImage3(imgproc.toBufferedImage(mask));
+//				Filterstates.setImage4(imgproc.toBufferedImage(morphOutput));
+//				image = imgproc.toBufferedImage(backUp);
+			else if(Values_cam.getMethod() == 15) {
+				Mat dst = new Mat(frame.width(), frame.height(), 1);
+				dst = frame.clone();
+				frame = imgproc.toGrayScale(frame);
+				new CircleTest().findHoughCircles(frame, dst);
+				if(!dst.empty()) {
+					System.out.println("LOL");
+					image = imgproc.toBufferedImage(dst);
+				} else System.err.println("FEJL I CIRKLEFINDING");
+			}
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					repaint();
+				}
+			});
 		}
 	}
 

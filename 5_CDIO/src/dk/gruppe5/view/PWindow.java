@@ -37,7 +37,7 @@ public class PWindow {
 
 		JFrame droneOrWebcamFrame = new JFrame();
 		droneOrWebcamFrame.setSize(w,h);
-		droneOrWebcamFrame.setTitle("Chose a video source");
+		droneOrWebcamFrame.setTitle("Choose a video source");
 
 		JFrame frame = new JFrame();
 		frame.setSize(w, h);
