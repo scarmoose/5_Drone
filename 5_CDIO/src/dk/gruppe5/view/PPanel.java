@@ -2,14 +2,18 @@ package dk.gruppe5.view;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
@@ -18,7 +22,7 @@ import com.google.zxing.Result;
 import CoordinateSystem.DronePosition;
 import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.ImageProcessor;
-import dk.gruppe5.framework.combinedImageAnalysis;
+//github.com/scarmoose/5_Drone.git
 import dk.gruppe5.model.Contour;
 import dk.gruppe5.model.DPoint;
 import dk.gruppe5.model.Values_cam;
@@ -38,7 +42,7 @@ public class PPanel extends JPanel implements Runnable {
 	// public int method = 2;
 
 	public int method = Values_cam.getMethod();
-	combinedImageAnalysis combi = new combinedImageAnalysis();
+
 	List<Point> startPoints;
 	List<Point> endPoints;
 	Point direction;
@@ -195,16 +199,12 @@ public class PPanel extends JPanel implements Runnable {
 											data.getPoints()[0], data.getPoints()[1], data.getPoints()[2]);
 									if (mapPosition != null) {
 										DronePosition.setPosition(mapPosition);
+										DronePosition.setDegree(90.0);
 										// System.out.println(mapPosition);
 										int screenWidth = image.getWidth();
 										int middleOfScreen = screenWidth/2;
 										int pixelsFromMiddleToQr =  Math.abs(((int)data.getPoints()[1].x-middleOfScreen)); 
 										DPoint mapPos = new DPoint(mapPosition);
-										System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr)+" grader");
-										String text = data.getQrNames()[0];
-										String wallNr =""+text.charAt(2);
-										int x = Integer.parseInt(wallNr);
-										DronePosition.setDegree((90.0*x)+test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
 										System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
 
 									}
@@ -262,14 +262,40 @@ public class PPanel extends JPanel implements Runnable {
 					frame = imgproc.drawLinesBetweenContourPoints(contour, frame, ratio, color);
 
 				}
-				Filterstates.setImage1(imgproc.toBufferedImage(frame));
-				image = imgproc.toBufferedImage(backUp);
+				Filterstates.setImage1(imgproc.toBufferedImage(backUp));
+				image = imgproc.toBufferedImage(frame);
 				
 			}else if(Values_cam.getMethod() == 10){
-				//her vil vi prøve at finde position ud fra et qr markering og de trekanter der er på hver side halvvejs til feltet
-				frame = combi.findPositionFromQRandTriangles(frame);
+				Mat backUp = new Mat();
+				backUp = frame;
+				int ratio = 1;
+
+				frame = imgproc.toGrayScale(frame);
+				frame = imgproc.equalizeHistogramBalance(frame);
+				frame = imgproc.blur(frame);
+				frame = imgproc.toCanny(frame);
+				// Nu skal vi prøve at finde firkanter af en hvis størrelse
+				List<Contour> contours = imgproc.findQRsquares(frame);
+		
+				// vi finder de potentielle QR kode områder
+				List<BufferedImage> cutouts = imgproc.warp(backUp, contours, ratio);
+//				List<Result> results = imgproc.readQRCodes(cutouts);
+				Result result = imgproc.readQRcodeFromWholeImage(imgproc.toBufferedImage(backUp));
+				
+//				int i = 0;
+//				for (Result result : results) {
+//					if (result != null) {
+//						// backUp =
+//						// imgProc.drawLinesBetweenBoundingRectPoints(contours.get(i),
+//						// backUp, ratio);
+//						Scalar color = new Scalar(255, 255, 0);
+//						backUp = imgproc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
+//						backUp = imgproc.putText(result.getText(), contours.get(i).getCenter(ratio), backUp);
+//					}
+//					i++;
+//				}
 //				
-				image = imgproc.toBufferedImage(frame);
+				
 
 			} else if(Values_cam.getMethod()==13){
 
@@ -279,9 +305,9 @@ public class PPanel extends JPanel implements Runnable {
 				Mat backUp = new Mat();
 				backUp = frame;
 				
-				List<Contour> circle = imgproc.findPapkasser(frame);
+				List<Contour> bluestuff = imgproc.findPapkasser(frame);
 				
-				for(int i = 0; i < circle.size(); i++){
+				for(int i = 0; i < bluestuff.size(); i++){
 					System.out.println("found a papkasse!");
 				}
 				
@@ -294,9 +320,71 @@ public class PPanel extends JPanel implements Runnable {
 				Filterstates.setImage4(imgproc.toBufferedImage(frame));
 				image = imgproc.toBufferedImage(backUp);
 				
+			} else if(Values_cam.getMethod()==23){
+				Mat backUp = new Mat();
+				backUp = frame;
+				
+				Mat blurredImage = new Mat();
+				Mat hsvImage = new Mat();
+				Mat mask = new Mat();
+				Mat morphOutput = new Mat();
+
+				// remove some noise
+				Imgproc.blur(frame, blurredImage, new Size(7, 7));
+
+				// convert the frame to HSV
+				Imgproc.cvtColor(blurredImage, hsvImage, Imgproc.COLOR_BGR2HSV);
+
 				/*
-				 * Tyvstjålet fra nettet, http://opencv-java-tutorials.readthedocs.io/en/latest/08-object-detection.html
+				 * get thresholding values from the UI
+				 * remember: H ranges 0-180, S and V range 0-255
 				 */
+
+				//		 for black colors:
+				//		 Scalar minValues = new Scalar(0,0,0);
+				//		 Scalar maxValues = new Scalar(179, 50, 100);
+				//		 
+				//		for blue colors:
+				//		Scalar minValues = new Scalar(49, 64, 50);
+				//		Scalar maxValues = new Scalar(128, 184, 255);
+
+				Scalar minValues = new Scalar(0,0,0);
+				Scalar maxValues = new Scalar(179, 50 ,100);
+				Core.inRange(hsvImage, minValues, maxValues, mask);
+				Filterstates.setImage1(imgproc.toBufferedImage(mask));
+
+				/*
+				 * morphological operators
+				 * dilate with large element, erode with small ones
+				 */
+				Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
+				Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
+				Imgproc.erode(mask, morphOutput, erodeElement);
+				Imgproc.erode(mask, morphOutput, erodeElement);
+				Imgproc.dilate(mask, morphOutput, dilateElement);
+				Imgproc.dilate(mask, morphOutput, dilateElement);
+				Filterstates.setImage2(imgproc.toBufferedImage(morphOutput));
+
+				// init
+				List<MatOfPoint> contours = new ArrayList<>();
+				Mat hierarchy = new Mat();
+
+				// find contours
+				Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+
+				// if any contour exist...
+				if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
+				{
+					// for each contour, display it in blue
+					for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
+					{
+						Imgproc.drawContours(frame, contours, idx, new Scalar(250, 0, 0));
+					}
+				}
+				Filterstates.setImage3(imgproc.toBufferedImage(hsvImage));
+				Filterstates.setImage4(imgproc.toBufferedImage(blurredImage));
+				image = imgproc.toBufferedImage(backUp);
+			}
 				
 //				Mat blurredImage = new Mat();
 //				Mat hsvImage = new Mat();
@@ -352,7 +440,7 @@ public class PPanel extends JPanel implements Runnable {
 //				Filterstates.setImage3(imgproc.toBufferedImage(mask));
 //				Filterstates.setImage4(imgproc.toBufferedImage(morphOutput));
 //				image = imgproc.toBufferedImage(backUp);
-			} else if(Values_cam.getMethod() == 15) {
+			else if(Values_cam.getMethod() == 15) {
 				Mat dst = new Mat(frame.width(), frame.height(), 1);
 				dst = frame.clone();
 				frame = imgproc.toGrayScale(frame);
@@ -369,11 +457,8 @@ public class PPanel extends JPanel implements Runnable {
 				}
 			});
 		}
-
 	}
 
-	
-	
 	public void opticalFlowCall(Mat frame) {
 		opticalFlowData flowData = imgproc.opticalFlow(frame, old_frame);
 		Mat ofs_frame = flowData.getFrame();

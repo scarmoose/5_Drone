@@ -1218,9 +1218,8 @@ public class ImageProcessor {
 			double radius = r.width / 2;
 
 			if (r.area() > 80) {
-				if (contours_1.get(i).total() > 100) {
-					if (Math.abs(1 - ((double) r.width / (double) r.height)) <= 0.05
-							&& Math.abs(1 - (area / Math.PI * Math.pow(radius, 2))) >= 0.05) {
+				if (contours_1.get(i).total() > 1500) {
+					if (Math.abs(1 - ((double) r.width / (double) r.height)) <= 0.05 && Math.abs(1 - (area / Math.PI * Math.pow(radius, 2))) >= 0.05) {
 						Contour contour1 = new Contour(contour, approxCurve);
 						circleContours.add(contour1);
 					}
@@ -1300,6 +1299,10 @@ public class ImageProcessor {
 
 		List<Contour> papkasser = new ArrayList<>();
 
+		/*
+		 * Tyvstjålet colordetection fra nettet, http://opencv-java-tutorials.readthedocs.io/en/latest/08-object-detection.html
+		 */
+
 		Mat blurredImage = new Mat();
 		Mat hsvImage = new Mat();
 		Mat mask = new Mat();
@@ -1315,6 +1318,15 @@ public class ImageProcessor {
 		 * get thresholding values from the UI
 		 * remember: H ranges 0-180, S and V range 0-255
 		 */
+
+
+		//		 for black colors:
+		//		 Scalar minValues = new Scalar(0,0,0);
+		//		 Scalar maxValues = new Scalar(255,255,10);
+		//		 
+		//		for blue colors:
+		//		Scalar minValues = new Scalar(49, 64, 50);
+		//		Scalar maxValues = new Scalar(128, 184, 255);
 
 		Scalar minValues = new Scalar(49, 64, 50);
 		Scalar maxValues = new Scalar(128, 184, 255);
@@ -1357,10 +1369,12 @@ public class ImageProcessor {
 				double radius = r.width / 2;
 
 				if(r.area() > 80){
-					if (contours.get(idx).total() > 100) {
-						if(Math.abs(1-((double)r.width/(double)r.height)) <= 0.05 && Math.abs(1-(area/Math.PI*Math.pow(radius,2))) >= 0.05){
-							Contour contour1 = new Contour(contour, approxCurve);
-							papkasser.add(contour1);
+					if(r.height/r.width < 1.5 ){
+						if (contours.get(idx).total() > 200) {
+							if(Math.abs(1-((double)r.width/(double)r.height)) <= 0.05 && Math.abs(1-(area/Math.PI*Math.pow(radius,2))) >= 0.05){
+								Contour contour1 = new Contour(contour, approxCurve);
+								papkasser.add(contour1);
+							}
 						}
 					}
 				}
