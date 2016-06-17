@@ -17,7 +17,7 @@ public class Mathmagic {
 	public final static Map<Integer, String> isMap = new HashMap<Integer, String>();
 	// public final static float[][] wallmarkDistances = new float[20][20];
 	public final static Wallmark[] wallmarks = {
-			new Wallmark("W00.00", new Point(94, 1055), new Point(188, 1055), new Point(263, 1055)),
+			new Wallmark("W00.00", new Point(94, 1055), new Point(188, 1055), new Point(264, 1055)),
 			new Wallmark("W00.01",new Point(264,1055), new Point(338, 1060),new Point(426,1055)), 
 			new Wallmark("W00.02",new Point(426,1055), new Point(515, 1055),new Point(604,1055)),
 			new Wallmark("W00.03",new Point(604,1055), new Point(694, 1060),new Point(767,1060)), 
