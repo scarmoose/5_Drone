@@ -37,6 +37,7 @@ import dk.gruppe5.model.Contour;
 import dk.gruppe5.model.DPoint;
 import dk.gruppe5.positioning.Movement;
 import dk.gruppe5.positioning.Position;
+import dk.gruppe5.test.CircleTest;
 
 public class VideoListenerPanel extends JPanel implements Runnable {
 
@@ -270,6 +271,15 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					         }
 					 }
 					 image = imgProc.toBufferedImage(blurredImage);
+				} else if (Values_cam.getMethod() == 15) {
+					Mat dst = new Mat(frame.width(), frame.height(), 1);
+					dst = frame.clone();
+					frame = imgProc.toGrayScale(frame);
+					new CircleTest().findHoughCircles(frame, dst);
+					if(!dst.empty()) {
+						System.out.println("LOL");
+						image = imgProc.toBufferedImage(dst);
+					} else System.err.println("FEJL I CIRKLEFINDING");
 				}
 
 				//System.out.println(image.getWidth() +","+ image.getHeight());

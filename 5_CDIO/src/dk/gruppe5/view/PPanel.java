@@ -1,40 +1,30 @@
 package dk.gruppe5.view;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
 import com.google.zxing.Result;
-import com.google.zxing.ResultPoint;
 
 import CoordinateSystem.DronePosition;
 import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.ImageProcessor;
 import dk.gruppe5.framework.combinedImageAnalysis;
-import dk.gruppe5.legacy.KeyInput;
 import dk.gruppe5.model.Contour;
 import dk.gruppe5.model.DPoint;
-import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.opticalFlowData;
 import dk.gruppe5.positioning.Position;
+import dk.gruppe5.test.CircleTest;
 
 public class PPanel extends JPanel implements Runnable {
 
@@ -121,7 +111,7 @@ public class PPanel extends JPanel implements Runnable {
 
 			if (Values_cam.getMethod() == 1) {
 				opticalFlowCall(frame);
-			} else if (Values_cam.getMethod() == 0) {
+			} else if (Values_cam.getMethod() == 0){
 
 				image = imgproc.toBufferedImage(frame);
 				frame = imgproc.toGrayScale(frame);
@@ -362,8 +352,22 @@ public class PPanel extends JPanel implements Runnable {
 //				Filterstates.setImage3(imgproc.toBufferedImage(mask));
 //				Filterstates.setImage4(imgproc.toBufferedImage(morphOutput));
 //				image = imgproc.toBufferedImage(backUp);
+			} else if(Values_cam.getMethod() == 15) {
+				Mat dst = new Mat(frame.width(), frame.height(), 1);
+				dst = frame.clone();
+				frame = imgproc.toGrayScale(frame);
+				new CircleTest().findHoughCircles(frame, dst);
+				if(!dst.empty()) {
+					System.out.println("LOL");
+					image = imgproc.toBufferedImage(dst);
+				} else System.err.println("FEJL I CIRKLEFINDING");
 			}
-			repaint();
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					repaint();
+				}
+			});
 		}
 
 	}
