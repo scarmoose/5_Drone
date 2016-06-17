@@ -120,7 +120,7 @@ public class PWindow {
 		btnTakeoff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("TAKEOFF");
-//				dCommando.droneFlightControl();
+				dCommando.droneFlightControl();
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();
