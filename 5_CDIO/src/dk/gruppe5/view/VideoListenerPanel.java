@@ -424,7 +424,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 								String wallNr =""+text.charAt(2);
 								int x = Integer.parseInt(wallNr);
 								//System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
-								DronePosition.setDegree((90.0*x)+test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
+								DronePosition.setDegree((90.0*x)-test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
 							}
 				
 						}
