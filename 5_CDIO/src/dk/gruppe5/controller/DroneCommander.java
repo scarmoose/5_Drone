@@ -3,6 +3,8 @@ package dk.gruppe5.controller;
 import java.awt.Canvas;
 import java.util.Random;
 
+import javax.sound.midi.Receiver;
+
 import CoordinateSystem.DronePosition;
 import de.yadrone.apps.controlcenter.plugins.altitude.AltitudeChart;
 import de.yadrone.apps.controlcenter.plugins.altitude.AltitudeChartPanel;
@@ -12,6 +14,10 @@ import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.command.VideoCodec;
 import de.yadrone.base.navdata.Altitude;
+
+import de.yadrone.base.navdata.AltitudeListener;
+import de.yadrone.base.navdata.NavData;
+import de.yadrone.base.navdata.NavDataManager;
 import dk.gruppe5.app.App;
 import dk.gruppe5.positioning.Movement;
 import dk.gruppe5.positioning.Position;
@@ -23,13 +29,12 @@ public class DroneCommander extends Canvas {
 	/**
 	 * 
 	 */
+	
 	private static final long serialVersionUID = -869265015784363288L;
 	
 	CommandManager cmd;
 
-	//private NavDataListener navl;
 	private Movement navl;
-
 	public DroneCommander() {
 		
 		try {
@@ -73,111 +78,110 @@ public class DroneCommander extends Canvas {
 			
 	}
 	
-//	public void strayAround() throws InterruptedException
-//	{
-//		droneTakeOff();
-//		cmd.hover().doFor(5000);
-//		int direction = new Random().nextInt() % 4;
-//		switch(direction)
-//		{
-//			case 0 : cmd.forward(speed).doFor(500); System.out.println("PaperChaseAutoController: Stray Around: FORWARD"); break;
-//			case 1 : cmd.backward(speed).doFor(500); System.out.println("PaperChaseAutoController: Stray Around: BACKWARD");break;
-//			case 2 : cmd.goLeft(speed).doFor(500); System.out.println("PaperChaseAutoController: Stray Around: LEFT"); break;
-//			case 3 : cmd.goRight(speed).doFor(500); System.out.println("PaperChaseAutoController: Stray Around: RIGHT");break;
-//		}
-//		
-//		Thread.currentThread().sleep(sleep);
-//		cmd.landing();
-//	}
+
+
 
 	public void droneFlightControl(){
-			
 		
-		while (true) {
-			try{	
-				cmd.takeOff();
-				System.out.println("Drone Tråden: Dronen letter nu.");
 
-				Thread.sleep(1000);
-				cmd.hover().doFor(7000);
-				Thread.sleep(1000);
-				
-				long t= System.currentTimeMillis();
-				long end = t+5000;
-				while(System.currentTimeMillis() < end) {
-					if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!= -70){
-						System.out.println("Yay!");
-						break;
-					}
-					//do something
-					//cmd.spinLeft(40).doFor(1000);
-					cmd.hover().doFor(700);
-					//pause to avoid churning
-					Thread.sleep(200);	
-				}
+		Thread thread = new Thread(new Runnable() {
+	         public void run() {
+	             
+	        	 droneTakeOff();
+	        	 
+	        	 try{
+	        		 long t = System.currentTimeMillis();
+	        		 long end = t+5000;
+	        		 while(System.currentTimeMillis() < end) {
+	        			 
+	 					if(DronePosition.getXPoint()!=630 || DronePosition.getYPoint()!= -70){
+							System.out.println("Yay!");
+							break;
+						}
 
-			} catch (InterruptedException e){
-				Thread.currentThread().interrupt();
-				e.printStackTrace();
-			}
-			break;
-		}
+	        			 
+	        			 cmd.hover().doFor(5000);
+	        			 System.out.println("Drone Thread: Drone is now Howering.");	
+	        			 Thread.sleep(1000);
+	        			 cmd.spinLeft(30).doFor(1000);
+	        			 Thread.sleep(1000);
+	        			 cmd.landing();
+	        			 System.out.println("Drone Flight Control Complete!");
+	        			 Thread.sleep(1000);
+	        			 break;
+	        		 }
+	        	 } catch (InterruptedException e){
+	        		 Thread.currentThread().interrupt();
+	        		 e.printStackTrace();
+	        	 }
+	         }
+	}); 
+	thread.start();
+		
 	}
-	/*public void droneHeight(){
+		
+
+		
+
+
+
+	public void droneTest(){
+		droneTakeOff();
+		hover();
+		killAll();
+		
+		
+	}
 	
-		if (navl.getAltitude() < 1450){
+	
+	public void droneHeight(){
+		if (App.currentAltitude < 1450){
+
 			cmd.up(speed).doFor(500);
 			cmd.hover().doFor(1000);
 
-		}else if(navl.getAltitude() > 1550){
+		}else if(App.currentAltitude > 1550){
 				cmd.down(speed).doFor(500);
 				cmd.hover().doFor(1000);
 
-		}else if (navl.getAltitude() > 1450 && navl.getAltitude() <1550 ){
+		}else if (App.currentAltitude > 1450 && App.currentAltitude <1550 ){
 			cmd.hover();
 		}
 	}
-	*/
+
 	public void droneTakeOff(){
 		System.out.println("We have Liftoff");
 		cmd.flatTrim();
 		cmd.takeOff();
 		System.out.println("takeoff done");
 	}
+
 	public void droneFlyingForward() throws InterruptedException{
 		cmd.forward(speed);
-		Thread.currentThread().sleep(sleep);
 	}
-	public void droneFlyingBackward() throws InterruptedException{
+	public void droneFlyingBackward(){
 		cmd.backward(speed);
-		Thread.currentThread().sleep(sleep);
 	}
-	public void droneFlyingUp() throws InterruptedException{
+	public void droneFlyingUp(){
 		cmd.up(speed).doFor(speed);
-		Thread.currentThread().sleep(sleep);
 	}
-	public void droneFlyingDown() throws InterruptedException{
+	public void droneFlyingDown(){
 		cmd.down(speed);
-		Thread.currentThread().sleep(sleep);
 	}
-	public void droneSpinLeft() throws InterruptedException{
+	public void droneSpinLeft(){
 		cmd.spinLeft(speed*2);
-		Thread.currentThread().sleep(sleep);
 	}
-	public void droneSpinRight() throws InterruptedException{
+	public void droneSpinRight(){
 		cmd.spinRight(speed*2);
-		Thread.currentThread().sleep(sleep);
-	}
+		}
 	public void droneKillAll(){
 		cmd.landing();
 	}
-	public void droneGoLeft() throws InterruptedException{
+	public void droneGoLeft(){
 		cmd.goLeft(speed);
-		Thread.currentThread().sleep(sleep);
 	}
-	public void droneGoRight() throws InterruptedException{
+	public void droneGoRight(){
 		cmd.goRight(speed);
-		Thread.currentThread().sleep(sleep);
 	}
 	
 	public void takeOffAndLand(long interval){
@@ -186,9 +190,10 @@ public class DroneCommander extends Canvas {
 		cmd.landing();
 	}
 	
-	public void hover() throws InterruptedException{
-		cmd.hover();
-		Thread.currentThread().sleep(sleep);
+	public void hover(){
+		System.out.println("Altitude1: " + App.currentAltitude);
+		cmd.hover().doFor(5000);
+		System.out.println("Altitude2: " + App.currentAltitude);
 	}
 	public void killAll(){
 		cmd.landing();
