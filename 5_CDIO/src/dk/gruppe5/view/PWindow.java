@@ -48,6 +48,7 @@ public class PWindow {
 		JButton btnSelectWebcam = new JButton("Use webcam");
 
 		JPanel droneOrWebcamPanel = new JPanel();
+		droneOrWebcamPanel.setFocusable(false);
 		droneOrWebcamPanel.setLayout(new GridLayout(0,1));
 		droneOrWebcamFrame.add(droneOrWebcamPanel);
 		droneOrWebcamPanel.add(btnSelectDrone);
@@ -62,11 +63,15 @@ public class PWindow {
 		JPanel leftPanel = new JPanel();
 		JPanel innerLeftPanel = new JPanel();
 		JPanel rightPanel = new JPanel();
+		leftPanel.setFocusable(false);
+		innerLeftPanel.setFocusable(false);
+		rightPanel.setFocusable(false);
 		rightPanel.setLayout(new GridLayout(0, 1));
 		leftPanel.setLayout(new GridLayout(4, 1));
 		innerLeftPanel.setLayout(new GridLayout(1, 2));
 
 		JButton btnUpdate = new JButton("UPDATE");
+		
 		JButton btnTakeoff = new JButton("TAKEOFF");
 		JButton btnEmergency = new JButton("KILL IT!");
 		JButton btnLand = new JButton("LAND");
@@ -96,6 +101,7 @@ public class PWindow {
 				frame.invalidate();
 				frame.validate();
 				frame.repaint();
+				frame.toFront();
 			}
 		});
 
@@ -114,7 +120,7 @@ public class PWindow {
 		btnTakeoff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("TAKEOFF");
-				//				dCommando.droneFlightControl();
+				dCommando.droneFlightControl();
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();
@@ -138,8 +144,9 @@ public class PWindow {
 				dCommando = new DroneCommander();
 				VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
 				new Thread(panel).start();
+				frame.setVisible(true);
 				frame.setFocusable(true);
-				frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
+			
 				//frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
 
 				leftPanel.add(innerLeftPanel);
@@ -154,7 +161,8 @@ public class PWindow {
 				rightPanel.add(filters);
 				frame.add(rightPanel);
 				frame.add(leftPanel);
-				frame.setVisible(true);
+				frame.addKeyListener(new KeyboardCommandManager((dCommando.getDrone())));
+			
 			}
 		});
 

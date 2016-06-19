@@ -31,6 +31,7 @@ import dk.gruppe5.controller.Mathmagic;
 import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.FrameGrabber;
 import dk.gruppe5.framework.ImageProcessor;
+import dk.gruppe5.framework.CombinedImageAnalysis;
 import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.Contour;
@@ -142,8 +143,12 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 						Movement movement = new Movement();
 						movement.centerPointInFrame(new DPoint(qrPoint), new DPoint(frame.width(),frame.height()));
 					}
-				}
-				else if (Values_cam.getMethod() == 1) {
+					image = imgProc.toBufferedImage(frame);
+				}else if(Values_cam.getMethod() == 21){
+					CombinedImageAnalysis combi = new CombinedImageAnalysis();
+					frame = combi.findPositionFromQRandTriangles(frame);		
+					image = imgProc.toBufferedImage(frame);	
+				}else if (Values_cam.getMethod() == 1) {
 
 					Mat backUp = new Mat();
 					backUp = frame;
@@ -434,7 +439,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 								String wallNr =""+text.charAt(2);
 								int x = Integer.parseInt(wallNr);
 								//System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
-								DronePosition.setDegree((90.0*x)+test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
+								DronePosition.setDegree((90.0*x)-test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
 							}
 				
 						}

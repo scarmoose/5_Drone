@@ -69,7 +69,7 @@ public class NavDataListener {
 			@Override
 			public void receivedAltitude(int altitude) {
 				if (altitude > 0){
-				//System.out.println("Altitude: " + altitude);
+				System.out.println("Altitude: " + altitude);
 				}
 			}
 

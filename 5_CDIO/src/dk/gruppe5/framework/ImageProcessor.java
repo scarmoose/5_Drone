@@ -1398,10 +1398,11 @@ public class ImageProcessor {
 			MatOfPoint2f approxCurve = new MatOfPoint2f();
 			double epsilon = Imgproc.arcLength(contour, true) * 0.1;
 
-			// we wanna se if a contour is a square, or has one or more edges so
+			// 
 			// we save them.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
 			double area = Imgproc.contourArea(approxCurve);
+			System.out.println(area);
 			if (area > minArea) {
 				if(approxCurve.total() == 3){
 					triangles.add(new Contour(contour,approxCurve));
