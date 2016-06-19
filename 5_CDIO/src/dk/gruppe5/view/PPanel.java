@@ -24,7 +24,9 @@ import com.google.zxing.Result;
 import CoordinateSystem.DronePosition;
 import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.ImageProcessor;
-//github.com/scarmoose/5_Drone.git
+
+import dk.gruppe5.framework.CombinedImageAnalysis;
+import dk.gruppe5.legacy.KeyInput;
 import dk.gruppe5.model.Contour;
 import dk.gruppe5.model.DPoint;
 import dk.gruppe5.model.Values_cam;
@@ -43,6 +45,7 @@ public class PPanel extends JPanel implements Runnable {
 	// public int method = 2;
 
 	public int method = Values_cam.getMethod();
+	CombinedImageAnalysis combi = new CombinedImageAnalysis();
 
 	List<Point> startPoints;
 	List<Point> endPoints;
@@ -115,8 +118,10 @@ public class PPanel extends JPanel implements Runnable {
 			long dt = System.currentTimeMillis() - t;
 
 			if (Values_cam.getMethod() == 1) {
+
 				opticalFlowCall(frame);
 			} else if (Values_cam.getMethod() == 0){
+
 
 				image = imgproc.toBufferedImage(frame);
 				frame = imgproc.toGrayScale(frame);
@@ -126,6 +131,9 @@ public class PPanel extends JPanel implements Runnable {
 				frame = imgproc.toCanny(frame);
 				Filterstates.setImage3(imgproc.toBufferedImage(frame));
 				Filterstates.setImage4(image);
+			} else if (Values_cam.getMethod() == 0) {
+				image = imgproc.toBufferedImage(frame);
+			
 
 			}else if (Values_cam.getMethod() == 6) {
 				Filterstates.setImage2(imgproc.toBufferedImage(frame));
@@ -267,37 +275,11 @@ public class PPanel extends JPanel implements Runnable {
 				image = imgproc.toBufferedImage(frame);
 				
 			}else if(Values_cam.getMethod() == 10){
-				Mat backUp = new Mat();
-				backUp = frame;
-				int ratio = 1;
 
-				frame = imgproc.toGrayScale(frame);
-				frame = imgproc.equalizeHistogramBalance(frame);
-				frame = imgproc.blur(frame);
-				frame = imgproc.toCanny(frame);
-				// Nu skal vi prøve at finde firkanter af en hvis størrelse
-				List<Contour> contours = imgproc.findQRsquares(frame);
-		
-				// vi finder de potentielle QR kode områder
-				List<BufferedImage> cutouts = imgproc.warp(backUp, contours, ratio);
-//				List<Result> results = imgproc.readQRCodes(cutouts);
-				Result result = imgproc.readQRcodeFromWholeImage(imgproc.toBufferedImage(backUp));
+				//her vil vi prøve at finde position ud fra et qr markering og de trekanter der er på hver side halvvejs til feltet
+				frame = combi.findPositionFromQRandTriangles(frame);		
+				image = imgproc.toBufferedImage(frame);
 				
-//				int i = 0;
-//				for (Result result : results) {
-//					if (result != null) {
-//						// backUp =
-//						// imgProc.drawLinesBetweenBoundingRectPoints(contours.get(i),
-//						// backUp, ratio);
-//						Scalar color = new Scalar(255, 255, 0);
-//						backUp = imgproc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
-//						backUp = imgproc.putText(result.getText(), contours.get(i).getCenter(ratio), backUp);
-//					}
-//					i++;
-//				}
-//				
-				
-
 			} else if(Values_cam.getMethod()==13){
 
 				/*
