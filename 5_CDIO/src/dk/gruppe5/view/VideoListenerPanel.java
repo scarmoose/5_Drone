@@ -27,6 +27,7 @@ import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.video.ImageListener;
 import dk.gruppe5.app.App;
+import dk.gruppe5.controller.DistanceCalc;
 import dk.gruppe5.controller.Mathmagic;
 import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.FrameGrabber;
@@ -144,7 +145,23 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 						movement.centerPointInFrame(new DPoint(qrPoint), new DPoint(frame.width(),frame.height()));
 					}
 					image = imgProc.toBufferedImage(frame);
-				}else if(Values_cam.getMethod() == 21){
+				}else if(Values_cam.getMethod() == 22){
+					
+					int ratio = 2;
+					frame = imgProc.calibrateCamera(frame);
+					frame = imgProc.downScale(frame, ratio);
+					frame = imgProc.toGrayScale(frame);
+
+					frame = imgProc.equalizeHistogramBalance(frame);
+					frame = imgProc.blur(frame);
+
+					frame = imgProc.toCanny(frame);
+					frame = imgProc.findAirfield(frame, ratio);
+					image = imgProc.toBufferedImage(frame);
+					
+					
+				}
+				else if(Values_cam.getMethod() == 21){
 					CombinedImageAnalysis combi = new CombinedImageAnalysis();
 					frame = combi.findPositionFromQRandTriangles(frame);		
 					image = imgProc.toBufferedImage(frame);	

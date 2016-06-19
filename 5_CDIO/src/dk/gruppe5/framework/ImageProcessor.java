@@ -450,11 +450,14 @@ public class ImageProcessor {
 				Point ctlPt = cirRect.getBoundingRect(ratio).tl();
 				Point cbrPt = cirRect.getBoundingRect(ratio).br();
 
+				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
+				drawLinesBetweenBoundingRectPoints(cirRect, standIn, ratio, color);
+				
 				if (carea > rectArea * 0.15 && true) {
 
 					if (ctlPt.inside(rect.getBoundingRect(ratio))) {
 						containedCircles++;
-						Scalar color = new Scalar(255, 0, 0);
+//						Scalar color = new Scalar(255, 0, 0);
 						Imgproc.rectangle(standIn, cirRect.getBrPoint(ratio), cirRect.getTlPoint(ratio), color, 3);
 					}
 				}
@@ -470,6 +473,10 @@ public class ImageProcessor {
 				Point txtPoint = rect.getCenter(ratio);
 
 				Imgproc.putText(standIn, "testAirfield", txtPoint, 5, 2, color);
+//				System.out.println(rect.getBoundingRect(ratio).width);
+				System.out.println(DistanceCalc.distanceFromCamera(rect.getBoundingRect(ratio).width));
+			}else{
+				
 			}
 
 		}
@@ -781,7 +788,6 @@ public class ImageProcessor {
 			}
 			// System.out.println("qr code name set");
 			nameOfQRCodeFound = qrCodeResultConfirms.get(z).getText();
-			distance += DistanceCalc.distanceFromCamera(qrCodeConfirmedShape.getWidth());
 		}
 
 		// find gennemsnit af punkter og returner 3 punkter, [left,middle,right]
@@ -881,8 +887,7 @@ public class ImageProcessor {
 
 			}
 			// System.out.println("qr code name set");
-			distance += DistanceCalc.distanceFromCamera(qrCodeConfirmedShape.getWidth());
-		}
+					}
 
 		// find gennemsnit af punkter og returner 3 punkter, [left,middle,right]
 		Point leftAverage = averagePoint(leftPoints);
@@ -1218,7 +1223,7 @@ public class ImageProcessor {
 			double radius = r.width / 2;
 
 			if (r.area() > 80) {
-				if (contours_1.get(i).total() > 1500) {
+				if (contours_1.get(i).total() > 15) {
 					if (Math.abs(1 - ((double) r.width / (double) r.height)) <= 0.05 && Math.abs(1 - (area / Math.PI * Math.pow(radius, 2))) >= 0.05) {
 						Contour contour1 = new Contour(contour, approxCurve);
 						circleContours.add(contour1);
