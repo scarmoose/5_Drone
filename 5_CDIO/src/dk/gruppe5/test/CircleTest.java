@@ -1,20 +1,21 @@
 package dk.gruppe5.test;
 
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+import dk.gruppe5.model.Contour;
+
 public class CircleTest {
 
-	public void findHoughCircles(Mat src, Mat destination) {
+	public boolean findHoughCircles(Mat src, Mat destination) {
 
-		int iCannyUpperThreshold = 30;
-		int iMinRadius = 20; // ????
-		int iMaxRadius = 250;
-		int iAccumulator = 200;
-		int iLineThickness = 2;
+		int iCannyUpperThreshold = 100;
+		int iMinRadius = 40; // ????
+		int iMaxRadius = 350;
+		int iAccumulator = 350;
+		int iLineThickness = 10;
 
 		Mat dst = new Mat(src.width(), src.height(), 5);
 		
@@ -43,10 +44,18 @@ public class CircleTest {
 				int radius = (int)Math.round(vCircle[2]);
 
 				// draw the found circle
+				
+				Scalar pointsclr = new Scalar(255,255,255);
+				Scalar radiussclr = new Scalar(255,255,255);
 
-				Imgproc.circle(destination, pt, radius, new Scalar(0,255,0), iLineThickness);
-				Imgproc.circle(destination, pt, 3, new Scalar(0,0,255), iLineThickness);
+				Imgproc.circle(destination, pt, radius, pointsclr, iLineThickness);
+				Imgproc.circle(destination, pt, 3, radiussclr, iLineThickness);
 			}
-		}
+			return true;
+		} return false;
+	}
+	
+	public boolean isContourInsideContour(Contour inner, Contour outer) {
+		return false;
 	}
 }

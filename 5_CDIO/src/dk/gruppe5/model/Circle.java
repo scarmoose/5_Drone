@@ -2,6 +2,10 @@ package dk.gruppe5.model;
 
 import java.awt.Point;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.opencv.core.Rect;
 
 //tyvstjålet fra https://github.com/Lanchon/circle-circle-intersection
 
@@ -33,6 +37,20 @@ public final class Circle implements Serializable {
 		temp = Double.doubleToLongBits(r);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
+	} 
+	
+	public boolean contains(Rect r) {
+		List<DPoint> list = new ArrayList<DPoint>() {{
+			add(new DPoint(r.tl()));
+			add(new DPoint(r.br().x, r.tl().y));
+			add(new DPoint(r.tl().x, r.br().y));
+			add(new DPoint(r.br()));
+		}};
+		for(DPoint p : list) {
+			if(p.distance(c) > this.r)
+				return false;
+		}
+		return true;
 	}
 
 	@Override

@@ -37,13 +37,14 @@ import com.google.zxing.common.HybridBinarizer;
 
 import dk.gruppe5.controller.DistanceCalc;
 import dk.gruppe5.controller.Mathmagic;
+import dk.gruppe5.model.Circle;
 import dk.gruppe5.model.Contour;
+import dk.gruppe5.model.DPoint;
 import dk.gruppe5.model.Shape;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.Wallmark;
 import dk.gruppe5.model.opticalFlowData;
 import dk.gruppe5.model.templateMatch;
-import dk.gruppe5.view.Filterstates;
 
 public class ImageProcessor {
 
@@ -1409,4 +1410,165 @@ public class ImageProcessor {
 		}
 		return triangles;
 	}
+
+	public List<MatOfPoint> getContourList(Mat src) {
+		List<MatOfPoint> contours = new ArrayList<>();
+		Mat hierarchy = new Mat();
+		Imgproc.findContours(src, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
+		return contours;
+	}
+	
+	public List<MatOfPoint> getHoughCircleContours(Mat src) {
+		Mat dst = Mat.zeros(src.size(), 0);
+		findAndDrawHoughCircles(src, dst);
+		List<MatOfPoint> contours = getContourList(dst);
+		return contours;
+	}
+	
+	public List<Rect> getBoundingRects(List<MatOfPoint> contours) {
+		List<Rect> rects = new ArrayList<>();
+		for(MatOfPoint contour : contours) {
+			rects.add(Imgproc.boundingRect(contour));
+		}
+		return rects;
+	}
+	
+	public List<MatOfPoint2f> getApproxCurves(List<MatOfPoint> list, double epsilon_coeff) {
+		List<MatOfPoint2f> approxs = new ArrayList<>();
+		for(MatOfPoint mop : list) {
+			MatOfPoint2f mop2f = new MatOfPoint2f(mop.toArray());
+			MatOfPoint2f approx = new MatOfPoint2f();
+			double epsilon = Imgproc.arcLength(mop2f, true)*epsilon_coeff;
+			Imgproc.approxPolyDP(mop2f, approx, epsilon, true);
+			approxs.add(approx);
+		}
+		
+		return approxs;
+	}
+	
+	public List<RotatedRect> getMinAreaRects(List<MatOfPoint2f> contours) {
+		List<RotatedRect> rrects = new ArrayList<>();
+		for(MatOfPoint2f mop : contours) {
+			rrects.add(Imgproc.minAreaRect(mop));
+		}
+		return rrects;
+	}
+	
+	
+	
+	
+	
+	/**
+	 * Tegner de fundne cirkler i <code>src</code> på <code>destination</code>
+	 * @param src frame der skal undersøges
+	 * @param destination frame der tegnes på
+	 * @return <code>true</code> hvis der er fundet cirkler. Ellers <code>false</code>
+	 */
+	public boolean findAndDrawHoughCircles(Mat src, Mat destination) {
+
+		int iCannyUpperThreshold = 130;
+		int iMinRadius = 40; // ????
+		int iMaxRadius = 350;
+		int iAccumulator = 350;
+		int iLineThickness = 5;
+
+		return findAndDrawHoughCircles(src, destination, iCannyUpperThreshold,
+				iMinRadius, iMaxRadius, iAccumulator, iLineThickness);
+	}
+	/**
+	 * Tegner de fundne cirkler i <code>src</code> på <code>destination</code>
+	 * @param src frame der skal undersøges
+	 * @param destination frame der tegnes på
+	 * @param iCannyUpperThreshold threshold
+	 * @param iMinRadius mininum cirkelradius i pixels
+	 * @param iMaxRadius maximun cirkelradius i pixels
+	 * @param iAccumulator <code>uwotm8</code>
+	 * @param iLineThickness stregtykkelse der skal tegnes med. 
+	 * @return <code>true</code> hvis der er fundet cirkler. Ellers <code>false</code>
+	 */
+	public boolean findAndDrawHoughCircles(Mat src, Mat destination, int iCannyUpperThreshold,
+			int iMinRadius, int iMaxRadius, int iAccumulator, int iLineThickness) {
+		Mat dst = new Mat(src.size(), 5);
+
+		Imgproc.HoughCircles(src, dst, Imgproc.CV_HOUGH_GRADIENT, 
+				2.0, src.rows() / 8, iCannyUpperThreshold, iAccumulator, 
+				iMinRadius, iMaxRadius);
+
+		int num = dst.cols();
+
+		if (num > 0) {
+			System.out.println("- Fundne cirkler: "+num);
+			for (int i = 0; i < num; i++) 
+			{
+				double vCircle[] = dst.get(0,i);
+
+				if (vCircle == null) {
+					System.err.println("No circles found");
+					break;
+				} else System.err.println("Circle apparently found");
+
+				Point pt = new Point(Math.round(vCircle[0]), Math.round(vCircle[1]));
+				int radius = (int)Math.round(vCircle[2]);
+
+				// draw the found circle
+
+				Scalar pointsclr = new Scalar(255,255,255);
+				Scalar radiussclr = new Scalar(255,255,255);
+
+				Imgproc.circle(destination, pt, radius, pointsclr, iLineThickness);
+				Imgproc.circle(destination, pt, 3, radiussclr, iLineThickness);
+			}
+			return true;
+		} else return false;
+	}
+	
+	public List<Circle> findHoughCircles(Mat src, int iCannyUpperThreshold,
+			int iMinRadius, int iMaxRadius, int iAccumulator, int iLineThickness) {
+		List<Circle> list = new ArrayList<>();
+		Mat dst = Mat.zeros(src.size(), 5);
+		Imgproc.HoughCircles(src, dst, Imgproc.CV_HOUGH_GRADIENT, 
+				2.0, src.rows() / 8, iCannyUpperThreshold, iAccumulator, 
+				iMinRadius, iMaxRadius);
+		
+		int num = dst.cols();
+		
+		if(num > 0) {
+			for(int i = 0; i < num; i++) {
+				double vCircle[] = dst.get(0, i);
+				if(vCircle == null) {
+					System.err.println("No circles found");
+					break;
+				}
+				DPoint center = new DPoint(vCircle[0], vCircle[1]); 
+				double radius = vCircle[2];
+				list.add(new Circle(center, radius));
+			}
+		}
+		return list;
+	}
+	
+	public List<Circle> findHoughCircles(Mat src) {
+		int iCannyUpperThreshold = 130;
+		int iMinRadius = 40; // ????
+		int iMaxRadius = 350;
+		int iAccumulator = 350;
+		int iLineThickness = 5;
+		return findHoughCircles(src, iCannyUpperThreshold, 
+				iMinRadius, iMaxRadius, iAccumulator, iLineThickness);
+	}
+	
+	//skal der ratio på??
+		public Mat drawRotatedRects(Mat img, List<RotatedRect> list) {
+			Point[] points = new Point[4];
+			for(RotatedRect r : list) {
+				r.points(points);
+				int n = 4; // 4 points in rect
+				for(int i = 0; i < n; i++) {
+					drawLine(points[i], points[(i+1)%n], img, new Scalar(123,54,187));
+				}
+			}
+			return img;
+		}
+
+
 }

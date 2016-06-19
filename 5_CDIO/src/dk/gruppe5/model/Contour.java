@@ -24,6 +24,12 @@ public class Contour {
 		this.contour = contour;
 		this.approxCurve = approxCurve;
 	}
+	
+	public Contour(MatOfPoint2f contour) {
+		this.contour = contour;
+	}
+
+	public Contour() {}
 
 	public MatOfPoint2f getContour() {
 		return contour;
@@ -31,6 +37,14 @@ public class Contour {
 
 	public MatOfPoint2f getApproxCurve() {
 		return approxCurve;
+	}
+
+	public void setContour(MatOfPoint2f contour) {
+		this.contour = contour;
+	}
+
+	public void setApproxCurve(MatOfPoint2f approxCurve) {
+		this.approxCurve = approxCurve;
 	}
 
 	public List<Point> getCorners(int ratio) {

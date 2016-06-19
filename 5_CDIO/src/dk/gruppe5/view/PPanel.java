@@ -11,7 +11,9 @@ import javax.swing.SwingUtilities;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -28,7 +30,6 @@ import dk.gruppe5.model.DPoint;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.opticalFlowData;
 import dk.gruppe5.positioning.Position;
-import dk.gruppe5.test.CircleTest;
 
 public class PPanel extends JPanel implements Runnable {
 
@@ -441,14 +442,22 @@ public class PPanel extends JPanel implements Runnable {
 //				Filterstates.setImage4(imgproc.toBufferedImage(morphOutput));
 //				image = imgproc.toBufferedImage(backUp);
 			else if(Values_cam.getMethod() == 15) {
-				Mat dst = new Mat(frame.width(), frame.height(), 1);
-				dst = frame.clone();
+				/*
+				Mat dst = Mat.zeros(frame.size(), 0);
+				// Mat dst = new Mat(frame.width(), frame.height(), 0);
+				// dst = frame.clone();
 				frame = imgproc.toGrayScale(frame);
 				new CircleTest().findHoughCircles(frame, dst);
 				if(!dst.empty()) {
 					System.out.println("LOL");
 					image = imgproc.toBufferedImage(dst);
 				} else System.err.println("FEJL I CIRKLEFINDING");
+				*/
+				
+				Mat dst = Mat.zeros(frame.size(), 5);
+				List<MatOfPoint> contours = imgproc.getContourList(frame);
+				List<MatOfPoint2f> approxs = imgproc.getApproxCurves(contours, 0.1);
+				List<RotatedRect> rects = imgproc.getMinAreaRects(approxs);
 			}
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
@@ -458,6 +467,8 @@ public class PPanel extends JPanel implements Runnable {
 			});
 		}
 	}
+	
+	
 
 	public void opticalFlowCall(Mat frame) {
 		opticalFlowData flowData = imgproc.opticalFlow(frame, old_frame);
