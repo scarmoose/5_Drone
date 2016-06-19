@@ -205,12 +205,12 @@ public class Lines {
     		ArrayList<Integer> RightXelements = new ArrayList<>();
     		ArrayList<Integer> RightYelements = new ArrayList<>();
     		for (int i = 0 ; i < Mathmagic.getArray().length ; i++){
-    			Xelements.add((int) Mathmagic.getArray()[i].getPosition().getX());
-    			Yelements.add((int) Mathmagic.getArray()[i].getPosition().getY());
-    			LeftXelements.add((int) Mathmagic.getArray()[i].getLeftTrianglePos().getX());
-    			LeftYelements.add((int) Mathmagic.getArray()[i].getLeftTrianglePos().getY());
-    			RightXelements.add((int) Mathmagic.getArray()[i].getRightTrianglePos().getX());
-    			RightYelements.add((int) Mathmagic.getArray()[i].getRightTrianglePos().getY());
+    			Xelements.add((int) Mathmagic.getArray()[i].getPosition().x);
+    			Yelements.add((int) Mathmagic.getArray()[i].getPosition().y);
+    			LeftXelements.add((int) Mathmagic.getArray()[i].getLeftTrianglePos().x);
+    			LeftYelements.add((int) Mathmagic.getArray()[i].getLeftTrianglePos().y);
+    			RightXelements.add((int) Mathmagic.getArray()[i].getRightTrianglePos().x);
+    			RightYelements.add((int) Mathmagic.getArray()[i].getRightTrianglePos().y);
     		}
         	
     		for (int k = 0;k< Yelements.size();k++){
