@@ -20,7 +20,6 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
-import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -43,7 +42,7 @@ import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.Wallmark;
 import dk.gruppe5.model.opticalFlowData;
 import dk.gruppe5.model.templateMatch;
-import dk.gruppe5.view.Filterstates;
+import dk.gruppe5.test.CircleTest;
 
 public class ImageProcessor {
 
@@ -1303,6 +1302,7 @@ public class ImageProcessor {
 		 * Tyvstjålet colordetection fra nettet, http://opencv-java-tutorials.readthedocs.io/en/latest/08-object-detection.html
 		 */
 
+		CircleTest circle = new CircleTest();
 		Mat blurredImage = new Mat();
 		Mat hsvImage = new Mat();
 		Mat mask = new Mat();
@@ -1353,6 +1353,7 @@ public class ImageProcessor {
 		// if any contour exist...
 		if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
 		{
+			
 			// for each contour, display it in blue
 			for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
 			{
@@ -1370,7 +1371,7 @@ public class ImageProcessor {
 
 				if(r.area() > 80){
 					if(r.height/r.width < 1.5 ){
-						if (contours.get(idx).total() > 200) {
+						if (contours.get(idx).total() > 400) {
 							if(Math.abs(1-((double)r.width/(double)r.height)) <= 0.05 && Math.abs(1-(area/Math.PI*Math.pow(radius,2))) >= 0.05){
 								Contour contour1 = new Contour(contour, approxCurve);
 								papkasser.add(contour1);
