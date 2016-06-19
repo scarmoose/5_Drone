@@ -22,7 +22,9 @@ import com.google.zxing.Result;
 import CoordinateSystem.DronePosition;
 import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.ImageProcessor;
-//github.com/scarmoose/5_Drone.git
+
+import dk.gruppe5.framework.CombinedImageAnalysis;
+import dk.gruppe5.legacy.KeyInput;
 import dk.gruppe5.model.Contour;
 import dk.gruppe5.model.DPoint;
 import dk.gruppe5.model.Values_cam;
@@ -42,6 +44,7 @@ public class PPanel extends JPanel implements Runnable {
 	// public int method = 2;
 
 	public int method = Values_cam.getMethod();
+	CombinedImageAnalysis combi = new CombinedImageAnalysis();
 
 	List<Point> startPoints;
 	List<Point> endPoints;
@@ -114,8 +117,10 @@ public class PPanel extends JPanel implements Runnable {
 			long dt = System.currentTimeMillis() - t;
 
 			if (Values_cam.getMethod() == 1) {
+
 				opticalFlowCall(frame);
 			} else if (Values_cam.getMethod() == 0){
+
 
 				image = imgproc.toBufferedImage(frame);
 				frame = imgproc.toGrayScale(frame);
@@ -125,6 +130,9 @@ public class PPanel extends JPanel implements Runnable {
 				frame = imgproc.toCanny(frame);
 				Filterstates.setImage3(imgproc.toBufferedImage(frame));
 				Filterstates.setImage4(image);
+			} else if (Values_cam.getMethod() == 0) {
+				image = imgproc.toBufferedImage(frame);
+			
 
 			}else if (Values_cam.getMethod() == 6) {
 				Filterstates.setImage2(imgproc.toBufferedImage(frame));
@@ -266,6 +274,11 @@ public class PPanel extends JPanel implements Runnable {
 				image = imgproc.toBufferedImage(frame);
 				
 			}else if(Values_cam.getMethod() == 10){
+
+				//her vil vi prøve at finde position ud fra et qr markering og de trekanter der er på hver side halvvejs til feltet
+				frame = combi.findPositionFromQRandTriangles(frame);		
+				image = imgproc.toBufferedImage(frame);
+
 				Mat backUp = new Mat();
 				backUp = frame;
 				int ratio = 1;
@@ -296,7 +309,6 @@ public class PPanel extends JPanel implements Runnable {
 //				}
 //				
 				
-
 			} else if(Values_cam.getMethod()==13){
 
 				/*

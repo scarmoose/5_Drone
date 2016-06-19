@@ -200,9 +200,17 @@ public class Lines {
             g2d.drawLine(930/2+20, 1060/2+50, 930/2+20, 50);
             ArrayList<Integer> Xelements = new ArrayList<>();
     		ArrayList<Integer> Yelements = new ArrayList<>();
+    		ArrayList<Integer> LeftXelements = new ArrayList<>();
+    		ArrayList<Integer> LeftYelements = new ArrayList<>();
+    		ArrayList<Integer> RightXelements = new ArrayList<>();
+    		ArrayList<Integer> RightYelements = new ArrayList<>();
     		for (int i = 0 ; i < Mathmagic.getArray().length ; i++){
     			Xelements.add((int) Mathmagic.getArray()[i].getPosition().getX());
     			Yelements.add((int) Mathmagic.getArray()[i].getPosition().getY());
+    			LeftXelements.add((int) Mathmagic.getArray()[i].getLeftTrianglePos().getX());
+    			LeftYelements.add((int) Mathmagic.getArray()[i].getLeftTrianglePos().getY());
+    			RightXelements.add((int) Mathmagic.getArray()[i].getRightTrianglePos().getX());
+    			RightYelements.add((int) Mathmagic.getArray()[i].getRightTrianglePos().getY());
     		}
         	
     		for (int k = 0;k< Yelements.size();k++){
@@ -220,6 +228,42 @@ public class Lines {
     			g2d.drawRoundRect(xvalue/2+20, yplace/2+50, 4, 4, 4, 4);
     			g2d.drawString(Mathmagic.getArray()[k].getName(), xvalue/2+20, yplace/2+70);
     		}
+    		
+    		for (int k = 0;k< LeftYelements.size();k++){
+    			int yplace = 0;
+    			int xvalue = LeftXelements.get(k);
+    			int yvalue = LeftYelements.get(k);
+    			if (yvalue < 530){
+    				yplace = 530-(yvalue - 530);
+    			}
+    			if (yvalue > 530){
+    				yplace= (530-yvalue)+530;
+    			}
+    			g2d.setStroke(bs2);
+    			g2d.setPaint(Color.green);
+    			
+    			g2d.drawLine(xvalue/2+20-7, yplace/2+50+7, xvalue/2+20+7, yplace/2+50+7);
+    			g2d.drawLine(xvalue/2+20-7, yplace/2+50+7, xvalue/2+20, yplace/2+50-7);
+    			g2d.drawLine(xvalue/2+20+7, yplace/2+50+7, xvalue/2+20, yplace/2+50-7);
+    		}
+    		
+    		for (int k = 0;k< RightYelements.size();k++){
+    			int yplace = 0;
+    			int xvalue = RightXelements.get(k);
+    			int yvalue = RightYelements.get(k);
+    			if (yvalue < 530){
+    				yplace = 530-(yvalue - 530);
+    			}
+    			if (yvalue > 530){
+    				yplace= (530-yvalue)+530;
+    			}
+    			g2d.setStroke(bs2);
+    			g2d.setPaint(Color.green);
+    			g2d.drawLine(xvalue/2+20-7, yplace/2+50+7, xvalue/2+20+7, yplace/2+50+7);
+    			g2d.drawLine(xvalue/2+20-7, yplace/2+50+7, xvalue/2+20, yplace/2+50-7);
+    			g2d.drawLine(xvalue/2+20+7, yplace/2+50+7, xvalue/2+20, yplace/2+50-7);
+    		}
+    		
             
     		File img = new File("rsz_1he291_av3.jpg");
 

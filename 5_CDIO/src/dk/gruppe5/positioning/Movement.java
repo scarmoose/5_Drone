@@ -1,5 +1,7 @@
 package dk.gruppe5.positioning;
 
+import com.google.zxing.datamatrix.encoder.SymbolShapeHint;
+
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.exception.ARDroneException;
@@ -16,6 +18,7 @@ import de.yadrone.base.navdata.GyroPhysData;
 import de.yadrone.base.navdata.GyroRawData;
 import de.yadrone.base.navdata.VelocityListener;
 import dk.gruppe5.app.App;
+import dk.gruppe5.controller.DroneCommander;
 import dk.gruppe5.exceptions.Fejl40;
 import dk.gruppe5.model.Circle;
 import dk.gruppe5.model.DPoint;
@@ -25,6 +28,7 @@ public class Movement {
 	private final IARDrone drone;
 	private final CommandManager cmd;
 	private Position pos;
+	public static int currentAltitude;
 
 
 	Runnable rthread = new Runnable(){
@@ -46,12 +50,14 @@ public class Movement {
 	}
 
 	private void init() {
-		drone.addExceptionListener(new MyExceptionListener());
+
+		//drone.addExceptionListener(new MyExceptionListener());
 		drone.getNavDataManager().addAltitudeListener(new MyAltitudeListener());
-		drone.getNavDataManager().addAttitudeListener(new MyAttitudeListener());
-		drone.getNavDataManager().addBatteryListener(new MyBatteryListener());
-		drone.getNavDataManager().addAcceleroListener(new MyAcceleroListener());
-		drone.getNavDataManager().addVelocityListener(new MyVelocityListener());
+		//drone.getNavDataManager().addAttitudeListener(new MyAttitudeListener());
+		//drone.getNavDataManager().addBatteryListener(new MyBatteryListener());
+		//drone.getNavDataManager().addAcceleroListener(new MyAcceleroListener());
+		//drone.getNavDataManager().addVelocityListener(new MyVelocityListener());
+
 	}
 
 
@@ -66,9 +72,9 @@ public class Movement {
 	 * @param frameSize
 	 */
 	public void centerPointInFrame(DPoint p, DPoint frameSize) {
-		int speed = 100;
+		int speed = 20;
 		int interval = 10;
-		int landIfLower = 15;
+		int landIfLower = 45;
 		DPoint point = p.clone();
 		double cx = frameSize.x/2;
 		double cy = frameSize.y/2;
@@ -80,19 +86,25 @@ public class Movement {
 		System.out.println("Length of vector: "+vlength);
 		
 		if(vlength < landIfLower) {
+			System.out.println("LANDING AT COORDINATES");
 			land();
 		} else if(Math.abs(vy) > Math.abs(vx)) {
+			System.out.println("correcting");
 			if(vy > 0) { // hvis punktet er over centrum
 				forward(speed, interval);
+				
 			} else backward(speed, interval);
 		} else {
 			if(vx > 0) { // hvis punkter er til højre for centrum
 				right(speed, interval);
 			} else left(speed, interval);
 		}
+
+
 	}
 	
 	public void randomSearch() {
+
 		
 	}
 
@@ -260,11 +272,11 @@ public class Movement {
 
 	}
 	
-	class MyAltitudeListener implements AltitudeListener {
+	public class MyAltitudeListener implements AltitudeListener {
 		@Override
 		public void receivedAltitude(int altitude) {
+			currentAltitude = altitude;
 			if (altitude > 0){
-				App.currentAltitude = altitude;
 			}
 		}
 

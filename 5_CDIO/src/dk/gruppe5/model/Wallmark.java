@@ -4,20 +4,40 @@ import java.awt.Point;
 
 public class Wallmark {
 	
-	String name;
-	Point position;
 
-	public Wallmark(String name, Point position) {
+	String name;
+
+
+	Point position;
+	
+	Point leftTrianglePos;
+	Point rightTrianglePos;
+	
+	
+	public Wallmark(String name,  Point leftTrianglePos,Point position, Point rightTrianglePos) {
 		super();
 		this.name = name;
 		this.position = position;
+		this.leftTrianglePos = leftTrianglePos;
+		this.rightTrianglePos = rightTrianglePos;
 	}
 	
 	public String getName() {
 		return name;
 	}
+
 	public Point getPosition() {
 		return position;
 	}
+
+	public Point getLeftTrianglePos() {
+		return leftTrianglePos;
+	}
+
+	public Point getRightTrianglePos() {
+		return rightTrianglePos;
+	}
+	
+
 
 }
