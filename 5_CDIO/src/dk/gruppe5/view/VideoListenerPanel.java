@@ -56,6 +56,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 	Point direction;
 	Mat old_frame;
 	FrameGrabber frameGrabber;
+	CombinedImageAnalysis combi = new CombinedImageAnalysis();
 
 	public VideoListenerPanel(final IARDrone drone) {
 		frameGrabber = new FrameGrabber(drone);
@@ -137,18 +138,14 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 				if (Values_cam.getMethod() == 0) {
 					image = imgProc.toBufferedImage(frame);
-				}else if(Values_cam.getMethod() == 11){
+				} else if (Values_cam.getMethod() == 11) {
 					Point qrPoint = findAirFieldInImageWithBottomCamera(frame);
-					if(qrPoint != null){
+					if (qrPoint != null) {
 						Movement movement = new Movement();
-						movement.centerPointInFrame(new DPoint(qrPoint), new DPoint(frame.width(),frame.height()));
+						movement.centerPointInFrame(new DPoint(qrPoint), new DPoint(frame.width(), frame.height()));
 					}
 					image = imgProc.toBufferedImage(frame);
-				}else if(Values_cam.getMethod() == 21){
-					CombinedImageAnalysis combi = new CombinedImageAnalysis();
-					frame = combi.findPositionFromQRandTriangles(frame);		
-					image = imgProc.toBufferedImage(frame);	
-				}else if (Values_cam.getMethod() == 1) {
+				} else if (Values_cam.getMethod() == 1) {
 
 					Mat backUp = new Mat();
 					backUp = frame;
@@ -185,23 +182,22 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					}
 
 					image = imgProc.toBufferedImage(backUp);
-				
-				} else if (Values_cam.getMethod() == 2) {
-					
-					locationEstimationFrom3Points(frame);
 
-				}
-				else if (Values_cam.getMethod() == 3) {
-					
+				} else if (Values_cam.getMethod() == 2) {
+
+					combi.locationEstimationFrom3Points(frame);
+
+				} else if (Values_cam.getMethod() == 3) {
+
 					Mat backUp = new Mat();
 					backUp = frame;
 					int ratio = 1;
-					
+
 					frame = imgProc.toGrayScale(frame);
 					frame = imgProc.equalizeHistogramBalance(frame);
 					frame = imgProc.blur(frame);
 					frame = imgProc.toCanny(frame);
-					
+
 					List<Contour> listofCircles = imgProc.findCircles(frame);
 					frame = imgProc.convertMatToColor(frame);
 
@@ -209,21 +205,22 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 						Scalar color = new Scalar(255, 255, 0);
 						frame = imgProc.drawLinesBetweenContourPoints(contour, frame, ratio, color);
-					
+
 					}
 					Filterstates.setImage1(imgProc.toBufferedImage(frame));
 					image = imgProc.toBufferedImage(backUp);
-				}else if(Values_cam.getMethod() == 4){
-					
-					//her vil vi prÃ¸ve at finde position ud fra et qr markering og de trekanter der er pÃ¥ hver side halvvejs til feltet
-					findPositionFromQRandTriangles(frame);
-					
-					
-				}
-				
-				else if (Values_cam.getMethod() == 13){
-				
-					
+				} else if (Values_cam.getMethod() == 4) {
+
+					// her vil vi prøve at finde position ud fra et qr markering
+					// og de trekanter der er på hver side halvvejs til feltet
+					frame = combi.locationEstimationFrom3Points(frame);
+					image = imgProc.toBufferedImage(frame);
+				} else if (Values_cam.getMethod() == 5) {
+
+					frame = combi.findPositionFromQRandTriangles(frame);
+					image = imgProc.toBufferedImage(frame);
+				} else if (Values_cam.getMethod() == 13) {
+
 					Mat blurredImage = new Mat();
 					Mat hsvImage = new Mat();
 					Mat mask = new Mat();
@@ -234,7 +231,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					// convert the frame to HSV
 					Imgproc.cvtColor(blurredImage, hsvImage, Imgproc.COLOR_BGR2HSV);
-					
+
 					// get thresholding values from the UI
 					// remember: H ranges 0-180, S and V range 0-255
 					Scalar minValues = new Scalar(110, 50, 50);
@@ -244,53 +241,50 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					Core.inRange(hsvImage, minValues, maxValues, mask);
 					// show the partial output
 					Filterstates.setImage1(imgProc.toBufferedImage(mask));
-					
+
 					// morphological operators
 					// dilate with large element, erode with small ones
-					 Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
-					 Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
+					Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
+					Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
 
-					 Imgproc.erode(mask, morphOutput, erodeElement);
-					 Imgproc.erode(mask, morphOutput, erodeElement);
+					Imgproc.erode(mask, morphOutput, erodeElement);
+					Imgproc.erode(mask, morphOutput, erodeElement);
 
-					 Imgproc.dilate(mask, morphOutput, dilateElement);
-					 Imgproc.dilate(mask, morphOutput, dilateElement);
+					Imgproc.dilate(mask, morphOutput, dilateElement);
+					Imgproc.dilate(mask, morphOutput, dilateElement);
 
-					 // show the partial output
+					// show the partial output
 					Filterstates.setImage2(imgProc.toBufferedImage(morphOutput));
-					 
+
 					// init
-					 List<MatOfPoint> contours = new ArrayList<>();
-					 Mat hierarchy = new Mat();
+					List<MatOfPoint> contours = new ArrayList<>();
+					Mat hierarchy = new Mat();
 
-					 // find contours
-					 Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+					// find contours
+					Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
 
-					 // if any contour exist...
-					 if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
-					 {
-					         // for each contour, display it in blue
-					         for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
-					         {
-					                 Imgproc.drawContours(frame, contours, idx, new Scalar(250, 0, 0));
-					         }
-					 }
-					 image = imgProc.toBufferedImage(blurredImage);
+					// if any contour exist...
+					if (hierarchy.size().height > 0 && hierarchy.size().width > 0) {
+						// for each contour, display it in blue
+						for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0]) {
+							Imgproc.drawContours(frame, contours, idx, new Scalar(250, 0, 0));
+						}
+					}
+					image = imgProc.toBufferedImage(blurredImage);
 				} else if (Values_cam.getMethod() == 15) {
 					Mat dst = new Mat(frame.width(), frame.height(), 1);
 					dst = frame.clone();
 					frame = imgProc.toGrayScale(frame);
 					new CircleTest().findHoughCircles(frame, dst);
-					if(!dst.empty()) {
+					if (!dst.empty()) {
 						System.out.println("LOL");
 						image = imgProc.toBufferedImage(dst);
-					} else System.err.println("FEJL I CIRKLEFINDING");
+					} else
+						System.err.println("FEJL I CIRKLEFINDING");
 				}
 
-				//System.out.println(image.getWidth() +","+ image.getHeight());
+				// System.out.println(image.getWidth() +","+ image.getHeight());
 
-
-				 
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						repaint();
@@ -301,61 +295,11 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 		}
 	}
 
-	private void findPositionFromQRandTriangles(Mat frame) {
-		frame = imgProc.calibrateCamera(frame);
-		Mat backUp = new Mat();
-		backUp = frame;
-		int ratio = 2;
-		frame = imgProc.downScale(backUp, ratio);
-		// fÃ¸rst gÃ¸r vi det sort hvidt
-		frame = imgProc.toGrayScale(frame);
-		//
-		frame = imgProc.equalizeHistogramBalance(frame);
-		// blur virker bedre
-		frame = imgProc.blur(frame);
-
-		// Til canny for at nemmere kunne finde contourer
-		frame = imgProc.toCanny(frame);
-		Result result = imgProc.readQRcodeFromWholeImage(imgProc.toBufferedImage(backUp));
-		
-		if(result != null){
-			Scalar color = new Scalar(0, 0, 255);
-			ResultPoint[] Rpoints = result.getResultPoints();
-			List<Point> points = new ArrayList<>();
-			int rPointsSpot = 0;
-			for(ResultPoint point : Rpoints){
-				points.add(new Point(Rpoints[rPointsSpot].getX(),Rpoints[rPointsSpot].getY()));
-				rPointsSpot++;
-			}
-			
-			double qrX,qrY; 
-			qrX = (points.get(0).x+points.get(1).x+points.get(2).x)/3.0;
-			qrY = (points.get(0).y+points.get(1).y+points.get(2).y)/3.0;
-			Point qrPosition = new Point(qrX,qrY);
-			points.add(qrPosition);
-			backUp = imgProc.drawLinesBetweenPoints(backUp, points, color);
-			
-			
-			
-			
-			
-			//cutout part of image and run analysis of that
-			
-			
-			
-		}
-
-		image = imgProc.toBufferedImage(backUp);
-
-		
-		
-	}
-
 	public Point findAirFieldInImageWithBottomCamera(Mat frame) {
 		Mat backUp = new Mat();
 		backUp = frame;
 		int ratio = 1;
-		//frame = imgProc.calibrateCamera(frame);
+		// frame = imgProc.calibrateCamera(frame);
 		frame = imgProc.toGrayScale(frame);
 		frame = imgProc.equalizeHistogramBalance(frame);
 		frame = imgProc.blur(frame);
@@ -363,115 +307,30 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 		// Nu skal vi prÃ¸ve at finde firkanter af en hvis stÃ¸rrelse
 
 		// vi finder de potentielle QR kode omrÃ¥der
-		//List<BufferedImage> cutouts = imgProc.getImagesFromContours(backUp,contours,ratio);
+		// List<BufferedImage> cutouts =
+		// imgProc.getImagesFromContours(backUp,contours,ratio);
 		Result result = imgProc.readQRcodeFromWholeImage(imgProc.toBufferedImage(backUp));
 		Point qrCenter = null;
-		if(result != null){
+		if (result != null) {
 			Scalar color = new Scalar(0, 0, 255);
 			ResultPoint[] Rpoints = result.getResultPoints();
 			List<Point> points = new ArrayList<>();
 			int rPointsSpot = 0;
-			for(ResultPoint point : Rpoints){
-				points.add(new Point(Rpoints[rPointsSpot].getX(),Rpoints[rPointsSpot].getY()));
+			for (ResultPoint point : Rpoints) {
+				points.add(new Point(Rpoints[rPointsSpot].getX(), Rpoints[rPointsSpot].getY()));
 				rPointsSpot++;
 			}
-			
-			
+
 			backUp = imgProc.drawLinesBetweenPoints(backUp, points, color);
-			double qrX = (points.get(0).x+points.get(1).x+points.get(2).x)/3;
-			double qrY = (points.get(0).y+points.get(1).y+points.get(2).y)/3;
-			qrCenter = new Point(qrX,qrY);
-			
-		}
-
-		image = imgProc.toBufferedImage(backUp);
-		
-		return  qrCenter;
-	}
-
-	public void locationEstimationFrom3Points(Mat frame) {
-		
-		frame = imgProc.calibrateCamera(frame);
-		Mat backUp = new Mat();
-		backUp = frame;
-		int ratio = 2;
-		frame = imgProc.downScale(backUp, ratio);
-		// fÃ¸rst gÃ¸r vi det sort hvidt
-		frame = imgProc.toGrayScale(frame);
-		//
-		frame = imgProc.equalizeHistogramBalance(frame);
-		// blur virker bedre
-		frame = imgProc.blur(frame);
-
-		// Til canny for at nemmere kunne finde contourer
-		frame = imgProc.toCanny(frame);
-
-		// Nu skal vi prøve at finde firkanter af en hvis stÃ¸rrelse
-		List<Contour> contours = imgProc.findQRsquares(frame);
-
-		// vi finder de potentielle QR kode områder
-		List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
-		List<Result> results = imgProc.readQRCodes(cutouts);
-		// backUp = imgProc.markQrCodes(results, shapes, backUp);
-		int contourNr = 0;
-		for (Result result : results) {
-			if (result != null) {
-				DetectedWallmarksAndNames data = imgProc.markQrCodesV2(contours.get(contourNr), contours,
-						backUp, result.getText(), ratio);
-				if (data != null) {
-					if (!Double.isNaN(data.getPoints()[0].x) && !Double.isNaN(data.getPoints()[1].x)
-							&& !Double.isNaN(data.getPoints()[2].x)) {
-						if (data.getQrNames()[0] != null && data.getQrNames()[1] != null
-								&& data.getQrNames()[2] != null) {
-							Scalar color1 = new Scalar(0, 0, 255);
-							backUp = imgProc.drawLine(data.getPoints()[0], data.getPoints()[1], backUp, color1);
-							backUp = imgProc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp, color1);
-							Position test = new Position();
-							Point mapPosition = test.getPositionFromPoints(data.getQrNames(), data.getPoints()[0], data.getPoints()[1], data.getPoints()[2]);
-							if (mapPosition != null) {
-								DronePosition.setPosition(mapPosition);
-								// System.out.println(mapPosition);
-								int screenWidth = image.getWidth();
-								int middleOfScreen = screenWidth/2;
-								int pixelsFromMiddleToQr =  Math.abs(((int)data.getPoints()[1].x-middleOfScreen)); 
-								DPoint mapPos = new DPoint(mapPosition);
-								String text = data.getQrNames()[0];
-								String wallNr =""+text.charAt(2);
-								int x = Integer.parseInt(wallNr);
-								//System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
-								DronePosition.setDegree((90.0*x)-test.getDirectionAngleRelativeToYAxis(mapPos, data.getQrNames()[1], pixelsFromMiddleToQr));
-							}
-				
-						}
-
-					} else if (!Double.isNaN(data.getPoints()[1].x)) {
-
-						Scalar color1 = new Scalar(255, 0, 0);
-						Imgproc.putText(backUp, data.getQrNames()[1], data.getPoints()[1], 5, 2, color1);
-						Point ofset = new Point(data.getPoints()[1].x, data.getPoints()[1].y + 30);
-						Imgproc.putText(backUp, data.getDistance() + "", ofset, 5, 2, color1);
-
-						if (!Double.isNaN(data.getPoints()[0].x)) {
-							Point ofset1 = new Point(data.getPoints()[0].x, data.getPoints()[0].y);
-							Imgproc.putText(backUp, "firkant", ofset1, 5, 2, color1);
-
-						}
-						if (!Double.isNaN(data.getPoints()[2].x)) {
-							Point ofset2 = new Point(data.getPoints()[2].x, data.getPoints()[2].y);
-							Imgproc.putText(backUp, "firkant", ofset2, 5, 2, color1);
-
-						}
-
-					}
-
-				} else {
-					image = imgProc.toBufferedImage(backUp);
-				}
-			}
-			contourNr++;
+			double qrX = (points.get(0).x + points.get(1).x + points.get(2).x) / 3;
+			double qrY = (points.get(0).y + points.get(1).y + points.get(2).y) / 3;
+			qrCenter = new Point(qrX, qrY);
 
 		}
 
 		image = imgProc.toBufferedImage(backUp);
+
+		return qrCenter;
 	}
+
 }
