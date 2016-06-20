@@ -37,6 +37,7 @@ import com.google.zxing.common.HybridBinarizer;
 
 import dk.gruppe5.controller.DistanceCalc;
 import dk.gruppe5.controller.Mathmagic;
+import dk.gruppe5.exceptions.Fejl40;
 import dk.gruppe5.model.Circle;
 import dk.gruppe5.model.Contour;
 import dk.gruppe5.model.DPoint;
@@ -45,8 +46,6 @@ import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.Wallmark;
 import dk.gruppe5.model.opticalFlowData;
 import dk.gruppe5.model.templateMatch;
-import dk.gruppe5.test.CircleTest;
-
 
 public class ImageProcessor {
 
@@ -1311,7 +1310,6 @@ public class ImageProcessor {
 		 * Tyvstjålet colordetection fra nettet, http://opencv-java-tutorials.readthedocs.io/en/latest/08-object-detection.html
 		 */
 
-		CircleTest circle = new CircleTest();
 		Mat blurredImage = new Mat();
 		Mat hsvImage = new Mat();
 		Mat mask = new Mat();
@@ -1362,7 +1360,6 @@ public class ImageProcessor {
 		// if any contour exist...
 		if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
 		{
-			
 			// for each contour, display it in blue
 			for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
 			{
@@ -1380,7 +1377,7 @@ public class ImageProcessor {
 
 				if(r.area() > 80){
 					if(r.height/r.width < 1.5 ){
-						if (contours.get(idx).total() > 400) {
+						if (contours.get(idx).total() > 200) {
 							if(Math.abs(1-((double)r.width/(double)r.height)) <= 0.05 && Math.abs(1-(area/Math.PI*Math.pow(radius,2))) >= 0.05){
 								Contour contour1 = new Contour(contour, approxCurve);
 								papkasser.add(contour1);
@@ -1602,6 +1599,21 @@ public class ImageProcessor {
 		int iAccumulator = 350;
 		return findHoughCircles(src, iCannyUpperThreshold, 
 				iMinRadius, iMaxRadius, iAccumulator);
+	}
+	
+	public Mat getSubmat(Mat src) throws Fejl40 {
+		throw new Fejl40("Ikke implementeret");
+	}
+	
+	public Rect getBoundingRect(Circle c) {
+		double x, y;
+		x = c.c.x-c.r/2;
+		y = c.c.y+c.r/2;
+		Point tl = new Point(x, y);
+		x = c.c.x+c.r/2;
+		y = c.c.y-c.r/2;
+		Point br = new Point(x, y);
+		return new Rect(tl, br);
 	}
 	
 	//skal der ratio på??

@@ -178,9 +178,9 @@ public class DroneCommander extends Canvas {
 		
 	}
 
-	public void findPosition(int interval){
+	public void findPosition(){
 		
-		cmd.forward(10).doFor(interval);
+		cmd.forward(10).doFor(1000);
 		cmd.backward(10).doFor(10);
 		
 		boolean gogo = true;
@@ -200,18 +200,15 @@ public class DroneCommander extends Canvas {
 			}
 
 			cmd.landing();
-
+			
 			if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!= -70){
 				cmd.hover().doFor(500);	
 				lookForAirfield();
-				cmd.landing();
 				gogo = false;
-				
+			}				
 				/*
 				 * der skal være noget her
 				 */
-			}
-
 		}
 	}
 
@@ -235,9 +232,7 @@ public class DroneCommander extends Canvas {
 	}
 
 	public void updatePosition(){
-		/*
-		 * assumes the drone has found a new position, which needs to be saved/remebered
-		 */
+		
 	}
 
 
