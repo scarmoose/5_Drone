@@ -28,7 +28,7 @@ public class CombinedImageAnalysis {
 		// frame = imgProc.calibrateCamera(frame);
 		Mat backUp = new Mat();
 		backUp = frame;
-		int ratio = 1;
+		int ratio = 2;
 		// frame = imgProc.downScale(backUp, ratio);
 		// først gør vi det sort hvidt
 		frame = imgProc.toGrayScale(frame);
@@ -124,6 +124,7 @@ public class CombinedImageAnalysis {
 	public Mat locationEstimationFrom3Points(Mat frame) {
 
 		frame = imgProc.calibrateCamera(frame);
+
 		Mat backUp = new Mat();
 		backUp = frame;
 		int ratio = 2;

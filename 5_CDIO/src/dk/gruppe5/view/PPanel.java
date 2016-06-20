@@ -24,7 +24,7 @@ import com.google.zxing.Result;
 import CoordinateSystem.DronePosition;
 import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.ImageProcessor;
-
+import dk.gruppe5.controller.DistanceCalc;
 import dk.gruppe5.framework.CombinedImageAnalysis;
 import dk.gruppe5.legacy.KeyInput;
 import dk.gruppe5.model.Contour;
@@ -168,7 +168,10 @@ public class PPanel extends JPanel implements Runnable {
 						// backUp =
 						// imgProc.drawLinesBetweenBoundingRectPoints(contours.get(i),
 						// backUp, ratio);
+					double height =	contours.get(i).getBoundingRect(ratio).height;
 						Scalar color = new Scalar(255, 255, 0);
+						System.out.println(DistanceCalc.distanceFromCamera(height));
+						
 						backUp = imgproc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
 						backUp = imgproc.putText("QR CODE TEST", contours.get(i).getCenter(2), backUp);
 					}else{
@@ -177,16 +180,7 @@ public class PPanel extends JPanel implements Runnable {
 					}
 					i++;
 				}
-				// Vi aflæser de potentielle QR koder og ser om vi har nogen
-				// matches, hvis vi har!
-				// så marker dette og firkanter der har ca samme højde og
-				// størrelse!
-				// skriv i disse hvilken en firkant de nok er ud fra dataene
-				// vi har.
-				// udregn afstand til QR kode via python afstands
-				// bestemmelse på papir
-
-				// backUp = imgProc.markQrCodes(results, shapes, backUp);
+		
 				int contourNr = 0;
 				for (Result result : results) {
 					if (result != null) {
