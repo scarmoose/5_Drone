@@ -616,7 +616,7 @@ public class ImageProcessor {
 		// Here contours are stored, we will check each one to see if it matches
 		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
 		Mat hierarchy_1 = new Mat();
-		Imgproc.findContours(frame, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+		Imgproc.findContours(frame, contours_1, hierarchy_1, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
 
 		List<Contour> contours = new ArrayList<>();
 
@@ -629,15 +629,22 @@ public class ImageProcessor {
 			// we wanna se if a contour is a square, or has one or more edges so
 			// we save them.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
+			
+		
 			Rect r = Imgproc.boundingRect(contours_1.get(i));
+//			double[] p =hierarchy_1.get(0, i);
+//			if(p[3] > 0.0){
 			if (r.area() > 2000) {
 				if (approxCurve.total() > 3 && approxCurve.total() < 10) {
 					Contour contour1 = new Contour(contour, approxCurve);
 					contours.add(contour1);
-				}
 
+//				}
+			}
 			}
 		}
+		
+		
 
 		return contours;
 	}
@@ -1476,15 +1483,51 @@ public class ImageProcessor {
 	/**
 	 * Skal give en liste af <code>minAreaRects</code> i form af <code>List</code><<code>RotatedRect</code>>
 	 * for contourerne givet. 
-	 * @param contours countourer, der skal findes firkanter for
+	 * @param approxs countourer, der skal findes firkanter for
 	 * @return liste med firkantero
 	 */
-	public List<RotatedRect> getMinAreaRects(List<MatOfPoint2f> contours) {
+	public List<RotatedRect> getMinAreaRects(List<MatOfPoint2f> approxs) {
 		List<RotatedRect> rrects = new ArrayList<>();
-		for(MatOfPoint2f mop : contours) {
+		for(MatOfPoint2f mop : approxs) {
 			rrects.add(Imgproc.minAreaRect(mop));
 		}
 		return rrects;
+	}
+	
+	/**
+	 * Finder minAreaRects i <code>src</code>
+	 * @param src frame der skal undersøges
+	 * @param epsilon_coeff epsilon koefficient til approxcurves
+	 * @return
+	 */
+	public List<RotatedRect> getMinAreaRectsFromMat(Mat src, double epsilon_coeff) {
+		List<MatOfPoint> contours = getContourList(src);
+		List<MatOfPoint2f> approxs = getApproxCurves(contours, epsilon_coeff);
+		List<RotatedRect> rrects = getMinAreaRects(approxs);
+		return rrects;
+	}
+	
+	/**
+	 *  DET ANTAGES AT <code>src</code>-MATRICEN ER KLIPPET TIL KUN AT INDEHOLDE CIRKLEN
+	 * Bestemmer om en cirkel indeholder en af de fundne <code>RotatedRects</code> 
+	 * @param src frame der skal ledes efter firkanter i 
+	 * @param c Cirkel der skal tjekkes for
+	 * @param epsilon_coeff epsilon coefficient til approxcurves
+	 * @param ratio hvor meget af cirklen, firkanten skal fylde for at returnere sand
+	 * @return
+	 */
+	public boolean doesCircleContainRect(Mat src, Circle c, double epsilon_coeff, double ratio) {
+		DPoint new_c = new DPoint(src.width()/2, src.height()/2);
+		Circle new_circ = new Circle(new_c, c.r);
+		Rect roi = c.getBoundingRect();
+		Mat sub = new Mat(src, roi);
+		List<RotatedRect> rrects = getMinAreaRectsFromMat(sub, epsilon_coeff);
+		for(RotatedRect rr : rrects) { // hvis en Rect er i cirklen, returneres sand
+			if(new_circ.contains(rr) && rr.size.area() > ratio*new_circ.area()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -1575,7 +1618,7 @@ public class ImageProcessor {
 			for(int i = 0; i < num; i++) {
 				double vCircle[] = dst.get(0, i);
 				if(vCircle == null) {
-					System.err.println("No circles found");
+					System.err.println("No circle found at "+i);
 					break;
 				}
 				DPoint center = new DPoint(vCircle[0], vCircle[1]); 
@@ -1601,21 +1644,6 @@ public class ImageProcessor {
 				iMinRadius, iMaxRadius, iAccumulator);
 	}
 	
-	public Mat getSubmat(Mat src) throws Fejl40 {
-		throw new Fejl40("Ikke implementeret");
-	}
-	
-	public Rect getBoundingRect(Circle c) {
-		double x, y;
-		x = c.c.x-c.r/2;
-		y = c.c.y+c.r/2;
-		Point tl = new Point(x, y);
-		x = c.c.x+c.r/2;
-		y = c.c.y-c.r/2;
-		Point br = new Point(x, y);
-		return new Rect(tl, br);
-	}
-	
 	//skal der ratio på??
 	/**
 	 * Tegner <code>RotatedRects</code> fra <code>list</code> på <code>img</code>.
@@ -1636,6 +1664,18 @@ public class ImageProcessor {
 		}
 		return img;
 	}
+	
+	/**
+	 * Giver sub image for src, med rectangle of interest
+	 * @param src
+	 * @param roi
+	 * @return
+	 */
+	public Mat getSubMat(Mat src, Rect roi) {
+		return new Mat(src, roi);
+	}
+	
+	
 
 
 }

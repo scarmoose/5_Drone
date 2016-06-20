@@ -14,7 +14,8 @@ import dk.gruppe5.model.DPoint;
 public class Position {
 	
 	final static float TOTAL_PIXELS = 720.0f;
-	final static float TOTAL_ANGLE = 67.7f;
+	final static float TOTAL_ANGLE = 59.79f;
+			
 	public static DPoint currentPos;
 	public static float currentAngle;
 	
@@ -335,8 +336,8 @@ public class Position {
 	
 	/**
 	 * Giver positionen i rummet, ud fra to QR-koder.
-	 * @param p1 QR_1
-	 * @param p2 QR_2
+	 * @param p1 QR_1 rumposition
+	 * @param p2 QR_2 rumposition
 	 * @param p1PixelWidth bredde af QR_1 i pixels
 	 * @param p2PixelWidth bredde af QR_2 i pixels
 	 * @return positionen i rummet
@@ -359,7 +360,7 @@ public class Position {
 	
 	/**
 	 * Vurderer om et punkt er inde i rummet
-	 * @param p
+	 * @param p punktet
 	 * @return
 	 */
 	public boolean isPointInsideRoom(DPoint p) {
