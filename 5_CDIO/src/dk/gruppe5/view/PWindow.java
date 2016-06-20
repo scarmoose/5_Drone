@@ -114,6 +114,7 @@ public class PWindow {
 		btnTakeoff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("TAKEOFF");
+
 				//dm.run();
 				dCommando.droneTakeOff();
 				try {
@@ -123,6 +124,7 @@ public class PWindow {
 					e.printStackTrace();
 				}
 				Position.isFlying = true;
+				new Thread(dm).start();
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();

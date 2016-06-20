@@ -8,6 +8,7 @@ import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.command.VideoCodec;
 import dk.gruppe5.app.App;
+import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.positioning.Movement;
 import dk.gruppe5.positioning.Movement.MyAltitudeListener;
 
@@ -31,13 +32,11 @@ public class DroneCommander extends Canvas {
 
 			System.out.println("Connecting to drone...");
 
-
 			App.drone.start();
 			Thread.sleep(2000);
 			cmd = App.drone.getCommandManager();
 			Thread.sleep(2000);
 			cmd.setVideoCodec(VideoCodec.H264_720P);
-
 			Thread.sleep(500);
 			cmd.setMaxAltitude(2000);
 			Thread.sleep(500);
@@ -45,11 +44,6 @@ public class DroneCommander extends Canvas {
 			Thread.sleep(500);
 			cmd.setVideoBitrate(3500);
 			Thread.sleep(500);
-
-			//	navl = new NavDataListener(App.drone); 
-			//navl = new Movement();
-
-			//	navl = new NavDataListener(App.drone);
 
 			System.out.println("Drone connected.");
 
@@ -67,9 +61,6 @@ public class DroneCommander extends Canvas {
 		}
 
 	}
-
-
-
 
 	public void droneFlightControl(){
 
@@ -163,67 +154,54 @@ public class DroneCommander extends Canvas {
 	}
 
 
-	public void cleanStartUp(int interval){
+	public void cleanStartUp(){
 
 		cmd.takeOff();
-		cmd.hover().doFor(interval);
+		cmd.hover().doFor(5000);
 		
 	}
 
 	public void findPosition(){
 		
-		cmd.forward(10).doFor(1000);
-		cmd.backward(10).doFor(100);
+		cleanStartUp();
+		
+		cmd.forward(10).doFor(500);
+		cmd.backward(10).doFor(10);
 		cmd.hover().doFor(5000);
 		boolean gogo = true;
 		
 		while(gogo) {
-
+			Values_cam.setMethod(2);
 			for(int i = 0; i < 4; i++){
 
-				long t = System.currentTimeMillis();
-				long end = t+6100;
-
-				while(System.currentTimeMillis()<end){
-					
 					cmd.hover().doFor(3000);
 					cmd.spinRight(100).doFor(100);
 					cmd.hover().doFor(3000);
-				}
 			}
 
-			cmd.landing();
-			
-			if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!= -70){
+			if(DronePosition.getXPoint() != 0 && DronePosition.getYPoint()!= 0){
 				cmd.hover().doFor(500);	
 				lookForAirfield();
-				gogo = false;
-			}				
-				/*
-				 * der skal være noget her
-				 */
+			}
 		}
 	}
 
 	public void lookForAirfield(){
 		
-		cmd.down(5).doFor(200);
+		cleanStartUp();
+				
+		cmd.setVideoChannel(VideoChannel.VERT);
 		cmd.hover().doFor(500);
-		
-		
-		
-		/*
-		 * search for airfields
-		 */
+		cmd.down(10).doFor(1000);
+		cmd.hover().doFor(500);
+		cmd.setVideoChannel(VideoChannel.HORI);
+		cmd.up(10).doFor(1000);
+		cmd.hover().doFor(500);
+		cmd.landing();
 		
 	}
 
 	public void closeToWall(){
-		/*
-		 * method is called every time the drone has flown in x direction,
-		 * in order to make sure we're not about to hit a wall
-		 * based on the distance to a QR code or a position
-		 */
 		if((DronePosition.getXPoint()>=830 || DronePosition.getXPoint()<=100 || DronePosition.getYPoint()<=100 || DronePosition.getYPoint()>=830) && DronePosition.getYPoint()!=-77){
 			long t = System.currentTimeMillis();
 			long end = t+3000;
@@ -246,15 +224,26 @@ public class DroneCommander extends Canvas {
 			}
 		}
 	}
-
-	public void updatePosition(){
+	
+public void flyBackToStartField(){
+		
+		cmd.setVideoChannel(VideoChannel.VERT);
+		cmd.hover().doFor(500);
+		cmd.down(10).doFor(1000);
+		cmd.hover().doFor(500);
+		cmd.setVideoChannel(VideoChannel.HORI);
+		if(DronePosition.getXPoint() == 630 && DronePosition.getYPoint() == -70){
+			cmd.landing();	
+		} else {
+			cmd.up(10).doFor(1000);
+			cmd.hover().doFor(5000);
+			findPosition();
+		}
 		
 	}
 
 	public Movement getMovement(){
 		return navl;
 	}
-
-
 
 }
