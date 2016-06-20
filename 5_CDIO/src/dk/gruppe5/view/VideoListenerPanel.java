@@ -147,8 +147,6 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					}
 					image = imgProc.toBufferedImage(frame);
 
-				} else if (Values_cam.getMethod() == 1) {
-
 				}else if(Values_cam.getMethod() == 22){
 					
 					int ratio = 2;
@@ -166,7 +164,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					
 				}else if (Values_cam.getMethod() == 1) {
 
-
+					frame = imgProc.calibrateCamera(frame);
 					Mat backUp = new Mat();
 					backUp = frame;
 					int ratio = 1;
@@ -195,18 +193,54 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					int i = 0;
 					for (Result result : results) {
 						if (result != null) {
+							Point centerPoint  = contours.get(i).getCenter(ratio);
 							Scalar color = new Scalar(0, 255, 0);
 							backUp = imgProc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
+							backUp = imgProc.putText(result.getText(), centerPoint, backUp);
+							int height = contours.get(i).getBoundingRect(ratio).height;
+							System.out.println(height);
+							System.out.println("Distance is:" + DistanceCalc.distanceFromCamera(height));
+							backUp = imgProc.putText("DISTANCE IS" + height, new Point(centerPoint.x,centerPoint.y+20), backUp);
 						}
 						i++;
 					}
 
 					image = imgProc.toBufferedImage(backUp);
 
+
+				} else if (Values_cam.getMethod() == 2) {
+
+					combi.locationEstimationFrom3Points(frame);
+									
+
+				} else if (Values_cam.getMethod() == 3) {
+
+					Mat backUp = new Mat();
+					backUp = frame;
+					int ratio = 1;
+
+					frame = imgProc.toGrayScale(frame);
+					frame = imgProc.equalizeHistogramBalance(frame);
+					frame = imgProc.blur(frame);
+					frame = imgProc.toCanny(frame);
+
+					List<Contour> listofCircles = imgProc.findCircles(frame);
+					frame = imgProc.convertMatToColor(frame);
+
+					for (Contour contour : listofCircles) {
+
+						Scalar color = new Scalar(255, 255, 0);
+						frame = imgProc.drawLinesBetweenContourPoints(contour, frame, ratio, color);
+
+					}
+					Filterstates.setImage1(imgProc.toBufferedImage(frame));
+					image = imgProc.toBufferedImage(backUp);
+
 				} else if (Values_cam.getMethod() == 4) {
 
 					// her vil vi prøve at finde position ud fra et qr markering
 					// og de trekanter der er på hver side halvvejs til feltet
+					//frame = imgProc.calibrateCamera(frame);
 					frame = combi.locationEstimationFrom3Points(frame);
 					image = imgProc.toBufferedImage(frame);
 				} else if (Values_cam.getMethod() == 5) {

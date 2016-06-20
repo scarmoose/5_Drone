@@ -24,7 +24,7 @@ import com.google.zxing.Result;
 import CoordinateSystem.DronePosition;
 import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.ImageProcessor;
-
+import dk.gruppe5.controller.DistanceCalc;
 import dk.gruppe5.framework.CombinedImageAnalysis;
 import dk.gruppe5.legacy.KeyInput;
 import dk.gruppe5.model.Contour;
@@ -168,7 +168,10 @@ public class PPanel extends JPanel implements Runnable {
 						// backUp =
 						// imgProc.drawLinesBetweenBoundingRectPoints(contours.get(i),
 						// backUp, ratio);
+					double height =	contours.get(i).getBoundingRect(ratio).height;
 						Scalar color = new Scalar(255, 255, 0);
+						System.out.println(DistanceCalc.distanceFromCamera(height));
+						
 						backUp = imgproc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
 						backUp = imgproc.putText("QR CODE TEST", contours.get(i).getCenter(2), backUp);
 					}else{
@@ -177,16 +180,7 @@ public class PPanel extends JPanel implements Runnable {
 					}
 					i++;
 				}
-				// Vi aflæser de potentielle QR koder og ser om vi har nogen
-				// matches, hvis vi har!
-				// så marker dette og firkanter der har ca samme højde og
-				// størrelse!
-				// skriv i disse hvilken en firkant de nok er ud fra dataene
-				// vi har.
-				// udregn afstand til QR kode via python afstands
-				// bestemmelse på papir
-
-				// backUp = imgProc.markQrCodes(results, shapes, backUp);
+		
 				int contourNr = 0;
 				for (Result result : results) {
 					if (result != null) {
@@ -287,7 +281,7 @@ public class PPanel extends JPanel implements Runnable {
 				 */
 				Mat backUp = new Mat();
 				backUp = frame;
-				
+					
 				List<Contour> bluestuff = imgproc.findPapkasser(frame);
 				
 				for(int i = 0; i < bluestuff.size(); i++){
@@ -331,8 +325,8 @@ public class PPanel extends JPanel implements Runnable {
 				//		Scalar minValues = new Scalar(49, 64, 50);
 				//		Scalar maxValues = new Scalar(128, 184, 255);
 
-				Scalar minValues = new Scalar(0,0,0);
-				Scalar maxValues = new Scalar(179, 50 ,100);
+				Scalar minValues = new Scalar(49, 64, 50);
+				Scalar maxValues = new Scalar(128, 184 , 255);
 				Core.inRange(hsvImage, minValues, maxValues, mask);
 				Filterstates.setImage1(imgproc.toBufferedImage(mask));
 
@@ -368,61 +362,7 @@ public class PPanel extends JPanel implements Runnable {
 				Filterstates.setImage4(imgproc.toBufferedImage(blurredImage));
 				image = imgproc.toBufferedImage(backUp);
 			}
-				
-//				Mat blurredImage = new Mat();
-//				Mat hsvImage = new Mat();
-//				Mat mask = new Mat();
-//				Mat morphOutput = new Mat();
-//
-//				// remove some noise
-//				Imgproc.blur(frame, blurredImage, new Size(7, 7));
-//
-//				// convert the frame to HSV
-//				Imgproc.cvtColor(blurredImage, hsvImage, Imgproc.COLOR_BGR2HSV);
-//
-//				// get thresholding values from the UI
-//				// remember: H ranges 0-180, S and V range 0-255
-//				Scalar minValues = new Scalar(49, 64, 50);
-//				Scalar maxValues = new Scalar(128, 184, 255);
-//
-//				Core.inRange(hsvImage, minValues, maxValues, mask);
-//				// show the partial output
-//				Filterstates.setImage1(imgproc.toBufferedImage(blurredImage));
-//
-//				// morphological operators
-//				// dilate with large element, erode with small ones
-//				Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
-//				Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
-//
-//				Imgproc.erode(mask, morphOutput, erodeElement);
-//				Imgproc.erode(mask, morphOutput, erodeElement);
-//
-//				Imgproc.dilate(mask, morphOutput, dilateElement);
-//				Imgproc.dilate(mask, morphOutput, dilateElement);
-//
-//				// show the partial output
-//				Filterstates.setImage2(imgproc.toBufferedImage(hsvImage));
-//
-//				// init
-//				List<MatOfPoint> contours = new ArrayList<>();
-//				Mat hierarchy = new Mat();
-//
-//				// find contours
-//				Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
-//
-//				// if any contour exist...
-//				if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
-//				{
-//					// for each contour, display it in blue
-//					for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
-//					{
-//						Imgproc.drawContours(frame, contours, idx, new Scalar(250, 0, 0));
-//					}
-//				}
-//				
-//				Filterstates.setImage3(imgproc.toBufferedImage(mask));
-//				Filterstates.setImage4(imgproc.toBufferedImage(morphOutput));
-//				image = imgproc.toBufferedImage(backUp);
+
 			else if(Values_cam.getMethod() == 15) {
 				/*
 				Mat dst = Mat.zeros(frame.size(), 0);
@@ -440,6 +380,19 @@ public class PPanel extends JPanel implements Runnable {
 				List<MatOfPoint> contours = imgproc.getContourList(frame);
 				List<MatOfPoint2f> approxs = imgproc.getApproxCurves(contours, 0.1);
 				List<RotatedRect> rects = imgproc.getMinAreaRects(approxs);
+			} 
+			else if(Values_cam.getMethod() == 99) {
+				System.out.println("Method "+99+" started");
+				Mat _frame = frame.clone();
+				frame = imgproc.toCanny(frame);
+				List<MatOfPoint> contours = imgproc.getContourList(frame);
+				List<MatOfPoint2f> approxs = imgproc.getApproxCurves(contours, 0.1);
+				List<RotatedRect> rects = imgproc.getMinAreaRects(approxs);
+				imgproc.drawRotatedRects(_frame, rects);
+				image = imgproc.toBufferedImage(_frame);
+				System.out.println("Method "+99+" ended");
+				
+				
 			}
 			
 			SwingUtilities.invokeLater(new Runnable() {
