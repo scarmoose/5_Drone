@@ -251,6 +251,10 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 						image = imgProc.toBufferedImage(dst);
 					} else
 						System.err.println("FEJL I CIRKLEFINDING");
+				}else if(Values_cam.getMethod() == 80){
+					frame = imgProc.calibrateCamera(frame);
+					image = imgProc.toBufferedImage(frame);
+					
 				}
 
 				// System.out.println(image.getWidth() +","+ image.getHeight());
