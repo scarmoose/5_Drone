@@ -1400,7 +1400,7 @@ public class ImageProcessor {
 			MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
 
 			MatOfPoint2f approxCurve = new MatOfPoint2f();
-			double epsilon = Imgproc.arcLength(contour, true) * 0.1;
+			double epsilon = Imgproc.arcLength(contour, true) * 0.05;
 
 			// 
 			// we save them.

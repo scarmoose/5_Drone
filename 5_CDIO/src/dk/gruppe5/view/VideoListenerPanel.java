@@ -210,7 +210,8 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 				} else if (Values_cam.getMethod() == 2) {
 
-					combi.locationEstimationFrom3Points(frame);
+					frame = combi.locationEstimationFrom3Points(frame);
+					image = imgProc.toBufferedImage(frame);
 
 				} else if (Values_cam.getMethod() == 3) {
 
