@@ -1476,15 +1476,51 @@ public class ImageProcessor {
 	/**
 	 * Skal give en liste af <code>minAreaRects</code> i form af <code>List</code><<code>RotatedRect</code>>
 	 * for contourerne givet. 
-	 * @param contours countourer, der skal findes firkanter for
+	 * @param approxs countourer, der skal findes firkanter for
 	 * @return liste med firkantero
 	 */
-	public List<RotatedRect> getMinAreaRects(List<MatOfPoint2f> contours) {
+	public List<RotatedRect> getMinAreaRects(List<MatOfPoint2f> approxs) {
 		List<RotatedRect> rrects = new ArrayList<>();
-		for(MatOfPoint2f mop : contours) {
+		for(MatOfPoint2f mop : approxs) {
 			rrects.add(Imgproc.minAreaRect(mop));
 		}
 		return rrects;
+	}
+	
+	/**
+	 * Finder minAreaRects i <code>src</code>
+	 * @param src frame der skal undersøges
+	 * @param epsilon_coeff epsilon koefficient til approxcurves
+	 * @return
+	 */
+	public List<RotatedRect> getMinAreaRectsFromMat(Mat src, double epsilon_coeff) {
+		List<MatOfPoint> contours = getContourList(src);
+		List<MatOfPoint2f> approxs = getApproxCurves(contours, epsilon_coeff);
+		List<RotatedRect> rrects = getMinAreaRects(approxs);
+		return rrects;
+	}
+	
+	/**
+	 * Bestemmer om en cirkel indeholder en af de fundne <code>RotatedRects</code> 
+	 * DET ANTAGES AT <code>src</code> ER KLIPPET TIL KUN AT INDEHOLDE CIRKLEN
+	 * @param src frame der skal ledes efter firkanter i 
+	 * @param c Cirkel der skal tjekkes for
+	 * @param epsilon_coeff epsilon coefficient til approxcurves
+	 * @param ratio hvor meget af cirklen, firkanten skal fylde for at returnere sand
+	 * @return
+	 */
+	public boolean doesCircleContainRect(Mat src, Circle c, double epsilon_coeff, double ratio) {
+		DPoint new_c = new DPoint(src.width()/2, src.height()/2);
+		Circle new_circ = new Circle(new_c, c.r);
+		Rect roi = c.getBoundingRect();
+		Mat sub = new Mat(src, roi);
+		List<RotatedRect> rrects = getMinAreaRectsFromMat(sub, epsilon_coeff);
+		for(RotatedRect rr : rrects) { // hvis en Rect er i cirklen, returneres sand
+			if(new_circ.contains(rr) && rr.size.area() > ratio*new_circ.area()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -1575,7 +1611,7 @@ public class ImageProcessor {
 			for(int i = 0; i < num; i++) {
 				double vCircle[] = dst.get(0, i);
 				if(vCircle == null) {
-					System.err.println("No circles found");
+					System.err.println("No circle found at "+i);
 					break;
 				}
 				DPoint center = new DPoint(vCircle[0], vCircle[1]); 
@@ -1601,10 +1637,6 @@ public class ImageProcessor {
 				iMinRadius, iMaxRadius, iAccumulator);
 	}
 	
-	public Mat getSubmat(Mat src) throws Fejl40 {
-		throw new Fejl40("Ikke implementeret");
-	}
-	
 	//skal der ratio på??
 	/**
 	 * Tegner <code>RotatedRects</code> fra <code>list</code> på <code>img</code>.
@@ -1625,6 +1657,18 @@ public class ImageProcessor {
 		}
 		return img;
 	}
+	
+	/**
+	 * Giver sub image for src, med rectangle of interest
+	 * @param src
+	 * @param roi
+	 * @return
+	 */
+	public Mat getSubMat(Mat src, Rect roi) {
+		return new Mat(src, roi);
+	}
+	
+	
 
 
 }

@@ -95,5 +95,13 @@ public final class Circle implements Serializable {
 	public String toString() {
 		return getClass().getSimpleName() + "(c: " + c + ", r: " + r + ")";
 	}
+	
+	public double area() {
+		return Math.PI * sq(this.r);
+	}
+	
+	public double sq(double a) {
+		return a * a;
+	}
 
 }

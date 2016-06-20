@@ -44,7 +44,6 @@ public class PPanel extends JPanel implements Runnable {
 	// is opticalflow, 2 is image recognision.
 	// public int method = 2;
 
-	public int method = Values_cam.getMethod();
 	CombinedImageAnalysis combi = new CombinedImageAnalysis();
 
 	List<Point> startPoints;
@@ -105,6 +104,7 @@ public class PPanel extends JPanel implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
+			int method = Values_cam.getMethod();
 			Mat frame = new Mat();
 			capture.read(frame);
 
@@ -392,6 +392,8 @@ public class PPanel extends JPanel implements Runnable {
 				image = imgproc.toBufferedImage(_frame);
 				System.out.println("Method "+99+" ended");
 				
+			}
+			else if(method == 100) {
 				
 			}
 			SwingUtilities.invokeLater(new Runnable() {

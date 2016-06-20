@@ -359,7 +359,7 @@ public class Position {
 	
 	/**
 	 * Vurderer om et punkt er inde i rummet
-	 * @param p
+	 * @param p punktet
 	 * @return
 	 */
 	public boolean isPointInsideRoom(DPoint p) {
