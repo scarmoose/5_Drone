@@ -13,9 +13,11 @@ import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 
 import CoordinateSystem.DronePosition;
+import dk.gruppe5.controller.DistanceCalc;
 import dk.gruppe5.controller.Mathmagic;
 import dk.gruppe5.model.Contour;
 import dk.gruppe5.model.DPoint;
+import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.Wallmark;
 import dk.gruppe5.positioning.Position;
 import dk.gruppe5.view.Filterstates;
@@ -209,6 +211,42 @@ public class CombinedImageAnalysis {
 		}
 
 		return backUp;
+	}
+
+	public Mat findQrCodeInImage(Mat frame) {
+		frame = imgProc.calibrateCamera(frame);
+
+		Mat backUp = new Mat();
+		backUp = frame;
+		int ratio = 2;
+		frame = imgProc.downScale(backUp, ratio);
+		// fÃ¸rst gÃ¸r vi det sort hvidt
+		frame = imgProc.toGrayScale(frame);
+		//
+		frame = imgProc.equalizeHistogramBalance(frame);
+		// blur virker bedre
+		frame = imgProc.blur(frame);
+
+		// Til canny for at nemmere kunne finde contourer
+		frame = imgProc.toCanny(frame);
+		// Nu skal vi prøve at finde firkanter af en hvis stÃ¸rrelse
+		List<Contour> contours = imgProc.findQRsquares(frame);
+
+		// vi finder de potentielle QR kode områder
+		List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
+		List<Result> results = imgProc.readQRCodes(cutouts);
+		// backUp = imgProc.markQrCodes(results, shapes, backUp);
+		int contourNr = 0;
+		for (Result result : results) {
+			if(result != null){
+				Values_cam.lastQrCodeFound = result.getText();
+				Values_cam.timeOfFindingSingleQRCode = System.currentTimeMillis();
+				Values_cam.distanceToLastQr = DistanceCalc.distanceFromCamera(contours.get(contourNr).getBoundingRect(ratio).height);
+			}
+			contourNr++;
+			
+		}
+		return frame;
 	}
 
 }

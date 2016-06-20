@@ -24,12 +24,13 @@ public class Contour {
 		this.contour = contour;
 		this.approxCurve = approxCurve;
 	}
-	
+
 	public Contour(MatOfPoint2f contour) {
 		this.contour = contour;
 	}
 
-	public Contour() {}
+	public Contour() {
+	}
 
 	public MatOfPoint2f getContour() {
 		return contour;
@@ -49,27 +50,27 @@ public class Contour {
 
 	public List<Point> getCorners(int ratio) {
 		List<Point> source = new ArrayList<Point>();
-	
 
 		double[] temp_double;
 		try {
-		temp_double = approxCurve.get(0, 0);
-		Point p1 = new Point(temp_double[0] * ratio, temp_double[1] * ratio);
-		temp_double = approxCurve.get(1, 0);
-		Point p2 = new Point(temp_double[0] * ratio, temp_double[1] * ratio);
-		temp_double = approxCurve.get(2, 0);
-		Point p3 = new Point(temp_double[0] * ratio, temp_double[1] * ratio);
-		temp_double = approxCurve.get(3, 0);
-		Point p4 = new Point(temp_double[0] * ratio, temp_double[1] * ratio);
-	
-		source.add(p1);
-		source.add(p2);
-		source.add(p3);
-		source.add(p4);
-	
+			temp_double = approxCurve.get(0, 0);
+			Point p1 = new Point(temp_double[0] * ratio, temp_double[1] * ratio);
+			temp_double = approxCurve.get(1, 0);
+			Point p2 = new Point(temp_double[0] * ratio, temp_double[1] * ratio);
+			temp_double = approxCurve.get(2, 0);
+			Point p3 = new Point(temp_double[0] * ratio, temp_double[1] * ratio);
+			temp_double = approxCurve.get(3, 0);
+			Point p4 = new Point(temp_double[0] * ratio, temp_double[1] * ratio);
+
+			source.add(p1);
+			source.add(p2);
+			source.add(p3);
+			source.add(p4);
+
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			System.err.println("getCorners exception -> no enoguh corners fix method?");
+			return null;
 		}
 		return source;
 	}
@@ -220,5 +221,37 @@ public class Contour {
 		}
 
 		return source;
+	}
+
+	public Point[] allCornerPointsInOrderFromTheLeft(int ratio) {
+		Point[] points = new Point[4];
+		List<Point> UnorderedPoint = getCorners(ratio);
+		List<Point> boundingRectPoints = getBoundingRectPoints(ratio);
+		for (int z = 0; z < 4; z++) {
+
+			double distancePointTl = 0.0;
+			for (int i = 0; i < 4; i++) {
+				double distance = getDistanceBetweenPoints(UnorderedPoint.get(i), boundingRectPoints.get(z));
+				if (distancePointTl == 0.0) {
+					distancePointTl = distance;
+					points[z] = UnorderedPoint.get(i);
+
+				} else if (distance < distancePointTl) {
+					points[z] = UnorderedPoint.get(i);
+
+				}
+
+			}
+		}
+
+		return points;
+
+	}
+
+	public double getDistanceBetweenPoints(Point pointOne, Point pointTwo) {
+		double px = pointOne.x - pointTwo.x;
+		double py = pointOne.y - pointTwo.y;
+		return Math.sqrt(px * px + py * py);
+
 	}
 }
