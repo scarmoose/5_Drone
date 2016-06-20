@@ -441,6 +441,7 @@ public class PPanel extends JPanel implements Runnable {
 				List<MatOfPoint2f> approxs = imgproc.getApproxCurves(contours, 0.1);
 				List<RotatedRect> rects = imgproc.getMinAreaRects(approxs);
 			}
+			
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
