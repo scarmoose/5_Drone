@@ -68,15 +68,13 @@ public class CombinedImageAnalysis {
 					color = new Scalar(0, 20, 255);
 					backUp = imgProc.drawLinesBetweenContourPoints(contour, backUp, ratio, color);
 
-					if (contour.getArea(ratio) > minArea) {
+					if (contour.getArea(ratio) > minArea && contour.getArea(ratio) < currentContour.getBoundingRect(ratio).area()*0.9) {
 
-						if (triangleCenter.y > centerCurrentContour.y * 0.7
-								&& triangleCenter.y < centerCurrentContour.y * 1.3) {
-							double minDistance = 100.0;
-							if (centerCurrentContour.x < triangleCenter.x + minDistance) {
+						if (triangleCenter.y > centerCurrentContour.y * 0.7 && triangleCenter.y < centerCurrentContour.y * 1.3) {
+							if (centerCurrentContour.x < triangleCenter.x) {
 								rightTrianglePixelCenter = triangleCenter;
 
-							} else if (centerCurrentContour.x > triangleCenter.x + minDistance) {
+							} else if (centerCurrentContour.x > triangleCenter.x) {
 								leftTrianglePixelCenter = triangleCenter;
 							}
 						}
@@ -139,7 +137,7 @@ public class CombinedImageAnalysis {
 
 		// Til canny for at nemmere kunne finde contourer
 		frame = imgProc.toCanny(frame);
-
+		Filterstates.setImage1(imgProc.toBufferedImage(frame));
 		// Nu skal vi prøve at finde firkanter af en hvis stÃ¸rrelse
 		List<Contour> contours = imgProc.findQRsquares(frame);
 
@@ -166,7 +164,7 @@ public class CombinedImageAnalysis {
 							if (mapPosition != null) {
 								DronePosition.setPosition(mapPosition);
 								// System.out.println(mapPosition);
-								
+
 								int screenWidth = 1280;
 								int middleOfScreen = screenWidth / 2;
 								int pixelsFromMiddleToQr = Math.abs(((int) data.getPoints()[1].x - middleOfScreen));
@@ -176,7 +174,7 @@ public class CombinedImageAnalysis {
 								int x = Integer.parseInt(wallNr);
 								// System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos,
 								// data.getQrNames()[1], pixelsFromMiddleToQr));
-								
+
 								DronePosition.setDegree((90.0 * x) - test.getDirectionAngleRelativeToYAxis(mapPos,
 										data.getQrNames()[1], pixelsFromMiddleToQr));
 							}

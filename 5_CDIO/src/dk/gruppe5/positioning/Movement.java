@@ -282,7 +282,7 @@ public class Movement {
 
 		@Override
 		public void receivedExtendedAltitude(Altitude exAltitude) {
-			System.out.println("receivedExtendedAltitude - Altitude: "+exAltitude);
+		//	System.out.println("receivedExtendedAltitude - Altitude: "+exAltitude);
 		}
 
 	}
