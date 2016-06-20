@@ -73,6 +73,7 @@ public class DroneCommander extends Canvas {
 
 	public void droneFlightControl(){
 
+
 		Thread thread = new Thread(new Runnable() {
 			public void run() {
 
@@ -94,16 +95,12 @@ public class DroneCommander extends Canvas {
 							cmd.landing();
 							break;
 						}
-
 						cmd.hover().doFor(10);
 						System.out.println("Drone Thread: Drone is now Howering.");	
 						Thread.sleep(100);
-						closeToWall();
 						//cmd.spinLeft(30).doFor(1000);
 						//Thread.sleep(1000);
 						System.out.println("Drone Flight Control Complete!");
-						cmd.landing();
-						break;
 					}
 				} catch (InterruptedException e){
 					Thread.currentThread().interrupt();
@@ -112,6 +109,7 @@ public class DroneCommander extends Canvas {
 			}
 		}); 
 		thread.start();
+
 	}
 
 	public void droneTest(){
@@ -181,6 +179,7 @@ public class DroneCommander extends Canvas {
 				long end = t+6100;
 
 				while(System.currentTimeMillis()<end){
+					
 					cmd.hover().doFor(3000);
 					cmd.spinRight(100).doFor(100);
 					cmd.hover().doFor(3000);
@@ -219,27 +218,6 @@ public class DroneCommander extends Canvas {
 		 * in order to make sure we're not about to hit a wall
 		 * based on the distance to a QR code or a position
 		 */
-		if((DronePosition.getXPoint()>=830 || DronePosition.getXPoint()<=100 || DronePosition.getYPoint()<=100 || DronePosition.getYPoint()>=830) && DronePosition.getYPoint()!=-77){
-			long t = System.currentTimeMillis();
-			long end = t+3000;
-			try {
-				if(DronePosition.getDegree()<=0){
-					while(System.currentTimeMillis()<end){
-						cmd.spinLeft(100).doFor(500);
-						Thread.sleep(10);
-					}
-				}
-				else if(DronePosition.getDegree()>0){
-					while(System.currentTimeMillis()<end){
-						cmd.spinRight(100).doFor(500);
-						Thread.sleep(10);
-					}
-				}
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 	}
 
 	public void updatePosition(){
