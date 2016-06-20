@@ -22,10 +22,9 @@ public class DecisionMaker implements Runnable {
 			
 			dc.cleanStartUp(7000);
 			dc.findPosition();
-			
 			dc.closeToWall();
 			
-			if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!=-70){
+			if(DronePosition.getXPoint()!=0 && DronePosition.getYPoint()!=0){
 				dc.lookForAirfield();
 			}
 		}

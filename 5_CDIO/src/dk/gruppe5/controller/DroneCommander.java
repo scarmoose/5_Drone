@@ -32,13 +32,11 @@ public class DroneCommander extends Canvas {
 
 			System.out.println("Connecting to drone...");
 
-
 			App.drone.start();
 			Thread.sleep(2000);
 			cmd = App.drone.getCommandManager();
 			Thread.sleep(2000);
 			cmd.setVideoCodec(VideoCodec.H264_720P);
-
 			Thread.sleep(500);
 			cmd.setMaxAltitude(2000);
 			Thread.sleep(500);
@@ -46,11 +44,6 @@ public class DroneCommander extends Canvas {
 			Thread.sleep(500);
 			cmd.setVideoBitrate(3500);
 			Thread.sleep(500);
-
-			//	navl = new NavDataListener(App.drone); 
-			//navl = new Movement();
-
-			//	navl = new NavDataListener(App.drone);
 
 			System.out.println("Drone connected.");
 
@@ -68,9 +61,6 @@ public class DroneCommander extends Canvas {
 		}
 
 	}
-
-
-
 
 	public void droneFlightControl(){
 
@@ -176,34 +166,29 @@ public class DroneCommander extends Canvas {
 			Values_cam.setMethod(2);
 			for(int i = 0; i < 4; i++){
 
-//				long t = System.currentTimeMillis();
-//				long end = t+6100;
-//				while(System.currentTimeMillis()<end){
-					System.out.println(i + ". spin!");
 					cmd.hover().doFor(3000);
 					cmd.spinRight(100).doFor(100);
 					cmd.hover().doFor(3000);
-//					}
-				
-				if(DronePosition.getXPoint() != 630 && DronePosition.getYPoint()!= -70){
-					cmd.hover().doFor(500);	
-					cmd.landing();
-//					lookForAirfield();
-					gogo = false;
-				}
 			}
-			cmd.landing();
+
+			if(DronePosition.getXPoint() != 0 && DronePosition.getYPoint()!= 0){
+				cmd.hover().doFor(500);	
+				lookForAirfield();
+			}
 		}
 	}
 
 	public void lookForAirfield(){
-		
-		cmd.down(5).doFor(1000);
+				
+		cmd.setVideoChannel(VideoChannel.VERT);
 		cmd.hover().doFor(500);
-
-		/*
-		 * search for airfields
-		 */
+		cmd.down(10).doFor(1000);
+		cmd.hover().doFor(500);
+		cmd.setVideoChannel(VideoChannel.HORI);
+		cmd.up(10).doFor(1000);
+		cmd.hover().doFor(500);
+		cmd.landing();
+		
 	}
 
 	public void closeToWall(){
@@ -228,12 +213,5 @@ public class DroneCommander extends Canvas {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public void updatePosition(){
-		
-	}
-
-
-
+	}	
 }
