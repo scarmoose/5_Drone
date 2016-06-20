@@ -616,7 +616,7 @@ public class ImageProcessor {
 		// Here contours are stored, we will check each one to see if it matches
 		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
 		Mat hierarchy_1 = new Mat();
-		Imgproc.findContours(frame, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+		Imgproc.findContours(frame, contours_1, hierarchy_1, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
 
 		List<Contour> contours = new ArrayList<>();
 
@@ -629,15 +629,22 @@ public class ImageProcessor {
 			// we wanna se if a contour is a square, or has one or more edges so
 			// we save them.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
+			
+		
 			Rect r = Imgproc.boundingRect(contours_1.get(i));
+//			double[] p =hierarchy_1.get(0, i);
+//			if(p[3] > 0.0){
 			if (r.area() > 2000) {
 				if (approxCurve.total() > 3 && approxCurve.total() < 10) {
 					Contour contour1 = new Contour(contour, approxCurve);
 					contours.add(contour1);
-				}
 
+//				}
+			}
 			}
 		}
+		
+		
 
 		return contours;
 	}

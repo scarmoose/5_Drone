@@ -14,7 +14,8 @@ import dk.gruppe5.model.DPoint;
 public class Position {
 	
 	final static float TOTAL_PIXELS = 720.0f;
-	final static float TOTAL_ANGLE = 67.7f;
+	final static float TOTAL_ANGLE = 59.79f;
+			
 	public static DPoint currentPos;
 	public static float currentAngle;
 	

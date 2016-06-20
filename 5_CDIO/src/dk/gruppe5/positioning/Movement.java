@@ -275,9 +275,9 @@ public class Movement {
 	public class MyAltitudeListener implements AltitudeListener {
 		@Override
 		public void receivedAltitude(int altitude) {
+
 			currentAltitude = altitude;
 			if (altitude > 0){
-				System.out.println("Altitude: " + altitude);
 			}
 		}
 

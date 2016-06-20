@@ -5,6 +5,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -29,6 +30,7 @@ import de.yadrone.base.video.ImageListener;
 import dk.gruppe5.app.App;
 import dk.gruppe5.controller.DistanceCalc;
 import dk.gruppe5.controller.Mathmagic;
+import dk.gruppe5.exceptions.Fejl40;
 import dk.gruppe5.framework.DetectedWallmarksAndNames;
 import dk.gruppe5.framework.FrameGrabber;
 import dk.gruppe5.framework.ImageProcessor;
@@ -147,65 +149,9 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					}
 					image = imgProc.toBufferedImage(frame);
 
-				}else if(Values_cam.getMethod() == 22){
-					
-					int ratio = 2;
-					frame = imgProc.calibrateCamera(frame);
-					frame = imgProc.downScale(frame, ratio);
-					frame = imgProc.toGrayScale(frame);
-
-					frame = imgProc.equalizeHistogramBalance(frame);
-					frame = imgProc.blur(frame);
-
-					frame = imgProc.toCanny(frame);
-					frame = imgProc.findAirfield(frame, ratio);
-					image = imgProc.toBufferedImage(frame);
-					
-					
 				}else if (Values_cam.getMethod() == 1) {
 
-					frame = imgProc.calibrateCamera(frame);
-					Mat backUp = new Mat();
-					backUp = frame;
-					int ratio = 1;
-					frame = imgProc.downScale(backUp, ratio);
-
-					// kig pÃ¥ whitebalancing og eventuelt at reducere omrÃ¥det
-					// som vi kigger igennem for firkanter.
-					// frame = imgProc.equalizeHistogramBalance(frame);
-
-					// fÃ¸rst gÃ¸r vi det sort hvidt
-					frame = imgProc.toGrayScale(frame);
-
-					frame = imgProc.equalizeHistogramBalance(frame);
-					// Vi tester fÃ¸rst med blur og ser hvor godt det bliver
-					// prÃ¸v ogsÃ¥ uden
-					// blur virker bedre
-					frame = imgProc.blur(frame);
-
-					// Til canny for at nemmere kunne finde contourer
-					frame = imgProc.toCanny(frame);
-
-					// Nu skal vi prÃ¸ve at finde firkanter
-					List<Contour> contours = imgProc.findQRsquares(frame);
-					List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
-					List<Result> results = imgProc.readQRCodes(cutouts);
-					int i = 0;
-					for (Result result : results) {
-						if (result != null) {
-							Point centerPoint  = contours.get(i).getCenter(ratio);
-							Scalar color = new Scalar(0, 255, 0);
-							backUp = imgProc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
-							backUp = imgProc.putText(result.getText(), centerPoint, backUp);
-							int height = contours.get(i).getBoundingRect(ratio).height;
-							System.out.println(height);
-							System.out.println("Distance is:" + DistanceCalc.distanceFromCamera(height));
-							backUp = imgProc.putText("DISTANCE IS" + height, new Point(centerPoint.x,centerPoint.y+20), backUp);
-						}
-						i++;
-					}
-
-					image = imgProc.toBufferedImage(backUp);
+					findPosWith2QrCodes(frame);
 
 
 				} else if (Values_cam.getMethod() == 2) {
@@ -237,10 +183,6 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					image = imgProc.toBufferedImage(backUp);
 
 				} else if (Values_cam.getMethod() == 4) {
-
-					// her vil vi prøve at finde position ud fra et qr markering
-					// og de trekanter der er på hver side halvvejs til feltet
-					//frame = imgProc.calibrateCamera(frame);
 					frame = combi.locationEstimationFrom3Points(frame);
 					image = imgProc.toBufferedImage(frame);
 				} else if (Values_cam.getMethod() == 5) {
@@ -309,6 +251,10 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 						image = imgProc.toBufferedImage(dst);
 					} else
 						System.err.println("FEJL I CIRKLEFINDING");
+				}else if(Values_cam.getMethod() == 80){
+					frame = imgProc.calibrateCamera(frame);
+					image = imgProc.toBufferedImage(frame);
+					
 				}
 
 				// System.out.println(image.getWidth() +","+ image.getHeight());
@@ -321,6 +267,96 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 			}
 
 		}
+	}
+
+	public void findPosWith2QrCodes(Mat frame) {
+		frame = imgProc.calibrateCamera(frame);
+		Mat backUp = new Mat();
+		backUp = frame;
+		int ratio = 2;
+		frame = imgProc.downScale(backUp, ratio);
+
+		// kig pÃ¥ whitebalancing og eventuelt at reducere omrÃ¥det
+		// som vi kigger igennem for firkanter.
+		// frame = imgProc.equalizeHistogramBalance(frame);
+
+		// fÃ¸rst gÃ¸r vi det sort hvidt
+		frame = imgProc.toGrayScale(frame);
+
+		frame = imgProc.equalizeHistogramBalance(frame);
+		// Vi tester fÃ¸rst med blur og ser hvor godt det bliver
+		// prÃ¸v ogsÃ¥ uden
+		// blur virker bedre
+		frame = imgProc.blur(frame);
+
+		// Til canny for at nemmere kunne finde contourer
+		frame = imgProc.toCanny(frame);
+
+		// Nu skal vi prÃ¸ve at finde firkanter
+		List<Contour> contours = imgProc.findQRsquares(frame);
+		List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
+		List<Result> results = imgProc.readQRCodes(cutouts);
+		List<String> qrNamesFound = new ArrayList<>();
+		
+		HashMap<String, Integer> qrMap = new HashMap<>();
+		int i = 0;
+		for (Result result : results) {
+			if (result != null) {
+				Point centerPoint  = contours.get(i).getCenter(ratio);
+				Scalar color = new Scalar(0, 255, 0);
+				backUp = imgProc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
+				backUp = imgProc.putText(result.getText(), centerPoint, backUp);
+				int height = contours.get(i).getBoundingRect(ratio).height;
+				String qrName = result.getText();
+				qrNamesFound.add(qrName);
+				if(!qrMap.containsKey(qrName)){
+					qrMap.put(qrName, height);
+				}else{
+					int heightExisting = qrMap.get(qrName);
+					heightExisting = (heightExisting+height)/2;
+					qrMap.put(qrName, heightExisting);
+				}
+				System.out.println(height);
+				System.out.println("Distance is:" + DistanceCalc.distanceFromCamera(height));
+				backUp = imgProc.putText("DISTANCE IS" + height, new Point(centerPoint.x,centerPoint.y+20), backUp);
+			}
+			i++;
+		}
+		
+		
+		
+		String qrNameOne = null;
+		String qrNameTwo = null;
+		for(String qrName : qrNamesFound){
+			if(qrNameOne == null){
+				qrNameOne = qrName;
+			}
+			if(!qrNameOne.equals(qrName)){
+				qrNameTwo = qrName;
+				break;
+			}
+			
+		}
+		if(qrNameOne != null && qrNameTwo != null){
+			Position pos = new Position();
+			DPoint p1 = Mathmagic.getPointFromName(qrNameOne);
+			DPoint p2 =Mathmagic.getPointFromName(qrNameTwo);
+			int p1PixelHeight = qrMap.get(qrNameOne);
+			int p2PixelHeight = qrMap.get(qrNameTwo);
+			DPoint position;
+			try {
+				position = pos.getPosition(p1, p2, (double)p1PixelHeight, (double)p2PixelHeight);
+				DronePosition.setPosition(position);
+				
+			} catch (Fejl40 e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		
+		image = imgProc.toBufferedImage(backUp);
 	}
 
 	public Point findAirFieldInImageWithBottomCamera(Mat frame) {
