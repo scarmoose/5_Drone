@@ -218,6 +218,27 @@ public class DroneCommander extends Canvas {
 		 * in order to make sure we're not about to hit a wall
 		 * based on the distance to a QR code or a position
 		 */
+		if((DronePosition.getXPoint()>=830 || DronePosition.getXPoint()<=100 || DronePosition.getYPoint()<=100 || DronePosition.getYPoint()>=830) && DronePosition.getYPoint()!=-77){
+			long t = System.currentTimeMillis();
+			long end = t+3000;
+			try {
+				if(DronePosition.getDegree()<=0){
+					while(System.currentTimeMillis()<end){
+						cmd.spinLeft(100).doFor(500);
+						Thread.sleep(10);
+					}
+				}
+				else if(DronePosition.getDegree()>0){
+					while(System.currentTimeMillis()<end){
+						cmd.spinRight(100).doFor(500);
+						Thread.sleep(10);
+					}
+				}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void updatePosition(){
