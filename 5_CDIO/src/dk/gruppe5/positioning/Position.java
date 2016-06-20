@@ -34,7 +34,6 @@ public class Position {
 	 * @param pixelsFromMiddleToQr
 	 * @return
 	 */
-	
 	public float getDirectionAngleRelativeToYAxis(DPoint dronePos, String qrName, int pixelsFromMiddleToQr) {
 		DPoint qrPos = Mathmagic.getPointFromName(qrName);
 		return getDirectionAngleRelativeToYAxis(dronePos, qrPos, pixelsFromMiddleToQr);

@@ -1,7 +1,10 @@
 package dk.gruppe5.positioning;
 
+import java.util.Random;
+
 import com.google.zxing.datamatrix.encoder.SymbolShapeHint;
 
+import CoordinateSystem.DronePosition;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.exception.ARDroneException;
@@ -50,7 +53,6 @@ public class Movement {
 	}
 
 	private void init() {
-
 		//drone.addExceptionListener(new MyExceptionListener());
 		drone.getNavDataManager().addAltitudeListener(new MyAltitudeListener());
 		//drone.getNavDataManager().addAttitudeListener(new MyAttitudeListener());
@@ -60,6 +62,9 @@ public class Movement {
 
 	}
 
+	public void moveAroundArea() {
+		
+	}
 
 	public void moveToPoint(DPoint p) throws Fejl40 {
 		DPoint position = Position.currentPos;
@@ -104,28 +109,59 @@ public class Movement {
 	}
 	
 	public void randomSearch() {
-
+		switch(new Random().nextInt(4)) {
+		case 0:
+			forward();
+			break;
+		case 1:
+			left();
+			break;
+		case 2:
+			right();
+			break;
+		case 3:
+			backward();
+			break;
+		default: 
+		}	
 		
 	}
 
 	public void left(int speed, int interval) {
 		cmd.goLeft(speed).doFor(interval);
-		cmd.hover();
+		cmd.hover().doFor(1000);
 	}
 
 	public void right(int speed, int interval) {
 		cmd.goRight(speed).doFor(interval);
-		cmd.hover();
+		cmd.hover().doFor(1000);
 	}
 
 	public void forward(int speed, int interval) {
 		cmd.forward(speed).doFor(interval);
-		cmd.hover();
+		cmd.hover().doFor(1000);
 	}
 
 	public void backward(int speed, int interval) {
 		cmd.backward(speed).doFor(interval);
-		cmd.hover();
+		cmd.hover().doFor(1000);
+	}
+	
+	int speed = 100, interval = 10;
+	public void left() {
+		left(speed, interval);
+	}
+	
+	public void right() {
+		right(speed, interval);
+	}
+	
+	public void forward() {
+		forward(speed, interval);
+	}
+	
+	public void backward() {
+		backward(speed, interval); 
 	}
 
 	public void land() {
