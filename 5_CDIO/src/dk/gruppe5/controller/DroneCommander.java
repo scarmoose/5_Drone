@@ -148,14 +148,16 @@ public class DroneCommander extends Canvas {
 	}
 
 
-	public void cleanStartUp(int interval){
+	public void cleanStartUp(){
 
 		cmd.takeOff();
-		cmd.hover().doFor(interval);
+		cmd.hover().doFor(5000);
 		
 	}
 
 	public void findPosition(){
+		
+		cleanStartUp();
 		
 		cmd.forward(10).doFor(500);
 		cmd.backward(10).doFor(10);
@@ -179,6 +181,8 @@ public class DroneCommander extends Canvas {
 	}
 
 	public void lookForAirfield(){
+		
+		cleanStartUp();
 				
 		cmd.setVideoChannel(VideoChannel.VERT);
 		cmd.hover().doFor(500);
@@ -213,5 +217,22 @@ public class DroneCommander extends Canvas {
 				e.printStackTrace();
 			}
 		}
-	}	
+	}
+	
+public void flyBackToStartField(){
+		
+		cmd.setVideoChannel(VideoChannel.VERT);
+		cmd.hover().doFor(500);
+		cmd.down(10).doFor(1000);
+		cmd.hover().doFor(500);
+		cmd.setVideoChannel(VideoChannel.HORI);
+		if(DronePosition.getXPoint() == 630 && DronePosition.getYPoint() == -70){
+			cmd.landing();	
+		} else {
+			cmd.up(10).doFor(1000);
+			cmd.hover().doFor(5000);
+			findPosition();
+		}
+		
+	}
 }
