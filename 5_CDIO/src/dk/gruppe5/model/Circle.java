@@ -1,11 +1,12 @@
 package dk.gruppe5.model;
 
-import java.awt.Point;
+import org.opencv.core.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.opencv.core.Rect;
+import org.opencv.core.RotatedRect;
 
 //tyvstjålet fra https://github.com/Lanchon/circle-circle-intersection
 
@@ -51,6 +52,16 @@ public final class Circle implements Serializable {
 				return false;
 		}
 		return true;
+	}
+	
+	public boolean contains(RotatedRect r) {
+		Point[] points = new Point[4];
+		r.points(points);
+		for(Point p : points) {
+			if(c.distance(new DPoint(p)) > this.r) {
+				return false;
+			}
+		} return true;
 	}
 
 	@Override

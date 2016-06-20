@@ -164,11 +164,6 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					image = imgProc.toBufferedImage(frame);
 					
 					
-				}
-				else if(Values_cam.getMethod() == 21){
-					CombinedImageAnalysis combi = new CombinedImageAnalysis();
-					frame = combi.findPositionFromQRandTriangles(frame);		
-					image = imgProc.toBufferedImage(frame);	
 				}else if (Values_cam.getMethod() == 1) {
 
 
@@ -208,6 +203,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					image = imgProc.toBufferedImage(backUp);
 
+
 				} else if (Values_cam.getMethod() == 2) {
 
 					combi.locationEstimationFrom3Points(frame);
@@ -235,6 +231,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					}
 					Filterstates.setImage1(imgProc.toBufferedImage(frame));
 					image = imgProc.toBufferedImage(backUp);
+
 				} else if (Values_cam.getMethod() == 4) {
 
 					// her vil vi prøve at finde position ud fra et qr markering

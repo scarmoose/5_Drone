@@ -63,7 +63,7 @@ public class Movement {
 
 	public void moveToPoint(DPoint p) throws Fejl40 {
 		DPoint position = Position.currentPos;
-		throw new Fejl40();
+		throw new Fejl40("Ikke implementeret");
 	}
 
 	/**
@@ -283,7 +283,7 @@ public class Movement {
 
 		@Override
 		public void receivedExtendedAltitude(Altitude exAltitude) {
-			System.out.println("receivedExtendedAltitude - Altitude: "+exAltitude);
+		//	System.out.println("receivedExtendedAltitude - Altitude: "+exAltitude);
 		}
 
 	}

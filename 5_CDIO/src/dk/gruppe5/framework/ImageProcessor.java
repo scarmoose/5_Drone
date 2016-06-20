@@ -1405,7 +1405,7 @@ public class ImageProcessor {
 			MatOfPoint2f contour = new MatOfPoint2f(contours_1.get(i).toArray());
 
 			MatOfPoint2f approxCurve = new MatOfPoint2f();
-			double epsilon = Imgproc.arcLength(contour, true) * 0.1;
+			double epsilon = Imgproc.arcLength(contour, true) * 0.05;
 
 			// 
 			// we save them.
@@ -1420,7 +1420,12 @@ public class ImageProcessor {
 		}
 		return triangles;
 	}
-
+	
+	/**
+	 * Giver en liste af contours for et givent frame.
+	 * @param src frame
+	 * @return liste af contours
+	 */
 	public List<MatOfPoint> getContourList(Mat src) {
 		List<MatOfPoint> contours = new ArrayList<>();
 		Mat hierarchy = new Mat();
@@ -1428,6 +1433,11 @@ public class ImageProcessor {
 		return contours;
 	}
 	
+	/**
+	 * Giver contours for de fundne cirkler i et givent frame. 
+	 * @param src frame
+	 * @return liste af contours
+	 */
 	public List<MatOfPoint> getHoughCircleContours(Mat src) {
 		Mat dst = Mat.zeros(src.size(), 0);
 		findAndDrawHoughCircles(src, dst);
@@ -1435,6 +1445,11 @@ public class ImageProcessor {
 		return contours;
 	}
 	
+	/**
+	 * Giver bounding rects for de givne contours i form af <code>List</code><<code>Rect</code>>
+	 * @param contours contours der skal findes bounding rects for
+	 * @return liste med bounding rects
+	 */
 	public List<Rect> getBoundingRects(List<MatOfPoint> contours) {
 		List<Rect> rects = new ArrayList<>();
 		for(MatOfPoint contour : contours) {
@@ -1443,6 +1458,12 @@ public class ImageProcessor {
 		return rects;
 	}
 	
+	/**
+	 * Giver de approximerede kurver for den givne liste af contours
+	 * @param list liste af contours
+	 * @param epsilon_coeff koefficient til hvor fin approksimeringen skal være.
+	 * @return
+	 */
 	public List<MatOfPoint2f> getApproxCurves(List<MatOfPoint> list, double epsilon_coeff) {
 		List<MatOfPoint2f> approxs = new ArrayList<>();
 		for(MatOfPoint mop : list) {
@@ -1452,10 +1473,15 @@ public class ImageProcessor {
 			Imgproc.approxPolyDP(mop2f, approx, epsilon, true);
 			approxs.add(approx);
 		}
-		
 		return approxs;
 	}
 	
+	/**
+	 * Skal give en liste af <code>minAreaRects</code> i form af <code>List</code><<code>RotatedRect</code>>
+	 * for contourerne givet. 
+	 * @param contours countourer, der skal findes firkanter for
+	 * @return liste med firkantero
+	 */
 	public List<RotatedRect> getMinAreaRects(List<MatOfPoint2f> contours) {
 		List<RotatedRect> rrects = new ArrayList<>();
 		for(MatOfPoint2f mop : contours) {
@@ -1463,10 +1489,6 @@ public class ImageProcessor {
 		}
 		return rrects;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * Tegner de fundne cirkler i <code>src</code> på <code>destination</code>
@@ -1485,6 +1507,7 @@ public class ImageProcessor {
 		return findAndDrawHoughCircles(src, destination, iCannyUpperThreshold,
 				iMinRadius, iMaxRadius, iAccumulator, iLineThickness);
 	}
+	
 	/**
 	 * Tegner de fundne cirkler i <code>src</code> på <code>destination</code>
 	 * @param src frame der skal undersøges
@@ -1532,8 +1555,17 @@ public class ImageProcessor {
 		} else return false;
 	}
 	
+	/**
+	 * Giver en liste af cirkler fundet i billedet i form af <code>List</code><<code>Circle</code>>.
+	 * @param src frame
+	 * @param iCannyUpperThreshold canny threshold
+	 * @param iMinRadius cirkel minimun radius
+	 * @param iMaxRadius cirkel maximum radius
+	 * @param iAccumulator accumulator? 100-300 tror jeg
+	 * @return liste med cirkler fundet
+	 */
 	public List<Circle> findHoughCircles(Mat src, int iCannyUpperThreshold,
-			int iMinRadius, int iMaxRadius, int iAccumulator, int iLineThickness) {
+			int iMinRadius, int iMaxRadius, int iAccumulator) {
 		List<Circle> list = new ArrayList<>();
 		Mat dst = Mat.zeros(src.size(), 5);
 		Imgproc.HoughCircles(src, dst, Imgproc.CV_HOUGH_GRADIENT, 
@@ -1557,28 +1589,41 @@ public class ImageProcessor {
 		return list;
 	}
 	
+	/**
+	 * Giver en liste af cirkler fundet i billedet i form af <code>List</code><<code>Circle</code>>.
+	 * bruger nogle faste værdier, der kan sættes i metoden
+	 * @param src frame
+	 * @return liste med cirkler
+	 */
 	public List<Circle> findHoughCircles(Mat src) {
 		int iCannyUpperThreshold = 130;
 		int iMinRadius = 40; // ????
 		int iMaxRadius = 350;
 		int iAccumulator = 350;
-		int iLineThickness = 5;
 		return findHoughCircles(src, iCannyUpperThreshold, 
-				iMinRadius, iMaxRadius, iAccumulator, iLineThickness);
+				iMinRadius, iMaxRadius, iAccumulator);
 	}
 	
 	//skal der ratio på??
-		public Mat drawRotatedRects(Mat img, List<RotatedRect> list) {
-			Point[] points = new Point[4];
-			for(RotatedRect r : list) {
-				r.points(points);
-				int n = 4; // 4 points in rect
-				for(int i = 0; i < n; i++) {
-					drawLine(points[i], points[(i+1)%n], img, new Scalar(123,54,187));
-				}
+	/**
+	 * Tegner <code>RotatedRects</code> fra <code>list</code> på <code>img</code>.
+	 * Det frame der bliver tegnet på, er det der bliver givet som parameter,
+	 * men det bliver også returneret.
+	 * @param img billede der skal tegnes på
+	 * @param list liste med <code>RotatedRects</code> der skal tegnes
+	 * @return frame der er tegnet på. 
+	 */
+	public Mat drawRotatedRects(Mat img, List<RotatedRect> list) {
+		Point[] points = new Point[4];
+		for(RotatedRect r : list) {
+			r.points(points);
+			int n = 4; // 4 points in rect
+			for(int i = 0; i < n; i++) {
+				drawLine(points[i], points[(i+1)%n], img, new Scalar(123,54,187));
 			}
-			return img;
 		}
+		return img;
+	}
 
 
 }
