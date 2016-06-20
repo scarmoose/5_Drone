@@ -11,7 +11,9 @@ import javax.swing.SwingUtilities;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -30,7 +32,6 @@ import dk.gruppe5.model.DPoint;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.opticalFlowData;
 import dk.gruppe5.positioning.Position;
-import dk.gruppe5.test.CircleTest;
 
 public class PPanel extends JPanel implements Runnable {
 
@@ -278,36 +279,6 @@ public class PPanel extends JPanel implements Runnable {
 				//her vil vi prøve at finde position ud fra et qr markering og de trekanter der er på hver side halvvejs til feltet
 				frame = combi.findPositionFromQRandTriangles(frame);		
 				image = imgproc.toBufferedImage(frame);
-
-				Mat backUp = new Mat();
-				backUp = frame;
-				int ratio = 1;
-
-				frame = imgproc.toGrayScale(frame);
-				frame = imgproc.equalizeHistogramBalance(frame);
-				frame = imgproc.blur(frame);
-				frame = imgproc.toCanny(frame);
-				// Nu skal vi prøve at finde firkanter af en hvis størrelse
-				List<Contour> contours = imgproc.findQRsquares(frame);
-		
-				// vi finder de potentielle QR kode områder
-				List<BufferedImage> cutouts = imgproc.warp(backUp, contours, ratio);
-//				List<Result> results = imgproc.readQRCodes(cutouts);
-				Result result = imgproc.readQRcodeFromWholeImage(imgproc.toBufferedImage(backUp));
-				
-//				int i = 0;
-//				for (Result result : results) {
-//					if (result != null) {
-//						// backUp =
-//						// imgProc.drawLinesBetweenBoundingRectPoints(contours.get(i),
-//						// backUp, ratio);
-//						Scalar color = new Scalar(255, 255, 0);
-//						backUp = imgproc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
-//						backUp = imgproc.putText(result.getText(), contours.get(i).getCenter(ratio), backUp);
-//					}
-//					i++;
-//				}
-//				
 				
 			} else if(Values_cam.getMethod()==13){
 
@@ -399,14 +370,22 @@ public class PPanel extends JPanel implements Runnable {
 			}
 
 			else if(Values_cam.getMethod() == 15) {
-				Mat dst = new Mat(frame.width(), frame.height(), 1);
-				dst = frame.clone();
+				/*
+				Mat dst = Mat.zeros(frame.size(), 0);
+				// Mat dst = new Mat(frame.width(), frame.height(), 0);
+				// dst = frame.clone();
 				frame = imgproc.toGrayScale(frame);
 				new CircleTest().findHoughCircles(frame, dst);
 				if(!dst.empty()) {
 					System.out.println("LOL");
 					image = imgproc.toBufferedImage(dst);
 				} else System.err.println("FEJL I CIRKLEFINDING");
+				*/
+				
+				Mat dst = Mat.zeros(frame.size(), 5);
+				List<MatOfPoint> contours = imgproc.getContourList(frame);
+				List<MatOfPoint2f> approxs = imgproc.getApproxCurves(contours, 0.1);
+				List<RotatedRect> rects = imgproc.getMinAreaRects(approxs);
 			}
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
@@ -416,6 +395,8 @@ public class PPanel extends JPanel implements Runnable {
 			});
 		}
 	}
+	
+	
 
 	public void opticalFlowCall(Mat frame) {
 		opticalFlowData flowData = imgproc.opticalFlow(frame, old_frame);

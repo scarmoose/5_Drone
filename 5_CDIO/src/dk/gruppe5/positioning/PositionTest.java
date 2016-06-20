@@ -1,6 +1,3 @@
-/**
- * 
- */
 package dk.gruppe5.positioning;
 
 import org.opencv.core.Core;
