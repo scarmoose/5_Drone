@@ -342,10 +342,10 @@ public class Position {
 	 * @return positionen i rummet
 	 * @throws Fejl40
 	 */
-	public DPoint getPosition(DPoint p1, DPoint p2, double p1PixelWidth, double p2PixelWidth) 
+	public DPoint getPosition(DPoint p1, DPoint p2, double p1PixelHeight, double p2PixelHeight) 
 			throws Fejl40 {
-		double 	r1 = getDistanceToQr(p1PixelWidth),
-				r2 = getDistanceToQr(p2PixelWidth);
+		double 	r1 = getDistanceToQr(p1PixelHeight),
+				r2 = getDistanceToQr(p2PixelHeight);
 		Circle 	c1 = new Circle(p1, r1),
 				c2 = new Circle(p2, r2);
 		CircleCircleIntersection cci = new CircleCircleIntersection(c1, c2);
@@ -374,13 +374,13 @@ public class Position {
 	 * giver afstanden til en QR kode, da vi kender antal pixels den fylder i billedet, samt den
 	 * virkelige størrelse. 
 	 * @param perceivedPixels pixels den fylder i billedet
-	 * @return afstand i mm
+	 * @return afstand i cm
 	 */
 	public double getDistanceToQr(double perceivedPixels) {
-		double percievedPixelWidth = 226;
+		double percievedPixelHeight = 480;
 		double centimeter = 100.0;
 		double paperHeight = 42.0;
-		double focalLength = (percievedPixelWidth*centimeter)/paperHeight;
+		double focalLength = (percievedPixelHeight*centimeter)/paperHeight;
 		return (paperHeight*focalLength)/perceivedPixels;
 	}
 
