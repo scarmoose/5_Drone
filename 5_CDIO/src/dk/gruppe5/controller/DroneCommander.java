@@ -28,30 +28,30 @@ public class DroneCommander extends Canvas {
 	private final static int speed = 5;
 	private final static int sleep = 500;
 
-	
+
 	/**
 	 * 
 	 */
-	
+
 	private static final long serialVersionUID = -869265015784363288L;
-	
+
 	CommandManager cmd;
 
 	Movement navl = new Movement();
-	
+
 	public DroneCommander() {
-		
+
 		try {
-			
+
 			System.out.println("Connecting to drone...");
-			
-			
+
+
 			App.drone.start();
 			Thread.sleep(2000);
 			cmd = App.drone.getCommandManager();
 			Thread.sleep(2000);
 			cmd.setVideoCodec(VideoCodec.H264_720P);
-	
+
 			Thread.sleep(500);
 			cmd.setMaxAltitude(2000);
 			Thread.sleep(500);
@@ -60,94 +60,87 @@ public class DroneCommander extends Canvas {
 			cmd.setVideoBitrate(3500);
 			Thread.sleep(500);
 
-		//	navl = new NavDataListener(App.drone); 
+			//	navl = new NavDataListener(App.drone); 
 			//navl = new Movement();
 
-		//	navl = new NavDataListener(App.drone);
+			//	navl = new NavDataListener(App.drone);
 
 			System.out.println("Drone connected.");
-		
+
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 			System.err.println("Could not connect to drone.");
-			
+
 		}
-		
+
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-			
+
 	}
-	
+
 
 
 
 	public void droneFlightControl(){
-		
+
 
 		Thread thread = new Thread(new Runnable() {
-	         public void run() {
-	             
-	        	 droneTakeOff();
-	        	 getDroneAltitude(Movement.currentAltitude);
-	        	 
-	        	 try{
-	        		 //long t = System.currentTimeMillis();
-	        		 //long end = t+100000;
-	        		 while(true) {
-	 					if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!= -70){
+			public void run() {
+
+				droneTakeOff();
+				getDroneAltitude(Movement.currentAltitude);
+
+				try{
+					//long t = System.currentTimeMillis();
+					//long end = t+100000;
+					while(true) {
+						if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!= -70){
 							System.out.println("Yay!");
 							long t = System.currentTimeMillis();
-			        		long end = t+10000;
-			        		while(System.currentTimeMillis()<end){
-			        			cmd.spinLeft(30).doFor(100);
-			        			Thread.sleep(10);
-			        		}
+							long end = t+10000;
+							while(System.currentTimeMillis()<end){
+								cmd.spinLeft(30).doFor(100);
+								Thread.sleep(10);
+							}
 							cmd.landing();
 							break;
 						}
-	        			 cmd.hover().doFor(10);
-	        			 System.out.println("Drone Thread: Drone is now Howering.");	
-	        			 Thread.sleep(100);
-	        			 //cmd.spinLeft(30).doFor(1000);
-	        			 //Thread.sleep(1000);
-	        			 System.out.println("Drone Flight Control Complete!");
-	        		 }
-	        	 } catch (InterruptedException e){
-	        		 Thread.currentThread().interrupt();
-	        		 e.printStackTrace();
-	        	 }
-	         }
-	}); 
-	thread.start();
-		
+						cmd.hover().doFor(10);
+						System.out.println("Drone Thread: Drone is now Howering.");	
+						Thread.sleep(100);
+						//cmd.spinLeft(30).doFor(1000);
+						//Thread.sleep(1000);
+						System.out.println("Drone Flight Control Complete!");
+					}
+				} catch (InterruptedException e){
+					Thread.currentThread().interrupt();
+					e.printStackTrace();
+				}
+			}
+		}); 
+		thread.start();
+
 	}
-		
-
-		
-
-
 
 	public void droneTest(){
 		//getDroneAltitude(Movement.currentAltitude);
 		droneTakeOff();
 		cmd.hover().doFor(10000);
 		killAll();
-		
-		
+
+
 	}
-	
-	
-	
+
 	public void getDroneAltitude(int altitude){
 		MyAltitudeListener alt = null;
-		
+
 		Movement.currentAltitude = altitude;
 		if (Movement.currentAltitude <= 2000){
-	
+
 			System.out.println("Drone Altitude" + altitude);
 		} else {
 			System.out.println("Drone Altitude Null!:" + altitude);
@@ -155,51 +148,16 @@ public class DroneCommander extends Canvas {
 	}
 
 	public void droneTakeOff(){
-		System.out.println("We have Liftoff");
 		cmd.flatTrim();
 		cmd.takeOff();
-		System.out.println("takeoff done");
 	}
 
-	public void droneFlyingForward() throws InterruptedException{
-		cmd.forward(speed);
-	}
-	public void droneFlyingBackward(){
-		cmd.backward(speed);
-	}
-	public void droneFlyingUp(){
-		cmd.up(speed).doFor(speed);
-	}
-	public void droneFlyingDown(){
-		cmd.down(speed);
-	}
-	public void droneSpinLeft(){
-		cmd.spinLeft(speed*2);
-	}
-	public void droneSpinRight(){
-		cmd.spinRight(speed*2);
-		}
-	public void droneKillAll(){
-		cmd.landing();
-	}
-	public void droneGoLeft(){
-		cmd.goLeft(speed);
-	}
-	public void droneGoRight(){
-		cmd.goRight(speed);
-	}
-	
 	public void takeOffAndLand(long interval){
 		cmd.takeOff();
 		cmd.waitFor(interval);
 		cmd.landing();
 	}
-	
-//	public void hover(){
-//		System.out.println("Altitude1: " + Movement.currentAltitude);
-//		cmd.hover().doFor(5000);
-//		System.out.println("Altitude2: " + Movement.currentAltitude);
-//	}
+
 	public void killAll(){
 		cmd.landing();
 	}
@@ -207,15 +165,81 @@ public class DroneCommander extends Canvas {
 	public CommandManager getCmd() {
 		return cmd;
 	}
-	
+
 	public IARDrone getDrone() {
 		return App.drone;
 	}
 
 
-//	public NavDataListener getNavl() {
-//		return navl;
-//	}
+	public void cleanStartUp(int interval){
 
-	
+		cmd.takeOff();
+		cmd.hover().doFor(interval);
+		
+	}
+
+	public void findPosition(int interval){
+		
+		cmd.forward(10).doFor(interval);
+		cmd.backward(10).doFor(10);
+		
+		boolean gogo = true;
+		
+		while(gogo) {
+
+			for(int i = 0; i < 4; i++){
+
+				long t = System.currentTimeMillis();
+				long end = t+1250;
+
+				while(System.currentTimeMillis()<end){
+					cmd.hover().doFor(500);
+					cmd.spinLeft(50).doFor(250);
+					cmd.hover().doFor(500);
+				}
+			}
+
+			cmd.landing();
+
+			if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!= -70){
+				cmd.hover().doFor(500);	
+				lookForAirfield();
+				cmd.landing();
+				gogo = false;
+				
+				/*
+				 * der skal være noget her
+				 */
+			}
+
+		}
+	}
+
+	public void lookForAirfield(){
+		
+		cmd.down(5).doFor(200);
+		cmd.hover().doFor(500);
+		
+		/*
+		 * search for airfields
+		 */
+		
+	}
+
+	public void closeToWall(){
+		/*
+		 * method is called every time the drone has flown in x direction,
+		 * in order to make sure we're not about to hit a wall
+		 * based on the distance to a QR code or a position
+		 */
+	}
+
+	public void updatePosition(){
+		/*
+		 * assumes the drone has found a new position, which needs to be saved/remebered
+		 */
+	}
+
+
+
 }
