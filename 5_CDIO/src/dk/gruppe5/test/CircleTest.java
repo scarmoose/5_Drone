@@ -8,6 +8,23 @@ import org.opencv.imgproc.Imgproc;
 import dk.gruppe5.model.Contour;
 
 public class CircleTest {
+//
+//
+//	public void findHoughCircles(Mat src, Mat destination) {
+//		
+//		//for webcam
+//		int iCannyUpperThreshold = 120;
+//		int iMinRadius = 40; // ????
+//		int iMaxRadius = 350;
+//		int iAccumulator = 300;
+//		int iLineThickness = 2;
+//		
+//		//for drone:
+////		int iCannyUpperThreshold = 30;
+////		int iMinRadius = 20; // ????
+////		int iMaxRadius = 250;
+////		int iAccumulator = 200;
+////		int iLineThickness = 2;		
 
 	public boolean findHoughCircles(Mat src, Mat destination) {
 
@@ -16,6 +33,7 @@ public class CircleTest {
 		int iMaxRadius = 350;
 		int iAccumulator = 350;
 		int iLineThickness = 10;
+
 
 		Mat dst = new Mat(src.width(), src.height(), 5);
 		

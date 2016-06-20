@@ -203,6 +203,35 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					image = imgProc.toBufferedImage(backUp);
 
+
+				} else if (Values_cam.getMethod() == 2) {
+
+					combi.locationEstimationFrom3Points(frame);
+									
+
+				} else if (Values_cam.getMethod() == 3) {
+
+					Mat backUp = new Mat();
+					backUp = frame;
+					int ratio = 1;
+
+					frame = imgProc.toGrayScale(frame);
+					frame = imgProc.equalizeHistogramBalance(frame);
+					frame = imgProc.blur(frame);
+					frame = imgProc.toCanny(frame);
+
+					List<Contour> listofCircles = imgProc.findCircles(frame);
+					frame = imgProc.convertMatToColor(frame);
+
+					for (Contour contour : listofCircles) {
+
+						Scalar color = new Scalar(255, 255, 0);
+						frame = imgProc.drawLinesBetweenContourPoints(contour, frame, ratio, color);
+
+					}
+					Filterstates.setImage1(imgProc.toBufferedImage(frame));
+					image = imgProc.toBufferedImage(backUp);
+
 				} else if (Values_cam.getMethod() == 4) {
 
 					// her vil vi prøve at finde position ud fra et qr markering

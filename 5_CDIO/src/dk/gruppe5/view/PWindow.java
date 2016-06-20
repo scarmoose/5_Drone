@@ -1,27 +1,20 @@
 package dk.gruppe5.view;
 
 import java.awt.Color;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.PrintStream;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManager;
-
-import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManagerAlternative;
-import de.yadrone.apps.tutorial.TutorialVideoListener;
-
-
+import dk.gruppe5.ai.DecisionMaker;
 import dk.gruppe5.controller.DroneCommander;
 import dk.gruppe5.model.Values_cam;
 
@@ -31,6 +24,7 @@ public class PWindow {
 
 
 	DroneCommander dCommando;
+	DecisionMaker dm;
 
 
 	public PWindow(int w, int h) {
@@ -70,8 +64,7 @@ public class PWindow {
 		leftPanel.setLayout(new GridLayout(4, 1));
 		innerLeftPanel.setLayout(new GridLayout(1, 2));
 
-		JButton btnUpdate = new JButton("UPDATE");
-		
+		JButton btnUpdate = new JButton("UPDATE");	
 		JButton btnTakeoff = new JButton("TAKEOFF");
 		JButton btnEmergency = new JButton("KILL IT!");
 		JButton btnLand = new JButton("LAND");
@@ -89,6 +82,7 @@ public class PWindow {
 		leftPanel.add(btnLand);
 		leftPanel.add(btnEmergency);
 		btnEmergency.setForeground(Color.RED);
+	
 		/*
 		 * Button-functionality
 		 */
@@ -107,9 +101,7 @@ public class PWindow {
 
 		btnEmergency.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
-				System.out.println("KILL IT");
-				//				 dCommando.droneKillAll();
+				System.out.println("KILL ALL");
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();
@@ -120,7 +112,7 @@ public class PWindow {
 		btnTakeoff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("TAKEOFF");
-				dCommando.droneFlightControl();
+				dm.run();
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();
@@ -131,7 +123,7 @@ public class PWindow {
 		btnLand.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("TAKEOFF");
-				// dCommando.droneLanding();
+				dCommando.getDrone().landing();
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();
@@ -142,6 +134,7 @@ public class PWindow {
 		btnSelectDrone.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
 				dCommando = new DroneCommander();
+				dm = new DecisionMaker();
 				VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
 				new Thread(panel).start();
 				frame.setVisible(true);
