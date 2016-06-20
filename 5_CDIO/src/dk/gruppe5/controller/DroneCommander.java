@@ -14,7 +14,7 @@ import dk.gruppe5.positioning.Movement.MyAltitudeListener;
 public class DroneCommander extends Canvas {
 	private final static int speed = 5;
 	private final static int sleep = 500;
-
+	
 
 	/**
 	 * 
@@ -135,6 +135,12 @@ public class DroneCommander extends Canvas {
 
 	public void droneTakeOff(){
 		cmd.flatTrim();
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		cmd.takeOff();
 	}
 
@@ -243,6 +249,10 @@ public class DroneCommander extends Canvas {
 
 	public void updatePosition(){
 		
+	}
+
+	public Movement getMovement(){
+		return navl;
 	}
 
 

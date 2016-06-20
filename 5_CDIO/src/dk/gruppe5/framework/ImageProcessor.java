@@ -635,7 +635,7 @@ public class ImageProcessor {
 //			double[] p =hierarchy_1.get(0, i);
 //			if(p[3] > 0.0){
 			if (r.area() > 2000) {
-				if (approxCurve.total() > 3 && approxCurve.total() < 10) {
+				if (approxCurve.total() == 4) {
 					Contour contour1 = new Contour(contour, approxCurve);
 					contours.add(contour1);
 

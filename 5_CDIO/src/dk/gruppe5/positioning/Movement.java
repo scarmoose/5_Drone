@@ -108,6 +108,16 @@ public class Movement {
 		
 	}
 
+	public void up(int speed, int interval){
+		cmd.up(speed).doFor(interval);
+		cmd.hover();
+	}
+	
+	public void down(int speed, int interval){
+		cmd.down(speed).doFor(interval);
+		cmd.hover();
+	}
+	
 	public void left(int speed, int interval) {
 		cmd.goLeft(speed).doFor(interval);
 		cmd.hover();
@@ -128,6 +138,15 @@ public class Movement {
 		cmd.hover();
 	}
 
+	public void spinLeft(int speed, int interval){
+		cmd.spinLeft(speed).doFor(interval);
+		cmd.hover();
+	}
+	public void spinRight(int speed, int interval){
+		cmd.spinRight(speed).doFor(interval);
+		cmd.hover();
+	}
+	
 	public void land() {
 		cmd.landing();
 	}
@@ -276,8 +295,9 @@ public class Movement {
 		@Override
 		public void receivedAltitude(int altitude) {
 
-			currentAltitude = altitude;
+			
 			if (altitude > 0){
+				currentAltitude = altitude;
 			}
 		}
 

@@ -170,10 +170,10 @@ public class PPanel extends JPanel implements Runnable {
 						// backUp, ratio);
 					double height =	contours.get(i).getBoundingRect(ratio).height;
 						Scalar color = new Scalar(255, 255, 0);
-						System.out.println(DistanceCalc.distanceFromCamera(height));
+					//	System.out.println(DistanceCalc.distanceFromCamera(height));
 						
 						backUp = imgproc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
-						backUp = imgproc.putText("QR CODE TEST", contours.get(i).getCenter(2), backUp);
+						backUp = imgproc.putText(result.getText(), contours.get(i).getCenter(2), backUp);
 					}else{
 						Scalar color = new Scalar(0, 255, 255);
 						backUp = imgproc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);

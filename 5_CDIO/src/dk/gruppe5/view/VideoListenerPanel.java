@@ -153,7 +153,6 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					findPosWith2QrCodes(frame);
 
-
 				} else if (Values_cam.getMethod() == 2) {
 
 					combi.locationEstimationFrom3Points(frame);
@@ -189,7 +188,13 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					frame = combi.findPositionFromQRandTriangles(frame);
 					image = imgProc.toBufferedImage(frame);
-				} else if (Values_cam.getMethod() == 13) {
+				} else if(Values_cam.getMethod() == 6){
+					//looks for a QR code, if one is found, update some place. with time of finding it
+					//what the QR code is and the distance to it.
+					frame = combi.findQrCodeInImage(frame);
+					image = imgProc.toBufferedImage(frame);
+					
+				}else if (Values_cam.getMethod() == 13) {
 
 					Mat blurredImage = new Mat();
 					Mat hsvImage = new Mat();
