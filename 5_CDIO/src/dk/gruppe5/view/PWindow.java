@@ -112,7 +112,7 @@ public class PWindow {
 		btnTakeoff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("TAKEOFF");
-				dm.run();
+				//dm.run();
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
 				frame.validate();

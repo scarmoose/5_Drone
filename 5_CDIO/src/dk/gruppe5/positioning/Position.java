@@ -2,8 +2,11 @@ package dk.gruppe5.positioning;
 
 import java.awt.Point;
 
+import org.opencv.core.Rect;
+
 import CoordinateSystem.DronePosition;
 import dk.gruppe5.controller.Mathmagic;
+import dk.gruppe5.exceptions.Fejl40;
 import dk.gruppe5.model.Circle;
 import dk.gruppe5.model.CircleCircleIntersection;
 import dk.gruppe5.model.DPoint;
@@ -316,7 +319,6 @@ public class Position {
 	 * @param p2 Punkt 2
 	 * @return Afstanden i mellem de to punkter.
 	 */
-	
 	public float distance(org.opencv.core.Point p1, org.opencv.core.Point p2) {
 		return (float) Math.abs(Math.sqrt(
 						sq((float) (p2.x-p1.x)) +
@@ -329,6 +331,57 @@ public class Position {
 	
 	public static float getDistanceBetweenPoints(DPoint p1, DPoint p2) {
 		return (float) p1.distance(p2);
+	}
+	
+	/**
+	 * Giver positionen i rummet, ud fra to QR-koder.
+	 * @param p1 QR_1
+	 * @param p2 QR_2
+	 * @param p1PixelWidth bredde af QR_1 i pixels
+	 * @param p2PixelWidth bredde af QR_2 i pixels
+	 * @return positionen i rummet
+	 * @throws Fejl40
+	 */
+	public DPoint getPosition(DPoint p1, DPoint p2, double p1PixelHeight, double p2PixelHeight) 
+			throws Fejl40 {
+		double 	r1 = getDistanceToQr(p1PixelHeight),
+				r2 = getDistanceToQr(p2PixelHeight);
+		Circle 	c1 = new Circle(p1, r1),
+				c2 = new Circle(p2, r2);
+		CircleCircleIntersection cci = new CircleCircleIntersection(c1, c2);
+		DPoint[] points = cci.getIntersectionVectors();
+		for(DPoint p : points) {
+			if(isPointInsideRoom(p)) {
+				return p;
+			}
+		} throw new Fejl40("Ingen skæringspunkter i rummet fundet");
+	}
+	
+	/**
+	 * Vurderer om et punkt er inde i rummet
+	 * @param p
+	 * @return
+	 */
+	public boolean isPointInsideRoom(DPoint p) {
+		DPoint tl = new DPoint(0, 0);
+		DPoint br = new DPoint(926, 1055);
+		Rect room = new Rect(tl, br);
+		if(room.contains(p)) return true;
+		return false;
+	}
+	
+	/**
+	 * giver afstanden til en QR kode, da vi kender antal pixels den fylder i billedet, samt den
+	 * virkelige størrelse. 
+	 * @param perceivedPixels pixels den fylder i billedet
+	 * @return afstand i cm
+	 */
+	public double getDistanceToQr(double perceivedPixels) {
+		double percievedPixelHeight = 480;
+		double centimeter = 100.0;
+		double paperHeight = 42.0;
+		double focalLength = (percievedPixelHeight*centimeter)/paperHeight;
+		return (paperHeight*focalLength)/perceivedPixels;
 	}
 
 

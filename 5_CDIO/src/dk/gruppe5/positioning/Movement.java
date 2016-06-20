@@ -278,7 +278,6 @@ public class Movement {
 
 			currentAltitude = altitude;
 			if (altitude > 0){
-				System.out.println("Altitude: " + altitude);
 			}
 		}
 
