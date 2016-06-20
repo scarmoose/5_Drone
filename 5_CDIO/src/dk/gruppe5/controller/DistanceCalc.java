@@ -15,6 +15,10 @@ public class DistanceCalc {
 		return (paperHeight*focalLength)/(perceivedPixels);
 	}
 	
+	public static void main(String[] loln00b) {
+		System.out.println(focalLength);
+	}
+	
 	
 	
 }
