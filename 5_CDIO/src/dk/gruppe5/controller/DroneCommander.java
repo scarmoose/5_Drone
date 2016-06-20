@@ -1,28 +1,15 @@
 package dk.gruppe5.controller;
 
 import java.awt.Canvas;
-import java.util.Random;
-
-import javax.sound.midi.Receiver;
 
 import CoordinateSystem.DronePosition;
-import de.yadrone.apps.controlcenter.plugins.altitude.AltitudeChart;
-import de.yadrone.apps.controlcenter.plugins.altitude.AltitudeChartPanel;
-import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.command.VideoCodec;
-import de.yadrone.base.navdata.Altitude;
-
-import de.yadrone.base.navdata.AltitudeListener;
-import de.yadrone.base.navdata.NavData;
-import de.yadrone.base.navdata.NavDataManager;
 import dk.gruppe5.app.App;
-import dk.gruppe5.legacy.NavDataListener;
 import dk.gruppe5.positioning.Movement;
 import dk.gruppe5.positioning.Movement.MyAltitudeListener;
-import dk.gruppe5.positioning.Position;
 
 public class DroneCommander extends Canvas {
 	private final static int speed = 5;
@@ -36,7 +23,6 @@ public class DroneCommander extends Canvas {
 	private static final long serialVersionUID = -869265015784363288L;
 
 	CommandManager cmd;
-
 	Movement navl = new Movement();
 
 	public DroneCommander() {
@@ -181,8 +167,8 @@ public class DroneCommander extends Canvas {
 	public void findPosition(){
 		
 		cmd.forward(10).doFor(1000);
-		cmd.backward(10).doFor(10);
-		
+		cmd.backward(10).doFor(100);
+		cmd.hover().doFor(5000);
 		boolean gogo = true;
 		
 		while(gogo) {
@@ -190,12 +176,12 @@ public class DroneCommander extends Canvas {
 			for(int i = 0; i < 4; i++){
 
 				long t = System.currentTimeMillis();
-				long end = t+1250;
+				long end = t+6100;
 
 				while(System.currentTimeMillis()<end){
-					cmd.hover().doFor(500);
-					cmd.spinLeft(50).doFor(250);
-					cmd.hover().doFor(500);
+					cmd.hover().doFor(3000);
+					cmd.spinRight(100).doFor(100);
+					cmd.hover().doFor(3000);
 				}
 			}
 
@@ -216,6 +202,8 @@ public class DroneCommander extends Canvas {
 		
 		cmd.down(5).doFor(200);
 		cmd.hover().doFor(500);
+		
+		
 		
 		/*
 		 * search for airfields
