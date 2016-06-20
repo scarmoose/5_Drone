@@ -277,7 +277,6 @@ public class Movement {
 		public void receivedAltitude(int altitude) {
 			currentAltitude = altitude;
 			if (altitude > 0){
-				System.out.println("Altitude: " + altitude);
 			}
 		}
 

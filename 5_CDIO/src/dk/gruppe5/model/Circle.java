@@ -5,9 +5,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opencv.core.Rect;
-import org.opencv.core.RotatedRect;
-
 //tyvstjålet fra https://github.com/Lanchon/circle-circle-intersection
 
 public final class Circle implements Serializable {
@@ -38,7 +35,18 @@ public final class Circle implements Serializable {
 		temp = Double.doubleToLongBits(r);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
-	} 
+	}
+	
+	public Rect getBoundingRect() {
+		double x, y;
+		x = c.x-r/2;
+		y = c.y+r/2;
+		Point tl = new Point(x, y);
+		x = c.x+r/2;
+		y = c.y-r/2;
+		Point br = new Point(x, y);
+		return new Rect(tl, br);
+	}
 	
 	public boolean contains(Rect r) {
 		List<DPoint> list = new ArrayList<DPoint>() {{

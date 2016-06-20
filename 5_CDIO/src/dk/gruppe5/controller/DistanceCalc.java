@@ -4,7 +4,7 @@ import dk.gruppe5.framework.ImageProcessor;
 
 public class DistanceCalc {
 
-	static double percievedPixelWidth = 226;
+	static double percievedPixelWidth = 480;
 	static double centimeter = 100.0;
 	static double paperHeight = 42.0;
 	static double focalLength = (percievedPixelWidth*centimeter)/paperHeight;
@@ -13,6 +13,10 @@ public class DistanceCalc {
 	
 	public static double distanceFromCamera(double perceivedPixels){
 		return (paperHeight*focalLength)/(perceivedPixels);
+	}
+	
+	public static void main(String[] loln00b) {
+		System.out.println(focalLength);
 	}
 	
 	

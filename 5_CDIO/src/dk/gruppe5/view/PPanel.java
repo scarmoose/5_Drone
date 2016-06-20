@@ -394,6 +394,7 @@ public class PPanel extends JPanel implements Runnable {
 				
 				
 			}
+			
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {

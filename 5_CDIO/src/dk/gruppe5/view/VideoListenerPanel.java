@@ -147,8 +147,6 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					}
 					image = imgProc.toBufferedImage(frame);
 
-				} else if (Values_cam.getMethod() == 1) {
-
 				}else if(Values_cam.getMethod() == 22){
 					
 					int ratio = 2;
@@ -166,7 +164,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					
 				}else if (Values_cam.getMethod() == 1) {
 
-
+					frame = imgProc.calibrateCamera(frame);
 					Mat backUp = new Mat();
 					backUp = frame;
 					int ratio = 1;
@@ -195,8 +193,14 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					int i = 0;
 					for (Result result : results) {
 						if (result != null) {
+							Point centerPoint  = contours.get(i).getCenter(ratio);
 							Scalar color = new Scalar(0, 255, 0);
 							backUp = imgProc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
+							backUp = imgProc.putText(result.getText(), centerPoint, backUp);
+							int height = contours.get(i).getBoundingRect(ratio).height;
+							System.out.println(height);
+							System.out.println("Distance is:" + DistanceCalc.distanceFromCamera(height));
+							backUp = imgProc.putText("DISTANCE IS" + height, new Point(centerPoint.x,centerPoint.y+20), backUp);
 						}
 						i++;
 					}
@@ -305,6 +309,10 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 						image = imgProc.toBufferedImage(dst);
 					} else
 						System.err.println("FEJL I CIRKLEFINDING");
+				}else if(Values_cam.getMethod() == 80){
+					frame = imgProc.calibrateCamera(frame);
+					image = imgProc.toBufferedImage(frame);
+					
 				}
 
 				// System.out.println(image.getWidth() +","+ image.getHeight());

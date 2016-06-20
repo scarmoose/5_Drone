@@ -87,7 +87,6 @@ public class DroneCommander extends Canvas {
 
 	public void droneFlightControl(){
 
-
 		Thread thread = new Thread(new Runnable() {
 			public void run() {
 
@@ -109,6 +108,7 @@ public class DroneCommander extends Canvas {
 							cmd.landing();
 							break;
 						}
+
 						cmd.hover().doFor(10);
 						System.out.println("Drone Thread: Drone is now Howering.");	
 						Thread.sleep(100);
@@ -126,7 +126,6 @@ public class DroneCommander extends Canvas {
 			}
 		}); 
 		thread.start();
-
 	}
 
 	public void droneTest(){
