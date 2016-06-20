@@ -8,6 +8,7 @@ import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.command.VideoCodec;
 import dk.gruppe5.app.App;
+import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.positioning.Movement;
 import dk.gruppe5.positioning.Movement.MyAltitudeListener;
 
@@ -166,58 +167,46 @@ public class DroneCommander extends Canvas {
 
 	public void findPosition(){
 		
-		cmd.forward(10).doFor(1000);
-		cmd.backward(10).doFor(100);
+		cmd.forward(10).doFor(500);
+		cmd.backward(10).doFor(10);
 		cmd.hover().doFor(5000);
 		boolean gogo = true;
 		
 		while(gogo) {
-
+			Values_cam.setMethod(2);
 			for(int i = 0; i < 4; i++){
 
-				long t = System.currentTimeMillis();
-				long end = t+6100;
-
-				while(System.currentTimeMillis()<end){
-					
+//				long t = System.currentTimeMillis();
+//				long end = t+6100;
+//				while(System.currentTimeMillis()<end){
+					System.out.println(i + ". spin!");
 					cmd.hover().doFor(3000);
 					cmd.spinRight(100).doFor(100);
 					cmd.hover().doFor(3000);
+//					}
+				
+				if(DronePosition.getXPoint() != 630 && DronePosition.getYPoint()!= -70){
+					cmd.hover().doFor(500);	
+					cmd.landing();
+//					lookForAirfield();
+					gogo = false;
 				}
 			}
-
 			cmd.landing();
-			
-			if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!= -70){
-				cmd.hover().doFor(500);	
-				lookForAirfield();
-				gogo = false;
-			}				
-				/*
-				 * der skal være noget her
-				 */
 		}
 	}
 
 	public void lookForAirfield(){
 		
-		cmd.down(5).doFor(200);
+		cmd.down(5).doFor(1000);
 		cmd.hover().doFor(500);
-		
-		
-		
+
 		/*
 		 * search for airfields
 		 */
-		
 	}
 
 	public void closeToWall(){
-		/*
-		 * method is called every time the drone has flown in x direction,
-		 * in order to make sure we're not about to hit a wall
-		 * based on the distance to a QR code or a position
-		 */
 		if((DronePosition.getXPoint()>=830 || DronePosition.getXPoint()<=100 || DronePosition.getYPoint()<=100 || DronePosition.getYPoint()>=830) && DronePosition.getYPoint()!=-77){
 			long t = System.currentTimeMillis();
 			long end = t+3000;

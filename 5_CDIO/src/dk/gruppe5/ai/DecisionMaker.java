@@ -1,5 +1,6 @@
 package dk.gruppe5.ai;
 
+import CoordinateSystem.DronePosition;
 import dk.gruppe5.controller.DroneCommander;
 import dk.gruppe5.model.DPoint;
 
@@ -22,8 +23,11 @@ public class DecisionMaker implements Runnable {
 			dc.cleanStartUp(7000);
 			dc.findPosition();
 			
+			dc.closeToWall();
+			
+			if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!=-70){
+				dc.lookForAirfield();
+			}
 		}
 	}
-	
-	
 }
