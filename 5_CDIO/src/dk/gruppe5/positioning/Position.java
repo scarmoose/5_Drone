@@ -374,10 +374,10 @@ public class Position {
 	 * giver afstanden til en QR kode, da vi kender antal pixels den fylder i billedet, samt den
 	 * virkelige størrelse. 
 	 * @param perceivedPixels pixels den fylder i billedet
-	 * @return afstand i mm
+	 * @return afstand i cm
 	 */
 	public double getDistanceToQr(double perceivedPixels) {
-		double percievedPixelWidth = 226;
+		double percievedPixelWidth = 480;
 		double centimeter = 100.0;
 		double paperHeight = 42.0;
 		double focalLength = (percievedPixelWidth*centimeter)/paperHeight;
