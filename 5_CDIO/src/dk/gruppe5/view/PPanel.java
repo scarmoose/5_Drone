@@ -440,6 +440,19 @@ public class PPanel extends JPanel implements Runnable {
 				List<MatOfPoint> contours = imgproc.getContourList(frame);
 				List<MatOfPoint2f> approxs = imgproc.getApproxCurves(contours, 0.1);
 				List<RotatedRect> rects = imgproc.getMinAreaRects(approxs);
+			} 
+			else if(Values_cam.getMethod() == 99) {
+				System.out.println("Method "+99+" started");
+				Mat _frame = frame.clone();
+				frame = imgproc.toCanny(frame);
+				List<MatOfPoint> contours = imgproc.getContourList(frame);
+				List<MatOfPoint2f> approxs = imgproc.getApproxCurves(contours, 0.1);
+				List<RotatedRect> rects = imgproc.getMinAreaRects(approxs);
+				imgproc.drawRotatedRects(_frame, rects);
+				image = imgproc.toBufferedImage(_frame);
+				System.out.println("Method "+99+" ended");
+				
+				
 			}
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
