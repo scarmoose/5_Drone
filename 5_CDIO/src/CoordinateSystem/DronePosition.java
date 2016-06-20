@@ -13,6 +13,7 @@ public class DronePosition {
 	private static int x=630;
 	private static int y=-70;
 	private static double degrees = 0.0;
+	private static long time_last_pos = 0;
 	
 	private static boolean found=false;
 
@@ -28,6 +29,10 @@ public class DronePosition {
 	public static void setCoordinates(DPoint v){
 		x = (int) v.x;
 		y = (int) v.y;
+	}
+	
+	public static long getTimeLastPos() {
+		return time_last_pos;
 	}
 	
 	public static int getYMirror(){
@@ -48,11 +53,13 @@ public class DronePosition {
 	}
 	
 	public static void setPosition(Point p) {
+		time_last_pos = System.currentTimeMillis();
 		x = p.x;
 		y = p.y;
 	}
 	
 	public static void setPosition(org.opencv.core.Point p) {
+		time_last_pos = System.currentTimeMillis();
 		x = (int) p.x;
 		y = (int) p.y;
 	}

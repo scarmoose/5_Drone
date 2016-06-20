@@ -1508,8 +1508,8 @@ public class ImageProcessor {
 	}
 	
 	/**
+	 *  DET ANTAGES AT <code>src</code>-MATRICEN ER KLIPPET TIL KUN AT INDEHOLDE CIRKLEN
 	 * Bestemmer om en cirkel indeholder en af de fundne <code>RotatedRects</code> 
-	 * DET ANTAGES AT <code>src</code> ER KLIPPET TIL KUN AT INDEHOLDE CIRKLEN
 	 * @param src frame der skal ledes efter firkanter i 
 	 * @param c Cirkel der skal tjekkes for
 	 * @param epsilon_coeff epsilon coefficient til approxcurves
