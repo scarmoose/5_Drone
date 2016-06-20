@@ -236,6 +236,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					// her vil vi prøve at finde position ud fra et qr markering
 					// og de trekanter der er på hver side halvvejs til feltet
+					//frame = imgProc.calibrateCamera(frame);
 					frame = combi.locationEstimationFrom3Points(frame);
 					image = imgProc.toBufferedImage(frame);
 				} else if (Values_cam.getMethod() == 5) {
