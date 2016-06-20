@@ -14,10 +14,7 @@ public class DistanceCalc {
 	public static double distanceFromCamera(double perceivedPixels){
 		return (paperHeight*focalLength)/(perceivedPixels);
 	}
-	
-	public static void main(String[] loln00b) {
-		System.out.println(focalLength);
-	}
+
 	
 	
 	
