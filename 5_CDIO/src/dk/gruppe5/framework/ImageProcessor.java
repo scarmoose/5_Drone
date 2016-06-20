@@ -1605,17 +1605,6 @@ public class ImageProcessor {
 		throw new Fejl40("Ikke implementeret");
 	}
 	
-	public Rect getBoundingRect(Circle c) {
-		double x, y;
-		x = c.c.x-c.r/2;
-		y = c.c.y+c.r/2;
-		Point tl = new Point(x, y);
-		x = c.c.x+c.r/2;
-		y = c.c.y-c.r/2;
-		Point br = new Point(x, y);
-		return new Rect(tl, br);
-	}
-	
 	//skal der ratio på??
 	/**
 	 * Tegner <code>RotatedRects</code> fra <code>list</code> på <code>img</code>.

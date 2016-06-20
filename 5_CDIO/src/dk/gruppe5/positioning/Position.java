@@ -335,8 +335,8 @@ public class Position {
 	
 	/**
 	 * Giver positionen i rummet, ud fra to QR-koder.
-	 * @param p1 QR_1
-	 * @param p2 QR_2
+	 * @param p1 QR_1 rumposition
+	 * @param p2 QR_2 rumposition
 	 * @param p1PixelWidth bredde af QR_1 i pixels
 	 * @param p2PixelWidth bredde af QR_2 i pixels
 	 * @return positionen i rummet
