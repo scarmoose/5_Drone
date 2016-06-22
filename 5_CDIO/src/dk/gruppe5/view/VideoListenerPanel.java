@@ -140,27 +140,17 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 				}
 
 				if (Values_cam.getMethod() == 0) {
+					//normalt billede
 					image = imgProc.toBufferedImage(frame);
-				} else if (Values_cam.getMethod() == 11) {
-					Point qrPoint = findAirFieldInImageWithBottomCamera(frame);
-					if (qrPoint != null) {
-						Movement movement = new Movement();
-						movement.centerPointInFrame(new DPoint(qrPoint), new DPoint(frame.width(), frame.height()));
-					}
-					image = imgProc.toBufferedImage(frame);
-
-				}else if (Values_cam.getMethod() == 1) {
-
+				} else if (Values_cam.getMethod() == 1) {
+					//2 qr code poss finding
 					findPosWith2QrCodes(frame);
-
 				} else if (Values_cam.getMethod() == 2) {
-
+					//location from 1 qr and 2 squares on both sides
 					Mat backUp = new Mat();
 					backUp = frame;
-					combi.locationEstimationFrom3Points(frame);
-					
+					backUp =  combi.locationEstimationFrom3Points(frame);
 					image = imgProc.toBufferedImage(backUp);
-									
 
 				} else if (Values_cam.getMethod() == 3) {
 
@@ -192,12 +182,164 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					frame = combi.findPositionFromQRandTriangles(frame);
 					image = imgProc.toBufferedImage(frame);
-				} else if(Values_cam.getMethod() == 6){
-					//looks for a QR code, if one is found, update some place. with time of finding it
-					//what the QR code is and the distance to it.
+				} else if (Values_cam.getMethod() == 6) {
+					// looks for a QR code, if one is found, update some place.
+					// with time of finding it
+					// what the QR code is and the distance to it.
 					frame = combi.findQrCodeInImage(frame);
 					image = imgProc.toBufferedImage(frame);
+
+				}else if (Values_cam.getMethod() ==7) {
+					Point qrPoint = findAirFieldInImageWithBottomCamera(frame);
+					if (qrPoint != null) {
+						Movement movement = new Movement();
+						movement.centerPointInFrame(new DPoint(qrPoint), new DPoint(frame.width(), frame.height()));
+
+					}
+					image = imgProc.toBufferedImage(frame);
+				}else if(Values_cam.getMethod() == 8){
+					Mat backUp = new Mat();
+					backUp = frame;
+					int ratio = 1;
+
+					frame = imgProc.toGrayScale(frame);
+					frame = imgProc.equalizeHistogramBalance(frame);
+					frame = imgProc.blur(frame);
+					frame = imgProc.toCanny(frame);
 					
+					//find firkanter, tegn dem på billedet.
+					
+					List<Contour> contours = imgProc.findQRsquares(frame);
+					
+					for(Contour contour: contours){
+						Scalar color = new Scalar(200,100,20);
+						backUp = imgProc.drawLinesBetweenContourPoints(contour, backUp, ratio, color);
+						
+					}
+					image = imgProc.toBufferedImage(backUp);
+					
+				
+				}else if(Values_cam.getMethod() == 9){
+					Mat backUp = new Mat();
+					backUp = frame;
+					int ratio = 1;
+
+					frame = imgProc.toGrayScale(frame);
+					frame = imgProc.equalizeHistogramBalance(frame);
+					frame = imgProc.blur(frame);
+					frame = imgProc.toCanny(frame);
+
+					// find firkanter, tegn dem på billedet.
+
+					List<Contour> contours = imgProc.findQRsquares(frame);
+
+					// vi finder de potentielle QR kode områder
+					List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
+					List<Result> results = imgProc.readQRCodes(cutouts);
+					int contourNr = 0;
+					for (Result result : results) {
+						if (result != null) {
+							Scalar color = new Scalar(200, 100, 20);
+							backUp = imgProc.drawLinesBetweenContourPoints(contours.get(contourNr), backUp, ratio, color);
+						}
+						contourNr++;
+					}
+					
+					image = imgProc.toBufferedImage(backUp);
+				
+				} else if(Values_cam.getMethod() == 10){
+					Mat backUp = new Mat();
+					backUp = frame;
+					int ratio = 1;
+
+					frame = imgProc.toGrayScale(frame);
+					frame = imgProc.equalizeHistogramBalance(frame);
+					frame = imgProc.blur(frame);
+					frame = imgProc.toCanny(frame);
+
+					// find firkanter, tegn dem på billedet.
+
+					List<Contour> contours = imgProc.findQRsquares(frame);
+
+					// vi finder de potentielle QR kode områder
+					List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
+					List<Result> results = imgProc.readQRCodes(cutouts);
+					int contourNr = 0;
+					for (Result result : results) {
+						if (result != null) {
+							Scalar color = new Scalar(200, 100, 20);
+							backUp = imgProc.drawLinesBetweenContourPoints(contours.get(contourNr), backUp, ratio, color);
+						}
+						contourNr++;
+					}
+					
+					image = imgProc.toBufferedImage(backUp);
+				
+				}
+				else if(Values_cam.getMethod()==11){
+					Mat backUp = new Mat();
+					backUp = frame;
+					
+					Mat blurredImage = new Mat();
+					Mat hsvImage = new Mat();
+					Mat mask = new Mat();
+					Mat morphOutput = new Mat();
+
+					// remove some noise
+					Imgproc.blur(frame, blurredImage, new Size(7, 7));
+
+					// convert the frame to HSV
+					Imgproc.cvtColor(blurredImage, hsvImage, Imgproc.COLOR_BGR2HSV);
+
+					/*
+					 * get thresholding values from the UI
+					 * remember: H ranges 0-180, S and V range 0-255
+					 */
+
+					//		 for black colors:
+					//		 Scalar minValues = new Scalar(0,0,0);
+					//		 Scalar maxValues = new Scalar(179, 50, 100);
+					//		 
+					//		for blue colors:
+					//		Scalar minValues = new Scalar(49, 64, 50);
+					//		Scalar maxValues = new Scalar(128, 184, 255);
+
+					Scalar minValues = new Scalar(49, 64, 50);
+					Scalar maxValues = new Scalar(128, 184 , 255);
+					Core.inRange(hsvImage, minValues, maxValues, mask);
+					Filterstates.setImage1(imgProc.toBufferedImage(mask));
+
+					/*
+					 * morphological operators
+					 * dilate with large element, erode with small ones
+					 */
+					Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
+					Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
+					Imgproc.erode(mask, morphOutput, erodeElement);
+					Imgproc.erode(mask, morphOutput, erodeElement);
+					Imgproc.dilate(mask, morphOutput, dilateElement);
+					Imgproc.dilate(mask, morphOutput, dilateElement);
+					Filterstates.setImage2(imgProc.toBufferedImage(morphOutput));
+
+					// init
+					List<MatOfPoint> contours = new ArrayList<>();
+					Mat hierarchy = new Mat();
+
+					// find contours
+					Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
+
+					// if any contour exist...
+					if (hierarchy.size().height > 0 && hierarchy.size().width > 0)
+					{
+						// for each contour, display it in blue
+						for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
+						{
+							Imgproc.drawContours(frame, contours, idx, new Scalar(250, 0, 0));
+						}
+					}
+					Filterstates.setImage3(imgProc.toBufferedImage(hsvImage));
+					Filterstates.setImage4(imgProc.toBufferedImage(blurredImage));
+					image = imgProc.toBufferedImage(backUp);
 				}else if (Values_cam.getMethod() == 13) {
 
 					Mat blurredImage = new Mat();
@@ -260,10 +402,10 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 						image = imgProc.toBufferedImage(dst);
 					} else
 						System.err.println("FEJL I CIRKLEFINDING");
-				}else if(Values_cam.getMethod() == 80){
+				} else if (Values_cam.getMethod() == 80) {
 					frame = imgProc.calibrateCamera(frame);
 					image = imgProc.toBufferedImage(frame);
-					
+
 				}
 
 				// System.out.println(image.getWidth() +","+ image.getHeight());
@@ -306,65 +448,62 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 		List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
 		List<Result> results = imgProc.readQRCodes(cutouts);
 		List<String> qrNamesFound = new ArrayList<>();
-		
+
 		HashMap<String, Integer> qrMap = new HashMap<>();
 		int i = 0;
 		for (Result result : results) {
 			if (result != null) {
-				Point centerPoint  = contours.get(i).getCenter(ratio);
+				Point centerPoint = contours.get(i).getCenter(ratio);
 				Scalar color = new Scalar(0, 255, 0);
 				backUp = imgProc.drawLinesBetweenContourCornerPoints(contours.get(i), backUp, ratio, color);
 				backUp = imgProc.putText(result.getText(), centerPoint, backUp);
 				int height = contours.get(i).getBoundingRect(ratio).height;
 				String qrName = result.getText();
 				qrNamesFound.add(qrName);
-				if(!qrMap.containsKey(qrName)){
+				if (!qrMap.containsKey(qrName)) {
 					qrMap.put(qrName, height);
-				}else{
+				} else {
 					int heightExisting = qrMap.get(qrName);
-					heightExisting = (heightExisting+height)/2;
+					heightExisting = (heightExisting + height) / 2;
 					qrMap.put(qrName, heightExisting);
 				}
 				System.out.println(height);
 				System.out.println("Distance is:" + DistanceCalc.distanceFromCamera(height));
-				backUp = imgProc.putText("DISTANCE IS" + height, new Point(centerPoint.x,centerPoint.y+20), backUp);
+				backUp = imgProc.putText("DISTANCE IS" + height, new Point(centerPoint.x, centerPoint.y + 20), backUp);
 			}
 			i++;
 		}
-		
-		
-		
+
 		String qrNameOne = null;
 		String qrNameTwo = null;
-		for(String qrName : qrNamesFound){
-			if(qrNameOne == null){
+		for (String qrName : qrNamesFound) {
+			if (qrNameOne == null) {
 				qrNameOne = qrName;
 			}
-			if(!qrNameOne.equals(qrName)){
+			if (!qrNameOne.equals(qrName)) {
 				qrNameTwo = qrName;
 				break;
 			}
-			
+
 		}
-		if(qrNameOne != null && qrNameTwo != null){
+		if (qrNameOne != null && qrNameTwo != null) {
 			Position pos = new Position();
 			DPoint p1 = Mathmagic.getPointFromName(qrNameOne);
-			DPoint p2 =Mathmagic.getPointFromName(qrNameTwo);
+			DPoint p2 = Mathmagic.getPointFromName(qrNameTwo);
 			int p1PixelHeight = qrMap.get(qrNameOne);
 			int p2PixelHeight = qrMap.get(qrNameTwo);
 			DPoint position;
 			try {
-				position = pos.getPosition(p1, p2, (double)p1PixelHeight, (double)p2PixelHeight);
+				position = pos.getPosition(p1, p2, (double) p1PixelHeight, (double) p2PixelHeight);
 				DronePosition.setPosition(position);
-				
+
 			} catch (Fejl40 e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
-		
-		
+
 		image = imgProc.toBufferedImage(backUp);
 	}
 

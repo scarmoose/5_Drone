@@ -162,12 +162,30 @@ public class CombinedImageAnalysis {
 							backUp = imgProc.drawLine(data.getPoints()[0], data.getPoints()[1], backUp, color1);
 							backUp = imgProc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp, color1);
 							Position test = new Position();
-							Point mapPosition = test.getPositionFromPoints(data.getQrNames(), data.getPoints()[0],
-									data.getPoints()[1], data.getPoints()[2]);
+							Point mapPosition = null;
+							try{
+								mapPosition = test.getPositionFromPoints(data.getQrNames(), data.getPoints()[0],
+										data.getPoints()[1], data.getPoints()[2]);
+							}catch (Exception e) {
+								// TODO: handle exception
+							}
+							
 							if (mapPosition != null) {
 								DronePosition.setPosition(mapPosition);
 								// System.out.println(mapPosition);
+								Imgproc.putText(backUp, data.getQrNames()[1], data.getPoints()[1], 5, 2, color1);
+								Point ofset = new Point(data.getPoints()[1].x, data.getPoints()[1].y + 30);
+								
+								
+									Point ofset1 = new Point(data.getPoints()[0].x, data.getPoints()[0].y);
+									Imgproc.putText(backUp, "firkant", ofset1, 5, 2, color1);
 
+								
+									Point ofset2 = new Point(data.getPoints()[2].x, data.getPoints()[2].y);
+									Imgproc.putText(backUp, "firkant", ofset2, 5, 2, color1);
+
+							
+								
 								int screenWidth = 1280;
 								int middleOfScreen = screenWidth / 2;
 								int pixelsFromMiddleToQr = Math.abs(((int) data.getPoints()[1].x - middleOfScreen));
@@ -239,14 +257,22 @@ public class CombinedImageAnalysis {
 		int contourNr = 0;
 		for (Result result : results) {
 			if(result != null){
-				Values_cam.lastQrCodeFound = result.getText();
-				Values_cam.timeOfFindingSingleQRCode = System.currentTimeMillis();
-				Values_cam.distanceToLastQr = DistanceCalc.distanceFromCamera(contours.get(contourNr).getBoundingRect(ratio).height);
+				
+				
+//				Values_cam.lastQrCodeFound = result.getText();
+//				Values_cam.timeOfFindingSingleQRCode = System.currentTimeMillis();
+//				Values_cam.distanceToLastQr = DistanceCalc.distanceFromCamera(contours.get(contourNr).getBoundingRect(ratio).height);
+				Point centerPoint = contours.get(contourNr).getCenter(ratio);
+				double distance = DistanceCalc.distanceFromCamera(contours.get(contourNr).getBoundingRect(ratio).height);
+				String text = result.getText();
+				imgProc.putText(text, centerPoint, backUp);
+				Point offset = new Point(centerPoint.x,centerPoint.y+30);
+				imgProc.putText("Distance to QR" + distance, offset, backUp);
 			}
 			contourNr++;
 			
 		}
-		return frame;
+		return backUp;
 	}
 
 }

@@ -1,6 +1,7 @@
 package dk.gruppe5.controller;
 
 import java.awt.Canvas;
+import java.util.Random;
 
 import CoordinateSystem.DronePosition;
 import de.yadrone.base.IARDrone;
@@ -8,9 +9,11 @@ import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.command.VideoCodec;
 import dk.gruppe5.app.App;
+import dk.gruppe5.model.DPoint;
 import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.positioning.Movement;
 import dk.gruppe5.positioning.Movement.MyAltitudeListener;
+import dk.gruppe5.positioning.Position;
 
 public class DroneCommander extends Canvas {
 	private final static int speed = 5;
@@ -246,4 +249,69 @@ public void flyBackToStartField(){
 		return navl;
 	}
 
+	public CommandManager getCommandManager(){
+		return cmd;
+		
+	}
+	
+	public void randomSearch() {
+		switch(new Random().nextInt(6)) {
+		case 0:
+			navl.forward();
+			break;
+		case 1:
+			navl.left();
+			break;
+		case 2:
+			navl.right();
+			break;
+		case 3:
+			navl.backward();
+			break;
+		case 4:
+			navl.spinLeft(100, 200);
+		case 5:
+			navl.spinRight(100, 200);
+		default: 
+		}
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	public void centerPointInFrame(DPoint p, DPoint frameSize) {
+		Position.isFlying = false;
+		int speed = 20;
+		int interval = 10;
+		int landIfLower = 45;
+		DPoint point = p.clone();
+		double cx = frameSize.x/2;
+		double cy = frameSize.y/2;
+		DPoint center = new DPoint(cx, cy);
+		DPoint centerToPoint = point.sub(center);
+		double vlength = centerToPoint.length();
+		double vx = centerToPoint.x;
+		double vy = centerToPoint.y;
+		System.out.println("Length of vector: "+vlength);
+		
+		if(vlength < landIfLower) {
+			System.out.println("LANDING AT COORDINATES");
+			navl.land();
+		} else if(Math.abs(vy) > Math.abs(vx)) {
+			System.out.println("correcting");
+			if(vy > 0) { // hvis punktet er over centrum
+				navl.forward(speed, interval);
+				
+			} else navl.backward(speed, interval);
+		} else {
+			if(vx > 0) { // hvis punkter er til højre for centrum
+				navl.right(speed, interval);
+			} else navl.left(speed, interval);
+		}
+
+
+	}
 }

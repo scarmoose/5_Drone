@@ -232,13 +232,6 @@ public class ImageProcessor {
 
 		Imgproc.resize(templateImg, templateImg, new Size(input.width(), input.height()));
 
-		// gray and to canny??
-		// input = toGrayScale(input);
-		// input = toCanny(input);
-		//
-		// templateImg = toGrayScale(templateImg);
-		// templateImg = toCanny(templateImg);
-
 		//
 		int i = 0;
 		// As long as the size of template image is bigger than a 10th of the
@@ -285,28 +278,7 @@ public class ImageProcessor {
 			Imgproc.resize(templateImg, templateImg, new Size(input.width() - 16 * i, input.height() - 12 * i));
 
 		}
-		// System.out.println(matches.size());
-		// double highestValue = 0;
-		// int matchNr = 0;
-		// for(int z = 0; z < matches.size(); z++){
-		//
-		//
-		// if(matches.get(z).getMatchValue() > highestValue){
-		// highestValue =matches.get(z).getMatchValue();
-		// matchNr = z;
-		// }
-		//
-		// }
-		// input = toColor(input);
-		// //System.out.println(matchNr);
-		// //Imgproc.rectangle(input, matchLoc, new Point(matchLoc.x +
-		// templateImg.cols(), matchLoc.y + templateImg.rows()), new Scalar(0,
-		// 255, 0));
-		// Imgproc.rectangle(input, matches.get(matchNr).getCoordinate(), new
-		// Point(matches.get(matchNr).getCoordinate().x +
-		// matches.get(matchNr).getPicWidth(),
-		// matches.get(matchNr).getCoordinate().y +
-		// matches.get(matchNr).getPicHeight()), new Scalar(0, 255, 0));
+
 		System.out.println("-----------");
 		for (int x = 0; x < matches.size(); x++) {
 

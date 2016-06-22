@@ -157,7 +157,7 @@ public class Movement {
 		cmd.hover().doFor(1000);
 	}
 	
-	int speed = 100, interval = 10;
+	int speed = 100, interval = 200;
 	public void left() {
 		left(speed, interval);
 	}
@@ -167,7 +167,7 @@ public class Movement {
 	}
 	
 	public void forward() {
-		forward(speed, interval);
+		forward(speed, 500);
 	}
 	
 	public void backward() {

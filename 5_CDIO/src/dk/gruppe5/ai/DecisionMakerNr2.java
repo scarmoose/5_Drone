@@ -3,6 +3,7 @@ package dk.gruppe5.ai;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.yadrone.base.command.VideoChannel;
 import dk.gruppe5.app.App;
 import dk.gruppe5.controller.DroneCommander;
 import dk.gruppe5.framework.FrameGrabber;
@@ -30,6 +31,7 @@ public class DecisionMakerNr2 implements Runnable {
 	}
 
 	public void run() {
+	
 		try {
 		while (runs) {
 			if(Position.isFlying){
@@ -39,17 +41,10 @@ public class DecisionMakerNr2 implements Runnable {
 					// altitude is a OK now
 					// check if QR code is spotted and get its distance to the
 					// camera
-					Values_cam.setMethod(6);
-					long currentTime = System.currentTimeMillis();
-					if (currentTime - Values_cam.timeOfFindingSingleQRCode < 2000) {
-
-						// QR code detected, try to center it, small movements
-						System.out.println("Recent qr code seen, cms away -->" + Values_cam.distanceToLastQr);
-
-					} else {
-						// Search for QR code
+					Values_cam.setMethod(11);
+			
 						searchForQrCode();
-					}
+					
 				}
 				
 				
@@ -66,33 +61,14 @@ public class DecisionMakerNr2 implements Runnable {
 	}
 
 	private void searchForQrCode() throws InterruptedException {
-		boolean search = true;
-		int turnAround = 0;
+	while(true){
+		dCommando.randomSearch();
+		Thread.sleep(200);
 		
-			// if a qr code has been found, the time will now be less than 2
-			// seconds
-			// so the loop here will break
-			long currentTime = System.currentTimeMillis();
-			if (currentTime - Values_cam.timeOfFindingSingleQRCode < 2000) {
+	}
+			
+			
 
-				search = false;
-				
-			}
-			while(turnAround < 10 && search){
-				
-				System.out.println("Turning");
-				if (currentTime - Values_cam.timeOfFindingSingleQRCode < 2000) {
-
-					search = false;
-					break;
-				}
-				if(checkHeight()){
-					
-				dCommando.getMovement().spinLeft(80, 50);
-				Thread.sleep(1000);
-				turnAround++;
-				}
-			}
 		// If no qr code is visible in the frame, the we must find one, we
 		// can first turn around ourselves. if none is visible, height is
 		// okay. The go forward abit and try again
