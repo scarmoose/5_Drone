@@ -20,7 +20,7 @@ public class DecisionMaker implements Runnable {
 	public void run() {
 		while(think) {
 			
-			dc.cleanStartUp(7000);
+			dc.cleanStartUp();
 			dc.findPosition();
 			dc.closeToWall();
 			

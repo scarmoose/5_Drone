@@ -13,9 +13,11 @@ import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 
 import CoordinateSystem.DronePosition;
+import dk.gruppe5.controller.DistanceCalc;
 import dk.gruppe5.controller.Mathmagic;
 import dk.gruppe5.model.Contour;
 import dk.gruppe5.model.DPoint;
+import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.Wallmark;
 import dk.gruppe5.positioning.Position;
 import dk.gruppe5.view.Filterstates;
@@ -160,12 +162,30 @@ public class CombinedImageAnalysis {
 							backUp = imgProc.drawLine(data.getPoints()[0], data.getPoints()[1], backUp, color1);
 							backUp = imgProc.drawLine(data.getPoints()[1], data.getPoints()[2], backUp, color1);
 							Position test = new Position();
-							Point mapPosition = test.getPositionFromPoints(data.getQrNames(), data.getPoints()[0],
-									data.getPoints()[1], data.getPoints()[2]);
+							Point mapPosition = null;
+							try{
+								mapPosition = test.getPositionFromPoints(data.getQrNames(), data.getPoints()[0],
+										data.getPoints()[1], data.getPoints()[2]);
+							}catch (Exception e) {
+								// TODO: handle exception
+							}
+							
 							if (mapPosition != null) {
 								DronePosition.setPosition(mapPosition);
 								// System.out.println(mapPosition);
+								Imgproc.putText(backUp, data.getQrNames()[1], data.getPoints()[1], 5, 2, color1);
+								Point ofset = new Point(data.getPoints()[1].x, data.getPoints()[1].y + 30);
+								
+								
+									Point ofset1 = new Point(data.getPoints()[0].x, data.getPoints()[0].y);
+									Imgproc.putText(backUp, "firkant", ofset1, 5, 2, color1);
 
+								
+									Point ofset2 = new Point(data.getPoints()[2].x, data.getPoints()[2].y);
+									Imgproc.putText(backUp, "firkant", ofset2, 5, 2, color1);
+
+							
+								
 								int screenWidth = 1280;
 								int middleOfScreen = screenWidth / 2;
 								int pixelsFromMiddleToQr = Math.abs(((int) data.getPoints()[1].x - middleOfScreen));
@@ -208,6 +228,50 @@ public class CombinedImageAnalysis {
 
 		}
 
+		return backUp;
+	}
+
+	public Mat findQrCodeInImage(Mat frame) {
+		frame = imgProc.calibrateCamera(frame);
+
+		Mat backUp = new Mat();
+		backUp = frame;
+		int ratio = 2;
+		frame = imgProc.downScale(backUp, ratio);
+		// fÃ¸rst gÃ¸r vi det sort hvidt
+		frame = imgProc.toGrayScale(frame);
+		//
+		frame = imgProc.equalizeHistogramBalance(frame);
+		// blur virker bedre
+		frame = imgProc.blur(frame);
+
+		// Til canny for at nemmere kunne finde contourer
+		frame = imgProc.toCanny(frame);
+		// Nu skal vi prøve at finde firkanter af en hvis stÃ¸rrelse
+		List<Contour> contours = imgProc.findQRsquares(frame);
+
+		// vi finder de potentielle QR kode områder
+		List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
+		List<Result> results = imgProc.readQRCodes(cutouts);
+		// backUp = imgProc.markQrCodes(results, shapes, backUp);
+		int contourNr = 0;
+		for (Result result : results) {
+			if(result != null){
+				
+				
+//				Values_cam.lastQrCodeFound = result.getText();
+//				Values_cam.timeOfFindingSingleQRCode = System.currentTimeMillis();
+//				Values_cam.distanceToLastQr = DistanceCalc.distanceFromCamera(contours.get(contourNr).getBoundingRect(ratio).height);
+				Point centerPoint = contours.get(contourNr).getCenter(ratio);
+				double distance = DistanceCalc.distanceFromCamera(contours.get(contourNr).getBoundingRect(ratio).height);
+				String text = result.getText();
+				imgProc.putText(text, centerPoint, backUp);
+				Point offset = new Point(centerPoint.x,centerPoint.y+30);
+				imgProc.putText("Distance to QR" + distance, offset, backUp);
+			}
+			contourNr++;
+			
+		}
 		return backUp;
 	}
 

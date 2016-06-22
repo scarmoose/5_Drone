@@ -15,7 +15,7 @@ public class Position {
 	
 	final static float TOTAL_PIXELS = 720.0f;
 	final static float TOTAL_ANGLE = 59.79f;
-			
+	public static volatile boolean isFlying = false;
 	public static DPoint currentPos;
 	public static float currentAngle;
 	
@@ -34,7 +34,6 @@ public class Position {
 	 * @param pixelsFromMiddleToQr
 	 * @return
 	 */
-	
 	public float getDirectionAngleRelativeToYAxis(DPoint dronePos, String qrName, int pixelsFromMiddleToQr) {
 		DPoint qrPos = Mathmagic.getPointFromName(qrName);
 		return getDirectionAngleRelativeToYAxis(dronePos, qrPos, pixelsFromMiddleToQr);

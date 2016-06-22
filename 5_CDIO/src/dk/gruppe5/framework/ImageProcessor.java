@@ -232,13 +232,6 @@ public class ImageProcessor {
 
 		Imgproc.resize(templateImg, templateImg, new Size(input.width(), input.height()));
 
-		// gray and to canny??
-		// input = toGrayScale(input);
-		// input = toCanny(input);
-		//
-		// templateImg = toGrayScale(templateImg);
-		// templateImg = toCanny(templateImg);
-
 		//
 		int i = 0;
 		// As long as the size of template image is bigger than a 10th of the
@@ -285,28 +278,7 @@ public class ImageProcessor {
 			Imgproc.resize(templateImg, templateImg, new Size(input.width() - 16 * i, input.height() - 12 * i));
 
 		}
-		// System.out.println(matches.size());
-		// double highestValue = 0;
-		// int matchNr = 0;
-		// for(int z = 0; z < matches.size(); z++){
-		//
-		//
-		// if(matches.get(z).getMatchValue() > highestValue){
-		// highestValue =matches.get(z).getMatchValue();
-		// matchNr = z;
-		// }
-		//
-		// }
-		// input = toColor(input);
-		// //System.out.println(matchNr);
-		// //Imgproc.rectangle(input, matchLoc, new Point(matchLoc.x +
-		// templateImg.cols(), matchLoc.y + templateImg.rows()), new Scalar(0,
-		// 255, 0));
-		// Imgproc.rectangle(input, matches.get(matchNr).getCoordinate(), new
-		// Point(matches.get(matchNr).getCoordinate().x +
-		// matches.get(matchNr).getPicWidth(),
-		// matches.get(matchNr).getCoordinate().y +
-		// matches.get(matchNr).getPicHeight()), new Scalar(0, 255, 0));
+
 		System.out.println("-----------");
 		for (int x = 0; x < matches.size(); x++) {
 
@@ -635,7 +607,7 @@ public class ImageProcessor {
 //			double[] p =hierarchy_1.get(0, i);
 //			if(p[3] > 0.0){
 			if (r.area() > 2000) {
-				if (approxCurve.total() > 3 && approxCurve.total() < 10) {
+				if (approxCurve.total() == 4) {
 					Contour contour1 = new Contour(contour, approxCurve);
 					contours.add(contour1);
 

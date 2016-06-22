@@ -15,8 +15,10 @@ import javax.swing.SwingUtilities;
 
 import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManager;
 import dk.gruppe5.ai.DecisionMaker;
+import dk.gruppe5.ai.DecisionMakerNr2;
 import dk.gruppe5.controller.DroneCommander;
 import dk.gruppe5.model.Values_cam;
+import dk.gruppe5.positioning.Position;
 
 public class PWindow {
 
@@ -112,6 +114,16 @@ public class PWindow {
 		btnTakeoff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("TAKEOFF");
+
+				//dm.run();
+				dCommando.droneTakeOff();
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Position.isFlying = true;
 				new Thread(dm).start();
 				SwingUtilities.updateComponentTreeUI(frame);
 				frame.invalidate();
@@ -134,8 +146,10 @@ public class PWindow {
 		btnSelectDrone.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
 				dCommando = new DroneCommander();
-				dm = new DecisionMaker();
+				//dm = new DecisionMaker();
+				DecisionMakerNr2 dm2 = new DecisionMakerNr2(dCommando);
 				VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
+				new Thread(dm2).start();
 				new Thread(panel).start();
 				frame.setVisible(true);
 				frame.setFocusable(true);
