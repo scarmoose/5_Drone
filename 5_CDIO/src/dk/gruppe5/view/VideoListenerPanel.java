@@ -158,6 +158,9 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					Mat backUp = new Mat();
 					backUp = frame;
+					
+					frame = imgProc.calibrateCamera(frame);
+					
 					combi.locationEstimationFrom3Points(frame);
 					
 					image = imgProc.toBufferedImage(backUp);
@@ -202,7 +205,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 					// remove some noise
 					Imgproc.blur(frame, blurredImage, new Size(7, 7));
-
+ 
 					// convert the frame to HSV
 					Imgproc.cvtColor(blurredImage, hsvImage, Imgproc.COLOR_BGR2HSV);
 

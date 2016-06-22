@@ -184,10 +184,12 @@ public class DroneCommander extends Canvas {
 		cmd.hover().doFor(500);
 		cmd.down(10).doFor(1000);
 		cmd.hover().doFor(500);
+		
 		cmd.setVideoChannel(VideoChannel.HORI);
 		cmd.up(10).doFor(1000);
+		//insert if-statement which checks if there are in circles below camera
 		cmd.hover().doFor(500);
-		cmd.landing();
+
 		
 	}
 
