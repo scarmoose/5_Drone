@@ -246,7 +246,7 @@ public class CombinedImageAnalysis {
 				String text = result.getText();
 				imgProc.putText(text, centerPoint, backUp);
 				Point offset = new Point(centerPoint.x,centerPoint.y+30);
-				imgProc.putText("Distance to QR" + distance, offset, backUp);
+				imgProc.putText("dist->" + distance, offset, backUp);
 			}
 			contourNr++;
 			

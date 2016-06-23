@@ -194,6 +194,35 @@ public class PPanel extends JPanel implements Runnable {
 				
 				image = imgproc.toBufferedImage(backUp);
 			
+			}else if(Values_cam.getMethod() == 6){
+				
+				//Warp på enkelt billede,
+				//load ind enkelt billede
+				Mat testImage = imgproc.loadImage("pics/testfiles/TestBilledeTilWarp.png");
+				Mat backUp = testImage;
+				frame = imgproc.toGrayScale(testImage);
+				frame = imgproc.equalizeHistogramBalance(frame);
+				frame = imgproc.blur(frame);
+				frame = imgproc.toCanny(frame);
+				List<Contour> contours = imgproc.findQRsquares(frame);
+				
+				// vi finder de potentielle QR kode områder
+				List<BufferedImage> cutouts = imgproc.warp(backUp, contours, 1);
+				int imageNrName = 0;
+				for(BufferedImage image : cutouts){
+					imgproc.saveImage(imgproc.bufferedImageToMat(image), "image"+imageNrName+".png");
+					imageNrName++;
+				}
+				
+				
+				image = imgproc.toBufferedImage(testImage);
+				//find firkanter
+				//klip dem ud
+				//warp, gem warpede billede.
+				
+				
+				
+				
 			}
 			else if(Values_cam.getMethod()==23){
 				Mat backUp = new Mat();
