@@ -18,11 +18,6 @@ import dk.gruppe5.positioning.Position;
 public class DroneCommander extends Canvas {
 	private final static int speed = 5;
 	private final static int sleep = 500;
-	
-
-	/**
-	 * 
-	 */
 
 	private static final long serialVersionUID = -869265015784363288L;
 
@@ -34,7 +29,6 @@ public class DroneCommander extends Canvas {
 		try {
 
 			System.out.println("Connecting to drone...");
-
 			App.drone.start();
 			Thread.sleep(2000);
 			cmd = App.drone.getCommandManager();
@@ -47,14 +41,12 @@ public class DroneCommander extends Canvas {
 			Thread.sleep(500);
 			cmd.setVideoBitrate(3500);
 			Thread.sleep(500);
-
 			System.out.println("Drone connected.");
 
 		} catch (Exception e) {
 
 			e.printStackTrace();
 			System.err.println("Could not connect to drone.");
-
 		}
 
 		try {
@@ -62,21 +54,15 @@ public class DroneCommander extends Canvas {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void droneFlightControl(){
-
-
 		Thread thread = new Thread(new Runnable() {
 			public void run() {
-
 				droneTakeOff();
 				getDroneAltitude(Movement.currentAltitude);
 
 				try{
-					//long t = System.currentTimeMillis();
-					//long end = t+100000;
 					while(true) {
 						if(DronePosition.getXPoint()!=630 && DronePosition.getYPoint()!= -70){
 							System.out.println("Yay!");
@@ -92,8 +78,6 @@ public class DroneCommander extends Canvas {
 						cmd.hover().doFor(10);
 						System.out.println("Drone Thread: Drone is now Howering.");	
 						Thread.sleep(100);
-						//cmd.spinLeft(30).doFor(1000);
-						//Thread.sleep(1000);
 						System.out.println("Drone Flight Control Complete!");
 					}
 				} catch (InterruptedException e){
@@ -107,12 +91,9 @@ public class DroneCommander extends Canvas {
 	}
 
 	public void droneTest(){
-		//getDroneAltitude(Movement.currentAltitude);
 		droneTakeOff();
 		cmd.hover().doFor(10000);
 		killAll();
-
-
 	}
 
 	public void getDroneAltitude(int altitude){
@@ -132,7 +113,6 @@ public class DroneCommander extends Canvas {
 		try {
 			Thread.sleep(200);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		cmd.takeOff();
@@ -158,7 +138,6 @@ public class DroneCommander extends Canvas {
 
 
 	public void cleanStartUp(){
-
 		cmd.takeOff();
 		cmd.hover().doFor(5000);
 		
@@ -176,7 +155,6 @@ public class DroneCommander extends Canvas {
 		while(gogo) {
 			Values_cam.setMethod(2);
 			for(int i = 0; i < 4; i++){
-
 					cmd.hover().doFor(3000);
 					cmd.spinRight(100).doFor(100);
 					cmd.hover().doFor(3000);
@@ -197,7 +175,6 @@ public class DroneCommander extends Canvas {
 		cmd.hover().doFor(500);
 		cmd.down(10).doFor(1000);
 		cmd.hover().doFor(500);
-		
 		cmd.setVideoChannel(VideoChannel.HORI);
 		cmd.up(10).doFor(1000);
 		//insert if-statement which checks if there are in circles below camera
@@ -224,7 +201,6 @@ public class DroneCommander extends Canvas {
 					}
 				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

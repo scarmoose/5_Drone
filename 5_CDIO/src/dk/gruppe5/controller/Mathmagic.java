@@ -15,7 +15,6 @@ public class Mathmagic {
 
 	public final static Map<String, DPoint> spMap = new HashMap<String, DPoint>();
 	public final static Map<Integer, String> isMap = new HashMap<Integer, String>();
-	// public final static float[][] wallmarkDistances = new float[20][20];
 	public final static Wallmark[] wallmarks = {
 			new Wallmark("W00.00", new Point(94, 1055), new Point(188, 1055), new Point(264, 1055)),
 			new Wallmark("W00.01",new Point(264,1055), new Point(338, 1060),new Point(426,1055)), 
@@ -44,12 +43,6 @@ public class Mathmagic {
 			isMap.put(i, m.getName());
 			Point p = m.getPosition();
 			spMap.put(m.getName(), new DPoint(p.x, p.y));
-			// for(int j = 0; j < wallmarks.length; j++){
-			// Wallmark m2 = wallmarks[j];
-			// float distance = getDistanceBetweenPoints(new
-			// Vector2(m.getPosition()), new Vector2(m2.getPosition()));
-			// wallmarkDistances[i][j] = distance;
-			// }
 		}
 	}
 

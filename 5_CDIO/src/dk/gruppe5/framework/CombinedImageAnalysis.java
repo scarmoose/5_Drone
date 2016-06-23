@@ -27,14 +27,11 @@ public class CombinedImageAnalysis {
 	ImageProcessor imgProc = new ImageProcessor();
 
 	public Mat findPositionFromQRandTriangles(Mat frame) {
-		// frame = imgProc.calibrateCamera(frame);
 		Mat backUp = new Mat();
 		backUp = frame;
 		int ratio = 2;
-		// frame = imgProc.downScale(backUp, ratio);
 		// først gør vi det sort hvidt
 		frame = imgProc.toGrayScale(frame);
-		//
 		frame = imgProc.equalizeHistogramBalance(frame);
 		// blur virker bedre
 		frame = imgProc.blur(frame);
@@ -47,7 +44,6 @@ public class CombinedImageAnalysis {
 
 		List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
 		List<Result> results = imgProc.readQRCodes(cutouts);
-		// backUp = imgProc.markQrCodes(results, shapes, backUp);
 
 		int contourNr = 0;
 		Point leftTrianglePixelCenter = null;
@@ -66,7 +62,6 @@ public class CombinedImageAnalysis {
 				Point centerCurrentContour = currentContour.getCenter(ratio);
 				for (Contour contour : triangles) {
 					Point triangleCenter = contour.getCenter(ratio);
-					// System.out.println(triangleCenter);
 					color = new Scalar(0, 20, 255);
 					backUp = imgProc.drawLinesBetweenContourPoints(contour, backUp, ratio, color);
 
@@ -131,13 +126,11 @@ public class CombinedImageAnalysis {
 		backUp = frame;
 		int ratio = 2;
 		frame = imgProc.downScale(backUp, ratio);
-		// fÃ¸rst gÃ¸r vi det sort hvidt
+		// først gør vi det sort hvidt
 		frame = imgProc.toGrayScale(frame);
-		//
 		frame = imgProc.equalizeHistogramBalance(frame);
 		// blur virker bedre
 		frame = imgProc.blur(frame);
-
 		// Til canny for at nemmere kunne finde contourer
 		frame = imgProc.toCanny(frame);
 		Filterstates.setImage1(imgProc.toBufferedImage(frame));
@@ -147,7 +140,6 @@ public class CombinedImageAnalysis {
 		// vi finder de potentielle QR kode områder
 		List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
 		List<Result> results = imgProc.readQRCodes(cutouts);
-		// backUp = imgProc.markQrCodes(results, shapes, backUp);
 		int contourNr = 0;
 		for (Result result : results) {
 			if (result != null) {
@@ -167,12 +159,10 @@ public class CombinedImageAnalysis {
 								mapPosition = test.getPositionFromPoints(data.getQrNames(), data.getPoints()[0],
 										data.getPoints()[1], data.getPoints()[2]);
 							}catch (Exception e) {
-								// TODO: handle exception
 							}
 							
 							if (mapPosition != null) {
 								DronePosition.setPosition(mapPosition);
-								// System.out.println(mapPosition);
 								Imgproc.putText(backUp, data.getQrNames()[1], data.getPoints()[1], 5, 2, color1);
 								Point ofset = new Point(data.getPoints()[1].x, data.getPoints()[1].y + 30);
 								
@@ -193,9 +183,6 @@ public class CombinedImageAnalysis {
 								String text = data.getQrNames()[0];
 								String wallNr = "" + text.charAt(2);
 								int x = Integer.parseInt(wallNr);
-								// System.out.println(test.getDirectionAngleRelativeToYAxis(mapPos,
-								// data.getQrNames()[1], pixelsFromMiddleToQr));
-
 								DronePosition.setDegree((90.0 * x) - test.getDirectionAngleRelativeToYAxis(mapPos,
 										data.getQrNames()[1], pixelsFromMiddleToQr));
 							}
@@ -238,18 +225,15 @@ public class CombinedImageAnalysis {
 		backUp = frame;
 		int ratio = 2;
 		frame = imgProc.downScale(backUp, ratio);
-		// fÃ¸rst gÃ¸r vi det sort hvidt
+		// først gør vi det sort hvidt
 		frame = imgProc.toGrayScale(frame);
-		//
 		frame = imgProc.equalizeHistogramBalance(frame);
 		// blur virker bedre
 		frame = imgProc.blur(frame);
-
 		// Til canny for at nemmere kunne finde contourer
 		frame = imgProc.toCanny(frame);
 		// Nu skal vi prøve at finde firkanter af en hvis stÃ¸rrelse
 		List<Contour> contours = imgProc.findQRsquares(frame);
-
 		// vi finder de potentielle QR kode områder
 		List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
 		List<Result> results = imgProc.readQRCodes(cutouts);
@@ -257,11 +241,6 @@ public class CombinedImageAnalysis {
 		int contourNr = 0;
 		for (Result result : results) {
 			if(result != null){
-				
-				
-//				Values_cam.lastQrCodeFound = result.getText();
-//				Values_cam.timeOfFindingSingleQRCode = System.currentTimeMillis();
-//				Values_cam.distanceToLastQr = DistanceCalc.distanceFromCamera(contours.get(contourNr).getBoundingRect(ratio).height);
 				Point centerPoint = contours.get(contourNr).getCenter(ratio);
 				double distance = DistanceCalc.distanceFromCamera(contours.get(contourNr).getBoundingRect(ratio).height);
 				String text = result.getText();

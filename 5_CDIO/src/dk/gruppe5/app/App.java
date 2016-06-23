@@ -6,17 +6,4 @@ import de.yadrone.base.IARDrone;
 public class App {
 	
 	public static IARDrone drone = new ARDrone();
-	
-
-
-
-	 
-	
-
-	
-	
-	
-	
-	
-
 }

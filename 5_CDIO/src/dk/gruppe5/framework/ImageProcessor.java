@@ -163,10 +163,8 @@ public class ImageProcessor {
 	public Mat findContours(Mat input) {
 		List<MatOfPoint> contours_1 = new ArrayList<MatOfPoint>();
 		Mat hierarchy_1 = new Mat();
-		// Imgproc.findContours(input, contours_1, hierarchy_1,
-		// Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 		Imgproc.findContours(input, contours_1, hierarchy_1, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
-		// draw contours?
+		// draw contours
 		Random rn = new Random();
 		Mat standIn = new Mat();
 		Imgproc.cvtColor(input, standIn, Imgproc.COLOR_BayerBG2RGB);
@@ -178,34 +176,8 @@ public class ImageProcessor {
 			MatOfPoint2f approxCurve = new MatOfPoint2f();
 			double epsilon = Imgproc.arcLength(contour, true) * 0.02;
 			// houghcircles houghlines
-
-			// if(contours_1.get(i).size().area() >10 &&
-			// Imgproc.isContourConvex(contours_1.get(i))) { // Minimum size
-			// allowed for consideration
-			//
-			// Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255),
-			// rn.nextInt(255));
-			// Imgproc.drawContours(standIn, contours_1, i, color, 3);
-			//
-			// }
 			Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 			Imgproc.drawContours(standIn, contours_1, i, color, 3);
-			// we wanna se if a contour is a square.
-			// Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
-			//
-			// MatOfPoint approxf1 = new MatOfPoint();
-			// approxCurve.convertTo(approxf1, CvType.CV_32S);
-			//
-			// System.out.println(approxf1.width()*approxf1.height());
-			// if( (approxf1.width()*approxf1.height()) == 4 &&
-			// Math.abs(Imgproc.contourArea(approxf1)) > 10 &&
-			// Imgproc.isContourConvex(approxf1) ){
-
-			// System.out.println("I found shape Huurr durr");
-			//
-			//
-			// }
-
 		}
 
 		return standIn;
@@ -222,8 +194,6 @@ public class ImageProcessor {
 		}
 
 		Mat templateImg = bufferedImageToMat(img2);
-		// System.out.println("tempCols:"+templateImg.cols());
-		// System.out.println("frameCols:"+input.cols());
 
 		int match_method = Imgproc.TM_CCOEFF;
 		List<templateMatch> matches = new ArrayList<>();
@@ -243,9 +213,7 @@ public class ImageProcessor {
 			Mat result = new Mat(result_rows, result_cols, CvType.CV_32FC1);
 
 			// / Do the Matching and Normalize
-			Imgproc.matchTemplate(input, templateImg, result, match_method);
-			// Core.normalize(result, result, 0, 1, Core.NORM_MINMAX, -1, new
-			// Mat());
+			Imgproc.matchTemplate(input, templateImg, result, match_method);			
 			// / Localizing the best match with minMaxLoc
 			MinMaxLocResult mmr = Core.minMaxLoc(result);
 			Point matchLoc;
@@ -254,15 +222,9 @@ public class ImageProcessor {
 
 			} else {
 				matchLoc = mmr.maxLoc;
-				// System.out.println(mmr.maxVal);
-
 			}
 
-			// / Show me what you got
-			// System.out.println(matchLoc);
-
 			i++;
-			// System.out.println(templateImg.width()+":"+templateImg.height());
 			templateMatch tempMatch = new templateMatch(matchLoc, templateImg.width(), templateImg.height(),
 					mmr.maxVal);
 			matches.add(tempMatch);
@@ -304,7 +266,6 @@ public class ImageProcessor {
 	}
 
 	public opticalFlowData opticalFlow(Mat frameOne, Mat frameTwo) {
-		// TODO Auto-generated method stub
 		// Først finder vi de gode features at tracker
 		frameOne = toGrayScale(frameOne);
 		frameTwo = toGrayScale(frameTwo);
@@ -320,8 +281,6 @@ public class ImageProcessor {
 		Mat standIn = new Mat();
 		MatOfPoint corners1 = new MatOfPoint();
 		MatOfPoint corners2 = new MatOfPoint();
-		// Imgproc.goodFeaturesToTrack(frameOne, corners1, 100, 0.1, 30);
-		// Imgproc.goodFeaturesToTrack(frameTwo, corners2, 100, 0.1, 30);
 
 		Imgproc.goodFeaturesToTrack(frameOne, corners1, Values_cam.getCorn(), Values_cam.getQual(),
 				Values_cam.getDist());
@@ -358,9 +317,7 @@ public class ImageProcessor {
 					.sqrt((startP.x - endP.x) * (startP.x - endP.x) + (startP.y - endP.y) * (startP.y - endP.y));
 
 			if (distance > 20) {
-				// System.out.println("Distance:"+distance);
 				averageCalc = averageCalc + distance;
-				// System.out.println(err.get(i, 0)[0]);
 				nrOfVec++;
 			}
 
@@ -370,7 +327,6 @@ public class ImageProcessor {
 		int threshold = 1;
 		for (int i = 0; i < corners1f.height(); i++) {
 
-			// Imgproc.line(standIn,startP,endP,new Scalar(0,250,0),5);
 			Point startP = new Point(corners2f.get(i, 0));
 			Point endP = new Point(corners1f.get(i, 0));
 			Double distance = Math
@@ -426,12 +382,11 @@ public class ImageProcessor {
 
 				Scalar color = new Scalar(rn.nextInt(255), rn.nextInt(255), rn.nextInt(255));
 				drawLinesBetweenBoundingRectPoints(cirRect, standIn, ratio, color);
-				
+
 				if (carea > rectArea * 0.15 && true) {
 
 					if (ctlPt.inside(rect.getBoundingRect(ratio))) {
 						containedCircles++;
-//						Scalar color = new Scalar(255, 0, 0);
 						Imgproc.rectangle(standIn, cirRect.getBrPoint(ratio), cirRect.getTlPoint(ratio), color, 3);
 					}
 				}
@@ -447,10 +402,9 @@ public class ImageProcessor {
 				Point txtPoint = rect.getCenter(ratio);
 
 				Imgproc.putText(standIn, "testAirfield", txtPoint, 5, 2, color);
-//				System.out.println(rect.getBoundingRect(ratio).width);
 				System.out.println(DistanceCalc.distanceFromCamera(rect.getBoundingRect(ratio).width));
 			}else{
-				
+
 			}
 
 		}
@@ -473,9 +427,6 @@ public class ImageProcessor {
 		Mat standIn = new Mat();
 		MatOfPoint corners1 = new MatOfPoint();
 		MatOfPoint corners2 = new MatOfPoint();
-		// Imgproc.goodFeaturesToTrack(frameOne, corners1, 100, 0.1, 30);
-		// Imgproc.goodFeaturesToTrack(frameTwo, corners2, 100, 0.1, 30);
-
 		Imgproc.goodFeaturesToTrack(frameOne, corners1, Values_cam.getCorn(), Values_cam.getQual(),
 				Values_cam.getDist());
 		Imgproc.goodFeaturesToTrack(frameTwo, corners2, Values_cam.getCorn(), Values_cam.getQual(),
@@ -511,9 +462,7 @@ public class ImageProcessor {
 					.sqrt((startP.x - endP.x) * (startP.x - endP.x) + (startP.y - endP.y) * (startP.y - endP.y));
 
 			if (distance > 20) {
-				// System.out.println("Distance:"+distance);
 				averageCalc = averageCalc + distance;
-				// System.out.println(err.get(i, 0)[0]);
 				nrOfVec++;
 			}
 
@@ -523,7 +472,6 @@ public class ImageProcessor {
 		int threshold = 1;
 		for (int i = 0; i < corners1f.height(); i++) {
 
-			// Imgproc.line(standIn,startP,endP,new Scalar(0,250,0),5);
 			Point startP = new Point(corners2f.get(i, 0));
 			Point endP = new Point(corners1f.get(i, 0));
 			Double distance = Math
@@ -547,7 +495,6 @@ public class ImageProcessor {
 			if (distance < threshold * averageCalc && distance > 4) {
 
 				Imgproc.arrowedLine(standIn, startP, endP, new Scalar(0, 250, 0));
-				// System.out.println("test");
 				startPoints.add(startP);
 				endPoints.add(endP);
 			}
@@ -601,22 +548,18 @@ public class ImageProcessor {
 			// we wanna se if a contour is a square, or has one or more edges so
 			// we save them.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
-			
-		
+
+
 			Rect r = Imgproc.boundingRect(contours_1.get(i));
-//			double[] p =hierarchy_1.get(0, i);
-//			if(p[3] > 0.0){
 			if (r.area() > 2000) {
 				if (approxCurve.total() == 4) {
 					Contour contour1 = new Contour(contour, approxCurve);
 					contours.add(contour1);
-
-//				}
-			}
+				}
 			}
 		}
-		
-		
+
+
 
 		return contours;
 	}
@@ -644,12 +587,6 @@ public class ImageProcessor {
 			qrData.add(scanResult);
 
 		}
-		// for (Result Qrdata : qrData) {
-		// if (Qrdata != null) {
-		// System.out.println(Qrdata.getText());
-		// }
-		//
-		// }
 		return qrData;
 	}
 
@@ -667,12 +604,9 @@ public class ImageProcessor {
 			scanResult = reader.decode(bitmap);
 		} catch (ReaderException | IndexOutOfBoundsException e1) {
 			// no code found.
-
 			scanResult = null;
 		}
-
 		return scanResult;
-
 	}
 
 	public DetectedWallmarksAndNames markQrCodes(List<Result> results, List<Contour> contours, Mat backUp, int ratio) {
@@ -695,7 +629,6 @@ public class ImageProcessor {
 		double distance = 0;
 		for (int i = 0; i < results.size(); i++) {
 			if (results.get(i) != null) {
-				// draw the shape and write the result in the area
 				Contour contour = contours.get(i);
 				qrCodeShapeConfirms.add(contour);
 				qrCodeResultConfirms.add(results.get(i));
@@ -711,7 +644,6 @@ public class ImageProcessor {
 			Contour qrCodeConfirmedShape = qrCodeShapeConfirms.get(z);
 			String qrCodeResultText = qrCodeResultConfirms.get(z).getText();
 			// den her afstand skal lidt styres af afstanden vi er til qr koden
-
 			// finder lige midten af qr koden.
 			QrPointsPoints.add(qrCodeConfirmedShape.getCenter(ratio));
 
@@ -732,14 +664,10 @@ public class ImageProcessor {
 						 */
 						int nrWallMark = 0;
 						for (Wallmark wallmark : Mathmagic.getArray()) {
-
 							if (wallmark.getName().equals(qrCodeResultText)) {
-
 								Point txtPoint = shape.getCenter(ratio);
 								txtPoint = new Point(txtPoint.x * ratio, txtPoint.y * ratio);
 								rightPoints.add(txtPoint);
-
-								// System.out.println("name on right set");
 								nameOfQROnTheRight = Mathmagic.getNameFromInt(nrWallMark + 1);
 								break;
 							}
@@ -747,7 +675,6 @@ public class ImageProcessor {
 						}
 
 					} else if (shape.getTlPoint(ratio).x < (qrCodeConfirmedShape.getTlPoint(ratio).x)) {
-						// System.out.println("found one left off");
 						int nrWallMark = 0;
 						for (Wallmark wallmark : Mathmagic.getArray()) {
 
@@ -755,19 +682,14 @@ public class ImageProcessor {
 								Point txtPoint = shape.getCenter(ratio);
 								txtPoint = new Point(txtPoint.x * ratio, txtPoint.y * ratio);
 								leftPoints.add(txtPoint);
-								// System.out.println("name on left set");
 								nameOfQROnTheLeft = Mathmagic.getNameFromInt(nrWallMark - 1);
 								break;
 							}
 							nrWallMark++;
 						}
-
 					}
-
 				}
-
 			}
-			// System.out.println("qr code name set");
 			nameOfQRCodeFound = qrCodeResultConfirms.get(z).getText();
 		}
 
@@ -781,21 +703,10 @@ public class ImageProcessor {
 		String[] qrNames = { nameOfQROnTheLeft, nameOfQRCodeFound, nameOfQROnTheRight };
 
 		if (Double.isNaN(points[1].x) || qrNames[1] == null) {
-			// System.out.println("points null");
-			// System.out.println("not valid names
-			// "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+
-			// nameOfQROnTheLeft);
-			// System.out.println("not valid Points: -->
-			// "+rightAverage+","+QrAverage+","+leftAverage);
 			return null;
 		}
-		// System.out.println("Names: -->
-		// "+nameOfQROnTheRight+","+nameOfQRCodeFound+","+ nameOfQROnTheLeft);
-		// System.out.println("Points: -->
-		// "+rightAverage+","+QrAverage+","+leftAverage);
 		DetectedWallmarksAndNames data = new DetectedWallmarksAndNames(qrNames, points,
 				distance / qrCodeShapeConfirms.size());
-
 		return data;
 	}
 
@@ -834,14 +745,10 @@ public class ImageProcessor {
 					 */
 					int nrWallMark = 0;
 					for (Wallmark wallmark : Mathmagic.getArray()) {
-
 						if (wallmark.getName().equals(qrSquareName)) {
-
 							Point txtPoint = shape.getCenter(ratio);
 							txtPoint = new Point(txtPoint.x, txtPoint.y);
 							rightPoints.add(txtPoint);
-
-							// System.out.println("name on right set");
 							nameOfQROnTheRight = Mathmagic.getNameFromInt(nrWallMark + 1);
 							break;
 						}
@@ -849,7 +756,6 @@ public class ImageProcessor {
 					}
 
 				} else if (shape.getTlPoint(ratio).x < (qrCodeConfirmedShape.getTlPoint(ratio).x)) {
-					// System.out.println("found one left off");
 					int nrWallMark = 0;
 					for (Wallmark wallmark : Mathmagic.getArray()) {
 
@@ -857,18 +763,14 @@ public class ImageProcessor {
 							Point txtPoint = shape.getCenter(ratio);
 							txtPoint = new Point(txtPoint.x, txtPoint.y);
 							leftPoints.add(txtPoint);
-							// System.out.println("name on left set");
 							nameOfQROnTheLeft = Mathmagic.getNameFromInt(nrWallMark - 1);
 							break;
 						}
 						nrWallMark++;
 					}
-
 				}
-
 			}
-			// System.out.println("qr code name set");
-					}
+		}
 
 		// find gennemsnit af punkter og returner 3 punkter, [left,middle,right]
 		Point leftAverage = averagePoint(leftPoints);
@@ -892,8 +794,6 @@ public class ImageProcessor {
 		int minDistance = 100;
 		if (currentContour.getTlPoint(ratio).x > (QRCodeShape.getTlPoint(ratio).x + minDistance)
 				|| currentContour.getTlPoint(ratio).x < (QRCodeShape.getTlPoint(ratio).x - minDistance)) {
-
-			// System.out.println("x position far enough for shape");
 			// check om højde i billede ca passer med den bekræfte QR
 			// kodes position og hver firkant, dem der matcher checker
 			// vi størrelse
@@ -908,16 +808,13 @@ public class ImageProcessor {
 				Rect r = currentContour.getBoundingRect(ratio);
 				if (r.area() > (QRCodeShape.getBoundingRect(ratio).area() * 0.8)
 						&& r.area() < (QRCodeShape.getBoundingRect(ratio).area() * 1.2)) {
-					// System.out.println("Area is good!");
 					// check om formen ca passer med et A4 højde er
 					// længere end bredde
 					if (r.height > r.width) {
-						// System.out.println("Shape is good!");
 						return true;
 					}
 				}
 			}
-
 		}
 		return false;
 	}
@@ -1015,8 +912,6 @@ public class ImageProcessor {
 
 		for (Contour contour : contours) {
 			List<Point> points = contour.getCorners(ratio);
-			// List<Point> points = contour.getBoundingRectPoints(ratio);
-
 			Mat startM = Converters.vector_Point2f_to_Mat(points);
 
 			int resultWidth = startM.width() + 100;
@@ -1040,13 +935,10 @@ public class ImageProcessor {
 					index = i;
 					testdistance = distance;
 					y = point.y;
-					// System.out.println(distance);
 				}
 				i++;
-
 			}
-			// System.out.println(index);
-
+			
 			if (index == 0 || index == 1) {
 				Point ocvPOut1 = new Point(0, 0);
 				Point ocvPOut2 = new Point(0, resultHeight);
@@ -1082,9 +974,7 @@ public class ImageProcessor {
 				outputs.add(toBufferedImage(outputMat));
 
 			}
-
 		}
-
 		return outputs;
 	}
 
@@ -1251,15 +1141,11 @@ public class ImageProcessor {
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
 			Rect r = Imgproc.boundingRect(contours_1.get(i));
 			if (r.area() > 300) {
-				//if (approxCurve.total() > 3 && approxCurve.total() < 10) {
 				Contour contour1 = new Contour(contour, approxCurve);
 				contours.add(contour1);
 			}
-			// if (approxCurve.total() > 3 && approxCurve.total() < 10) {
 			Contour contour1 = new Contour(contour, approxCurve);
 			contours.add(contour1);
-			// }
-
 		}
 		return contours;
 	}
@@ -1268,16 +1154,10 @@ public class ImageProcessor {
 		List<BufferedImage> outputs = new ArrayList<>();
 
 		for (Contour contour : contours) {
-
-			// List<Point> points = contour.getBoundingRectPoints(ratio);
 			Rect r = contour.getBoundingRect(ratio);
-
 			Mat outputMat = new Mat(backUp, r);
-
 			outputs.add(toBufferedImage(outputMat));
-
 		}
-
 		return outputs;
 	}
 
@@ -1305,7 +1185,7 @@ public class ImageProcessor {
 		 * remember: H ranges 0-180, S and V range 0-255
 		 */
 
-
+		
 		//		 for black colors:
 		//		 Scalar minValues = new Scalar(0,0,0);
 		//		 Scalar maxValues = new Scalar(255,255,10);
@@ -1382,8 +1262,6 @@ public class ImageProcessor {
 
 			MatOfPoint2f approxCurve = new MatOfPoint2f();
 			double epsilon = Imgproc.arcLength(contour, true) * 0.05;
-
-			// 
 			// we save them.
 			Imgproc.approxPolyDP(contour, approxCurve, epsilon, true);
 			double area = Imgproc.contourArea(approxCurve);
@@ -1396,7 +1274,7 @@ public class ImageProcessor {
 		}
 		return triangles;
 	}
-	
+
 	/**
 	 * Giver en liste af contours for et givent frame.
 	 * @param src frame
@@ -1408,7 +1286,7 @@ public class ImageProcessor {
 		Imgproc.findContours(src, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
 		return contours;
 	}
-	
+
 	/**
 	 * Giver contours for de fundne cirkler i et givent frame. 
 	 * @param src frame
@@ -1420,7 +1298,7 @@ public class ImageProcessor {
 		List<MatOfPoint> contours = getContourList(dst);
 		return contours;
 	}
-	
+
 	/**
 	 * Giver bounding rects for de givne contours i form af <code>List</code><<code>Rect</code>>
 	 * @param contours contours der skal findes bounding rects for
@@ -1433,7 +1311,7 @@ public class ImageProcessor {
 		}
 		return rects;
 	}
-	
+
 	/**
 	 * Giver de approximerede kurver for den givne liste af contours
 	 * @param list liste af contours
@@ -1451,7 +1329,7 @@ public class ImageProcessor {
 		}
 		return approxs;
 	}
-	
+
 	/**
 	 * Skal give en liste af <code>minAreaRects</code> i form af <code>List</code><<code>RotatedRect</code>>
 	 * for contourerne givet. 
@@ -1465,7 +1343,7 @@ public class ImageProcessor {
 		}
 		return rrects;
 	}
-	
+
 	/**
 	 * Finder minAreaRects i <code>src</code>
 	 * @param src frame der skal undersøges
@@ -1478,7 +1356,7 @@ public class ImageProcessor {
 		List<RotatedRect> rrects = getMinAreaRects(approxs);
 		return rrects;
 	}
-	
+
 	/**
 	 *  DET ANTAGES AT <code>src</code>-MATRICEN ER KLIPPET TIL KUN AT INDEHOLDE CIRKLEN
 	 * Bestemmer om en cirkel indeholder en af de fundne <code>RotatedRects</code> 
@@ -1501,7 +1379,7 @@ public class ImageProcessor {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Tegner de fundne cirkler i <code>src</code> på <code>destination</code>
 	 * @param src frame der skal undersøges
@@ -1519,7 +1397,7 @@ public class ImageProcessor {
 		return findAndDrawHoughCircles(src, destination, iCannyUpperThreshold,
 				iMinRadius, iMaxRadius, iAccumulator, iLineThickness);
 	}
-	
+
 	/**
 	 * Tegner de fundne cirkler i <code>src</code> på <code>destination</code>
 	 * @param src frame der skal undersøges
@@ -1556,17 +1434,15 @@ public class ImageProcessor {
 				int radius = (int)Math.round(vCircle[2]);
 
 				// draw the found circle
-
 				Scalar pointsclr = new Scalar(255,255,255);
 				Scalar radiussclr = new Scalar(255,255,255);
-
 				Imgproc.circle(destination, pt, radius, pointsclr, iLineThickness);
 				Imgproc.circle(destination, pt, 3, radiussclr, iLineThickness);
 			}
 			return true;
 		} else return false;
 	}
-	
+
 	/**
 	 * Giver en liste af cirkler fundet i billedet i form af <code>List</code><<code>Circle</code>>.
 	 * @param src frame
@@ -1583,9 +1459,9 @@ public class ImageProcessor {
 		Imgproc.HoughCircles(src, dst, Imgproc.CV_HOUGH_GRADIENT, 
 				2.0, src.rows() / 8, iCannyUpperThreshold, iAccumulator, 
 				iMinRadius, iMaxRadius);
-		
+
 		int num = dst.cols();
-		
+
 		if(num > 0) {
 			for(int i = 0; i < num; i++) {
 				double vCircle[] = dst.get(0, i);
@@ -1600,7 +1476,7 @@ public class ImageProcessor {
 		}
 		return list;
 	}
-	
+
 	/**
 	 * Giver en liste af cirkler fundet i billedet i form af <code>List</code><<code>Circle</code>>.
 	 * bruger nogle faste værdier, der kan sættes i metoden
@@ -1615,8 +1491,7 @@ public class ImageProcessor {
 		return findHoughCircles(src, iCannyUpperThreshold, 
 				iMinRadius, iMaxRadius, iAccumulator);
 	}
-	
-	//skal der ratio på??
+
 	/**
 	 * Tegner <code>RotatedRects</code> fra <code>list</code> på <code>img</code>.
 	 * Det frame der bliver tegnet på, er det der bliver givet som parameter,
@@ -1636,7 +1511,7 @@ public class ImageProcessor {
 		}
 		return img;
 	}
-	
+
 	/**
 	 * Giver sub image for src, med rectangle of interest
 	 * @param src
@@ -1646,8 +1521,8 @@ public class ImageProcessor {
 	public Mat getSubMat(Mat src, Rect roi) {
 		return new Mat(src, roi);
 	}
-	
-	
+
+
 
 
 }

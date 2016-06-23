@@ -33,14 +33,7 @@ import dk.gruppe5.model.DPoint;
 public class Lines {
 
 	public Lines() {
-        initUI();
-        
-        //S�tter airfields
-        
-        /*AirfieldList.addAirfield(new Airfield("Airfield1",new Point(DronePosition.getXPoint(),DronePosition.getYMirror())));
-        AirfieldList.addAirfield(new Airfield("Airfield2",new Point(530,200)));
-        AirfieldList.addAirfield(new Airfield("Airfield3",new Point(800,800)));*/
-                
+        initUI();                
     }
 
     private void initUI() {
@@ -282,10 +275,7 @@ public class Lines {
             AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
             // Drawing the rotated image at the required drawing locations
-            g2d.drawImage(op.filter(buffImg, null), DronePosition.getXPoint()/2+20, DronePosition.getYMirror()/2+25, null);
-            
-            //g2d.drawImage(img1, DronePosition.getXPoint()/2+20, DronePosition.getYMirror()/2+25, this);
-           
+            g2d.drawImage(op.filter(buffImg, null), DronePosition.getXPoint()/2+20, DronePosition.getYMirror()/2+25, null);           
             
             for(int j = 0; j<AirfieldList.getArray().size();j++ ){
             	g2d.setStroke(bs2);

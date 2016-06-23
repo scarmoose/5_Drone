@@ -1,14 +1,9 @@
 package dk.gruppe5.legacy;
 
-import de.yadrone.apps.controlcenter.plugins.speed.SpeedPanel;
-import de.yadrone.base.ARDrone;
 import de.yadrone.base.ARDrone.ISpeedListener;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
-import de.yadrone.base.navdata.AcceleroListener;
-import de.yadrone.base.navdata.AcceleroPhysData;
-import de.yadrone.base.navdata.AcceleroRawData;
 import de.yadrone.base.navdata.Altitude;
 import de.yadrone.base.navdata.AltitudeListener;
 import de.yadrone.base.navdata.AttitudeListener;
@@ -20,7 +15,6 @@ import de.yadrone.base.navdata.GyroPhysData;
 import de.yadrone.base.navdata.GyroRawData;
 import de.yadrone.base.navdata.StateListener;
 import de.yadrone.base.navdata.VelocityListener;
-import de.yadrone.base.utils.ARDroneUtils;
 
 public class NavDataListener {
 	
@@ -37,17 +31,14 @@ public class NavDataListener {
 			
 			@Override
 			public void windCompensation(float pitch, float roll) {
-				//System.out.println("windCompensation - pitch: "+roll+", roll: "+roll);
 			}
 			
 			@Override
 			public void attitudeUpdated(float pitch, float roll, float yaw) {
-				//System.out.println("Pitch: " + pitch + " Roll: " + roll + " Yaw: " + yaw);
 			}
 			
 			@Override
 			public void attitudeUpdated(float pitch, float roll) {
-				//System.out.println("attitudeUpdated - pitch: "+pitch+", roll: "+roll);
 			}
 		});
 		
@@ -55,12 +46,10 @@ public class NavDataListener {
 			
 			@Override
 			public void voltageChanged(int vbat_raw) {
-				//System.out.println("voltageChanged - vbat_raw: "+vbat_raw);
 			}
 			
 			@Override
-			public void batteryLevelChanged(int percentage) {
-				//System.out.println("Battery: " + percentage + " %");			
+			public void batteryLevelChanged(int percentage) {			
 			}
 			
 		});
@@ -75,7 +64,6 @@ public class NavDataListener {
 
 			@Override
 			public void receivedExtendedAltitude(Altitude exAltitude) {
-				//System.out.println("receivedExtendedAltitude - Altitude: "+exAltitude);
 			}
 						
 		});
@@ -92,10 +80,6 @@ public class NavDataListener {
 			
 			@Override
 			public void velocityChanged(float vx, float vy, float vz) {
-				if(!(vx == 0.0f && vy == 0.0f && vz == 0.0f) ){
-				//System.out.println("velocity changed:"+ "x: "+vx + " y: "+ vy + " z: "+vz);
-				// TODO Auto-generated method stub
-			}
 			}
 		});
 
@@ -104,22 +88,17 @@ public class NavDataListener {
 			
 			@Override
 			public void receivedRawData(GyroRawData data) {
-				//System.out.println("GyroRayData"+ data);
-				
 			}
 			
 			@Override
 			public void receivedPhysData(GyroPhysData PhysData) {
-			//System.out.println("GyroPhysData"+ PhysData);
-				
 			}
 			
 			@Override
-			public void receivedOffsets(float[] recievedOffsets) {
-				//System.out.println("recievedOffsets"+ recievedOffsets);
-				
+			public void receivedOffsets(float[] recievedOffsets) {		
 			}
 		});
+		
 		drone.getNavDataManager().addStateListener(new StateListener(){
 
 			@Override
@@ -135,19 +114,13 @@ public class NavDataListener {
 			
 		});
 		
-
-		
 		drone.getSpeed();
-
 		System.out.println("Speedlol:"+ drone.getSpeed());
-		
-		
 		drone.addSpeedListener(new ISpeedListener() {
 
 			@Override
 			public void speedUpdated(int speed) {
-				System.out.println("Speed Updated:"+ speed);
-				
+				System.out.println("Speed Updated:"+ speed);			
 			}
 		});		
 	}

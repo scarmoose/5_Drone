@@ -22,57 +22,41 @@ public class DecisionMakerNr2 implements Runnable {
 
 	public void setupTargets() {
 		targets.add("AF.09");
-
 	}
 
 	public DecisionMakerNr2(DroneCommander dCommando) {
 		this.dCommando = dCommando;
-
 	}
 
 	public void run() {
-	
+
 		try {
-		while (runs) {
-			if(Position.isFlying){
-			// check altitude
-				
-				if (checkHeight()) {
-					// altitude is a OK now
-					// check if QR code is spotted and get its distance to the
-					// camera
-					Values_cam.setMethod(11);
-			
+			while (runs) {
+				if(Position.isFlying){
+					// check altitude
+					if (checkHeight()) {
+						// altitude is a OK now
+						// check if QR code is spotted and get its distance to the
+						// camera
+						Values_cam.setMethod(11);
 						searchForQrCode();
-					
+					}
 				}
-				
-				
-				
 			}
-		}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-
 	}
-
+	
 	private void searchForQrCode() throws InterruptedException {
-	while(true){
-		dCommando.randomSearch();
-		Thread.sleep(200);
+		while(true){
+			dCommando.randomSearch();
+			Thread.sleep(200);
+		}
 		
-	}
-			
-			
-
 		// If no qr code is visible in the frame, the we must find one, we
 		// can first turn around ourselves. if none is visible, height is
 		// okay. The go forward abit and try again
-
 	}
 
 	private boolean checkHeight() throws InterruptedException {

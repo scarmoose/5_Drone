@@ -37,8 +37,6 @@ public class FrameGrabber extends Thread {
 		return current;
 	}
 
-
-
 	@Override 
 	public void run() {
 
