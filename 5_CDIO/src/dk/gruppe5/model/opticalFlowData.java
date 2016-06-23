@@ -20,9 +20,6 @@ public class opticalFlowData {
 		this.frame = frame;
 		this.startPoints = startPoints;
 		this.endPoints = endPoints;
-		
-		//asd
-		
 	}
 	
 	

@@ -43,7 +43,7 @@ import dk.gruppe5.positioning.Movement;
 import dk.gruppe5.positioning.Position;
 import dk.gruppe5.test.CircleTest;
 
-public class VideoListenerPanel extends JPanel implements Runnable {
+public class DronePanel extends JPanel implements Runnable {
 
 	/**
 	 * 
@@ -61,19 +61,13 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 	FrameGrabber frameGrabber;
 	CombinedImageAnalysis combi = new CombinedImageAnalysis();
 
-	public VideoListenerPanel(final IARDrone drone) {
+	public DronePanel(final IARDrone drone) {
 		frameGrabber = new FrameGrabber(drone);
 		imgProc = new ImageProcessor();
 
 		addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-
-				// imgProc.saveImage(imgProc.bufferedImageToMat(image), "IMAGE"
-				// + picsNr + ".jpg");
-				//
-				// picsNr++;
 				App.drone.getCommandManager().setVideoChannel(VideoChannel.NEXT);
-
 			}
 		});
 	}
@@ -83,10 +77,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 		if (image != null) {
 			int x = this.getWidth();
 			int y = this.getHeight();
-
 			g.drawImage(image, 0, 0, x, y, null);
-			// g.drawImage(image, 0, 0,image.getWidth(), image.getHeight(),
-			// null);
 		}
 	}
 
@@ -96,9 +87,6 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 
 	public void directionGuess(double avAngle) {
 		if (startPoints.size() > 30) {
-			// System.out.println("Nr of vectors: "
-			// +startPoints.size());
-
 			if (avAngle > 315 && avAngle < 360) {
 				System.out.println("Left - U");
 
@@ -210,8 +198,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					frame = imgProc.blur(frame);
 					frame = imgProc.toCanny(frame);
 					
-					//find firkanter, tegn dem på billedet.
-					
+					//find firkanter, tegn dem på billedet.					
 					List<Contour> contours = imgProc.findQRsquares(frame);
 					
 					for(Contour contour: contours){
@@ -233,9 +220,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					frame = imgProc.toCanny(frame);
 
 					// find firkanter, tegn dem på billedet.
-
 					List<Contour> contours = imgProc.findQRsquares(frame);
-
 					// vi finder de potentielle QR kode områder
 					List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
 					List<Result> results = imgProc.readQRCodes(cutouts);
@@ -261,9 +246,7 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					frame = imgProc.toCanny(frame);
 
 					// find firkanter, tegn dem på billedet.
-
 					List<Contour> contours = imgProc.findQRsquares(frame);
-
 					// vi finder de potentielle QR kode områder
 					List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
 					List<Result> results = imgProc.readQRCodes(cutouts);
@@ -410,9 +393,6 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 					image = imgProc.toBufferedImage(frame);
 
 				}
-
-				// System.out.println(image.getWidth() +","+ image.getHeight());
-
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						repaint();
@@ -430,23 +410,22 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 		int ratio = 2;
 		frame = imgProc.downScale(backUp, ratio);
 
-		// kig pÃ¥ whitebalancing og eventuelt at reducere omrÃ¥det
+		// kig på whitebalancing og eventuelt at reducere området
 		// som vi kigger igennem for firkanter.
-		// frame = imgProc.equalizeHistogramBalance(frame);
 
-		// fÃ¸rst gÃ¸r vi det sort hvidt
+		// først gør vi det sort hvidt
 		frame = imgProc.toGrayScale(frame);
 
 		frame = imgProc.equalizeHistogramBalance(frame);
-		// Vi tester fÃ¸rst med blur og ser hvor godt det bliver
-		// prÃ¸v ogsÃ¥ uden
+		// Vi tester først med blur og ser hvor godt det bliver
+		// prøver også uden
 		// blur virker bedre
 		frame = imgProc.blur(frame);
 
 		// Til canny for at nemmere kunne finde contourer
 		frame = imgProc.toCanny(frame);
 
-		// Nu skal vi prÃ¸ve at finde firkanter
+		// Nu skal vi prøve at finde firkanter
 		List<Contour> contours = imgProc.findQRsquares(frame);
 		List<BufferedImage> cutouts = imgProc.warp(backUp, contours, ratio);
 		List<Result> results = imgProc.readQRCodes(cutouts);
@@ -501,7 +480,6 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 				DronePosition.setPosition(position);
 
 			} catch (Fejl40 e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -514,16 +492,13 @@ public class VideoListenerPanel extends JPanel implements Runnable {
 		Mat backUp = new Mat();
 		backUp = frame;
 		int ratio = 1;
-		// frame = imgProc.calibrateCamera(frame);
 		frame = imgProc.toGrayScale(frame);
 		frame = imgProc.equalizeHistogramBalance(frame);
 		frame = imgProc.blur(frame);
 		frame = imgProc.toCanny(frame);
-		// Nu skal vi prÃ¸ve at finde firkanter af en hvis stÃ¸rrelse
+		// Nu skal vi prøve at finde firkanter af en hvis størrelse
 
 		// vi finder de potentielle QR kode omrÃ¥der
-		// List<BufferedImage> cutouts =
-		// imgProc.getImagesFromContours(backUp,contours,ratio);
 		Result result = imgProc.readQRcodeFromWholeImage(imgProc.toBufferedImage(backUp));
 		Point qrCenter = null;
 		if (result != null) {

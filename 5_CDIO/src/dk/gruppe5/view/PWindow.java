@@ -114,13 +114,10 @@ public class PWindow {
 		btnTakeoff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("TAKEOFF");
-
-				//dm.run();
 				dCommando.droneTakeOff();
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				Position.isFlying = true;
@@ -146,16 +143,12 @@ public class PWindow {
 		btnSelectDrone.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
 				dCommando = new DroneCommander();
-				//dm = new DecisionMaker();
 				DecisionMakerNr2 dm2 = new DecisionMakerNr2(dCommando);
-				VideoListenerPanel panel = new VideoListenerPanel(dCommando.getDrone());
+				DronePanel panel = new DronePanel(dCommando.getDrone());
 				new Thread(dm2).start();
 				new Thread(panel).start();
 				frame.setVisible(true);
 				frame.setFocusable(true);
-			
-				//frame.addKeyListener(new KeyboardCommandManagerAlternative(dCommando.getDrone()));
-
 				leftPanel.add(innerLeftPanel);
 				innerLeftPanel.add(btnUpdate);
 				innerLeftPanel.add(txtMethod);
@@ -176,13 +169,12 @@ public class PWindow {
 		btnSelectWebcam.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
 
-				PPanel videoFeed = new PPanel();
+				WebcamPanel videoFeed = new WebcamPanel();
 				Thread camThread = new Thread(videoFeed);
 				camThread.start();
 				frame.addWindowListener(new WindowAdapter() {
 					@Override
 					public void windowClosing(WindowEvent e) {
-						//N�dl�sning, nu slukker programmet da :P
 						camThread.stop();
 					}
 				});

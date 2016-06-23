@@ -1,7 +1,7 @@
 /**
  * 
  */
-package dk.gruppe5.test;
+package dk.gruppe5.main;
 
 import org.opencv.core.Core;
 
@@ -13,7 +13,7 @@ import dk.gruppe5.view.ThresholdChanger;
  * @author thomas
  *
  */
-public class WebcamTest {
+public class Main {
 
 	/**
 	 * @param args
@@ -26,8 +26,6 @@ public class WebcamTest {
 		PWindow window = new PWindow(1280, 720);
 		Lines.main(null);
 		ThresholdChanger changer = new ThresholdChanger(250,150);
-		
-		//test 123
 	}
 
 }

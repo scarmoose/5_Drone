@@ -92,10 +92,6 @@ public class PositionTest {
 		mm = new Mathmagic();
 		pos = new Position();
 
-		//		Point p1 = mm.map.get("W00.04");
-		//		Point p2 = mm.map.get("W01.00");
-		//		Point p3 = mm.map.get("W01.01");
-
 		DPoint p1 = new DPoint(0,0);
 		DPoint p2 = new DPoint(1,2);
 		DPoint p3 = new DPoint(0,4);
@@ -111,7 +107,7 @@ public class PositionTest {
 
 		DPoint[] vectors = pos.getIntersectionPoints(c1, c2);
 		for(DPoint v : vectors)  {
-			//System.out.println(v);
+			//missing implementation
 		}
 
 		DPoint vector = pos.getPositionPoint(c1, c2, points);

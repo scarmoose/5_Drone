@@ -17,17 +17,8 @@ public class Values_cam {
 	public static double timeOfFindingSingleQRCode = 0.0;
 	public static String lastQrCodeFound = "";
 	public static double distanceToLastQr;
-	
-	
-	
-	
-	
-	
 	private static Values_cam valCam = new Values_cam();
-	
 	private Values_cam(){
-		
-		
 	}
 	
 	public static Values_cam getInstance(){

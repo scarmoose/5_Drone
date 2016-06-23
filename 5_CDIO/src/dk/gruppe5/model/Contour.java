@@ -169,10 +169,6 @@ public class Contour {
 	}
 
 	public Rect getBoundingRect(int ratio) {
-
-		// RotatedRect r = Imgproc.fitEllipse(contour);
-
-		// Rect p = r.boundingRect();
 		MatOfPoint matOfPoint = new MatOfPoint();
 		contour.convertTo(matOfPoint, CvType.CV_32S);
 

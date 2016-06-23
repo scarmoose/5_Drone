@@ -33,7 +33,7 @@ import dk.gruppe5.model.Values_cam;
 import dk.gruppe5.model.opticalFlowData;
 import dk.gruppe5.positioning.Position;
 
-public class PPanel extends JPanel implements Runnable {
+public class WebcamPanel extends JPanel implements Runnable {
 
 	BufferedImage image;
 	BufferedImage imageTest;
@@ -42,7 +42,6 @@ public class PPanel extends JPanel implements Runnable {
 	static int WEBCAM = 0;
 	// Method is used to determine what filter is run on the image, 0 is none, 1
 	// is opticalflow, 2 is image recognision.
-	// public int method = 2;
 
 	CombinedImageAnalysis combi = new CombinedImageAnalysis();
 
@@ -55,14 +54,13 @@ public class PPanel extends JPanel implements Runnable {
 	 */
 	private static final long serialVersionUID = -8195841601716878275L;
 
-	public PPanel() {
+	public WebcamPanel() {
 		capture = new VideoCapture(WEBCAM);
 		imgproc = new ImageProcessor();
 
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("Thread sleep was interrupted");
 		}
@@ -71,24 +69,17 @@ public class PPanel extends JPanel implements Runnable {
 			System.out.println("Error: Camera connection is not open.");
 		else
 			System.out.println("Success: Camera connection is open.");
-		// dosent work atm
-		// this.addKeyListener(new KeyInput());
 	}
 
 	@Override
 	public void paint(Graphics g) {
 		super.paintComponent(g);
-		// g.drawString("HEJ VERDEN!", 400, 300);
 		if (image != null) {
-
 			int x = this.getWidth();
 			int y = this.getHeight();
-
 			g.drawImage(image, 0, 0, x, y, null);
-
-			// System.out.println("Image drawn in "+dt+"ms");
 			int ofsetX = image.getWidth();
-			// System.out.println(direction.x+":"+direction.y);
+
 			if (Values_cam.getMethod() == 10) {
 				if (imageTest != null) {
 					g.drawImage(imageTest, ofsetX, 0, imageTest.getWidth(), imageTest.getHeight(), null);
@@ -107,8 +98,6 @@ public class PPanel extends JPanel implements Runnable {
 			int method = Values_cam.getMethod();
 			Mat frame = new Mat();
 			capture.read(frame);
-
-			//image = imgproc.toBufferedImage(frame);
 
 			if (old_frame == null) {
 				old_frame = frame;
@@ -155,8 +144,7 @@ public class PPanel extends JPanel implements Runnable {
 				frame = imgproc.blur(frame);
 				frame = imgproc.toCanny(frame);
 				
-				//find firkanter, tegn dem på billedet.
-				
+				//find firkanter, tegn dem på billedet.			
 				List<Contour> contours = imgproc.findQRsquares(frame);
 				
 				for(Contour contour: contours){
@@ -177,7 +165,6 @@ public class PPanel extends JPanel implements Runnable {
 				frame = imgproc.toCanny(frame);
 
 				// find firkanter, tegn dem på billedet.
-
 				List<Contour> contours = imgproc.findQRsquares(frame);
 
 				// vi finder de potentielle QR kode områder
@@ -213,16 +200,10 @@ public class PPanel extends JPanel implements Runnable {
 					imgproc.saveImage(imgproc.bufferedImageToMat(image), "image"+imageNrName+".png");
 					imageNrName++;
 				}
-				
-				
 				image = imgproc.toBufferedImage(testImage);
 				//find firkanter
 				//klip dem ud
-				//warp, gem warpede billede.
-				
-				
-				
-				
+				//warp, gem warpede billede.				
 			}
 			else if(Values_cam.getMethod()==23){
 				Mat backUp = new Mat();
@@ -291,18 +272,6 @@ public class PPanel extends JPanel implements Runnable {
 			}
 
 			else if(Values_cam.getMethod() == 15) {
-				/*
-				Mat dst = Mat.zeros(frame.size(), 0);
-				// Mat dst = new Mat(frame.width(), frame.height(), 0);
-				// dst = frame.clone();
-				frame = imgproc.toGrayScale(frame);
-				new CircleTest().findHoughCircles(frame, dst);
-				if(!dst.empty()) {
-					System.out.println("LOL");
-					image = imgproc.toBufferedImage(dst);
-				} else System.err.println("FEJL I CIRKLEFINDING");
-				*/
-				
 				Mat dst = Mat.zeros(frame.size(), 5);
 				List<MatOfPoint> contours = imgproc.getContourList(frame);
 				List<MatOfPoint2f> approxs = imgproc.getApproxCurves(contours, 0.1);
@@ -348,15 +317,11 @@ public class PPanel extends JPanel implements Runnable {
 			Double distance = Math.sqrt(Math.pow(one.x - two.x, 2) + Math.pow(one.y - two.y, 2));
 
 			if (distance > 5) {
-				// System.out.println("Distance: "+distance);
 				double angle = Math.atan2(two.y - one.y, two.x - one.x);
 				double angle2 = angle * (180 / Math.PI);
-				// System.out.println(angle2);
 				if (angle2 < 0) {
-					// System.out.println(angle2);
 					angletotal = angletotal + angle2 + 360;
 				} else {
-					// System.out.println(angle2);
 					angletotal = angletotal + angle2;
 				}
 			}
@@ -376,8 +341,7 @@ public class PPanel extends JPanel implements Runnable {
 	 */
 	public void directionGuess(double avAngle) {
 		if (startPoints.size() > 30) {
-			// System.out.println("Nr of vectors: " +startPoints.size());
-
+	
 			if (avAngle > 315 && avAngle < 360) {
 				System.out.println("Left - U");
 

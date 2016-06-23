@@ -53,13 +53,7 @@ public class Movement {
 	}
 
 	private void init() {
-		//drone.addExceptionListener(new MyExceptionListener());
 		drone.getNavDataManager().addAltitudeListener(new MyAltitudeListener());
-		//drone.getNavDataManager().addAttitudeListener(new MyAttitudeListener());
-		//drone.getNavDataManager().addBatteryListener(new MyBatteryListener());
-		//drone.getNavDataManager().addAcceleroListener(new MyAcceleroListener());
-		//drone.getNavDataManager().addVelocityListener(new MyVelocityListener());
-
 	}
 
 	public void moveAroundArea() {
@@ -322,9 +316,7 @@ public class Movement {
 		@Override
 		public void batteryLevelChanged(int percentage) {
 			System.out.println("Battery: " + percentage + " %");			
-
 		}
-
 	}
 	
 	public class MyAltitudeListener implements AltitudeListener {
@@ -339,9 +331,7 @@ public class Movement {
 
 		@Override
 		public void receivedExtendedAltitude(Altitude exAltitude) {
-		//	System.out.println("receivedExtendedAltitude - Altitude: "+exAltitude);
 		}
-
 	}
 
 	class MyExceptionListener implements IExceptionListener {
@@ -350,9 +340,7 @@ public class Movement {
 		{
 			exc.printStackTrace();
 		}
-		
 	}
-
 }
 
 

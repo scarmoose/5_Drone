@@ -98,25 +98,6 @@ public final class CircleCircleIntersection {
 			distanceRadicalPointIntersectionPoints = 0;
 			return;
 		}
-		
-		// Type determination is simpler if done later.
-		/* else
-		{
-			double rs = c1.r + c2.r;
-			if (distanceC1cC2c >= rs) {
-				if (distanceC1cC2c == rs) type = Type.EXTERNALLY_TANGENT;
-				else type = Type.SEPARATE;
-			}
-			else
-			{
-				double rd = abs(c1.r - c2.r);
-				if (distanceC1cC2c <= rd) {
-					if (distanceC1cC2c == rd) type = Type.INTERNALLY_TANGENT;
-					else type = Type.ECCENTRIC_CONTAINED;
-				}
-				else type = Type.OVERLAPPING;
-			}
-		} */
 
 		// Direction versor from c1 center to c2 center:
 		versorC1cC2c = vectorC1cC2c.scale(1 / distanceC1cC2c);
@@ -130,7 +111,6 @@ public final class CircleCircleIntersection {
 
 		// If type had been determined before:
 		//switch (type.getIntersectionPointCount()) { ... }
-
 		// Square of distance between radical point and either intersection point, if circles are overlapping:
 		double sqH = sq(c1.r) - sq(distanceC1cRadicalLine);
 		if (sqH > 0)

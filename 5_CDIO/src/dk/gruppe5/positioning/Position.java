@@ -82,11 +82,6 @@ public class Position {
 		return signed_angle;
 	}
 
-	
-//	public float getDistanceToPoints(float angle, float distanceBetweenPoints) {
-//		return (float) ((distanceBetweenPoints/2) / Math.tan(Math.toRadians(angle)));
-//	}
-
 	/**
 	 * OBS. VIRKER KUN MED INTEGERS, SÅ DEN VIRKER EGENTLIG IKKE
 	 * @param c1 Circle 1
